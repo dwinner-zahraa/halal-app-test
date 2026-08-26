@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#e06666">
-  <title>Halal App</title>
+  <title>H-scan</title>
   
-  <link rel="stylesheet" href="style.css?v=14">
+  <link rel="stylesheet" href="style.css?v=15">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
 
   <!-- Leaflet Map CSS & JS -->
@@ -18,44 +18,44 @@
 
   <!-- Top Header Bar -->
   <header class="app-header">
-    <div><strong>LOGO</strong></div>
+    <div><strong data-i18n="logo">H-SCAN</strong></div>
     <div id="time-display">--:--<br><small>-- ---</small></div>
-    <div>🇲🇾 Flag</div>
+    <div>🇲🇾 <span data-i18n="flag">Flag</span></div>
   </header>
 
   <!-- 1. APP / HOME PAGE VIEW -->
   <div id="app-page" class="page-view active-page">
     <div class="banner-carousel">
-      <p>Banner Slide (Updates / Info)</p>
+      <p data-i18n="bannerText">Banner Slide (Updates / Info)</p>
     </div>
 
     <div class="middle-grid">
       <div id="map" class="active-map"></div>
-      <div class="saved-history">Saved / History</div>
+      <div class="saved-history" data-i18n="savedHistory">Saved / History</div>
     </div>
 
     <div class="bottom-carousel">
-      <p>Halal Food & Snacks Slide</p>
+      <p data-i18n="bottomBannerText">Halal Food & Snacks Slide</p>
     </div>
   </div>
 
   <!-- 2. ADD PRODUCT PAGE VIEW -->
   <div id="add-product-page" class="page-view">
-    <h2><i class="fa-solid fa-plus"></i> Add Product</h2>
-    <p>Submit a new product to the Halal database here.</p>
+    <h2><i class="fa-solid fa-plus"></i> <span data-i18n="addProductTitle">Add Product</span></h2>
+    <p data-i18n="addProductDesc">Submit a new product to the Halal database here.</p>
   </div>
 
   <!-- 3. SCANNER PAGE VIEW -->
   <div id="scan-page" class="page-view">
-    <h2><i class="fa-solid fa-qrcode"></i> Barcode Scanner</h2>
-    <p>Camera view for scanning product barcodes will load here.</p>
+    <h2><i class="fa-solid fa-qrcode"></i> <span data-i18n="scanTitle">Barcode Scanner</span></h2>
+    <p data-i18n="scanDesc">Camera view for scanning product barcodes will load here.</p>
   </div>
 
   <!-- 4. COUNTRIES PAGE VIEW -->
   <div id="countries-page" class="page-view">
     <div class="countries-header">
-      <h2><i class="fa-solid fa-globe"></i> Halal Regions</h2>
-      <p>Select a country to explore verified Halal certifications.</p>
+      <h2><i class="fa-solid fa-globe"></i> <span data-i18n="countriesTitle">Halal Regions</span></h2>
+      <p data-i18n="countriesDesc">Select a country to explore verified Halal certifications.</p>
     </div>
 
     <div class="country-search-box">
@@ -64,7 +64,7 @@
     </div>
 
     <div class="countries-scroll-container">
-      <div class="country-section-title">Popular Destinations</div>
+      <div class="country-section-title" data-i18n="popularTitle">Popular Destinations</div>
       <div class="popular-grid">
         <div class="country-card popular"><span class="flag">🇲🇾</span><span class="name">Malaysia</span></div>
         <div class="country-card popular"><span class="flag">🇯🇵</span><span class="name">Japan</span></div>
@@ -74,201 +74,13 @@
         <div class="country-card popular"><span class="flag">🇸🇬</span><span class="name">Singapore</span></div>
       </div>
 
-      <div class="country-section-title">All Countries</div>
+      <div class="country-section-title" data-i18n="allCountriesTitle">All Countries</div>
       <div class="all-countries-list" id="countries-list">
-        <div class="country-row"><span class="flag">🇦🇫</span><span class="country-name">Afghanistan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇦🇱</span><span class="country-name">Albania</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇩🇿</span><span class="country-name">Algeria</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇦🇩</span><span class="country-name">Andorra</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇦🇴</span><span class="country-name">Angola</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇦🇬</span><span class="country-name">Antigua & Barbuda</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇦🇷</span><span class="country-name">Argentina</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇦🇲</span><span class="country-name">Armenia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇦🇺</span><span class="country-name">Australia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇦🇹</span><span class="country-name">Austria</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇦🇿</span><span class="country-name">Azerbaijan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇸</span><span class="country-name">Bahamas</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇭</span><span class="country-name">Bahrain</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇩</span><span class="country-name">Bangladesh</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇧</span><span class="country-name">Barbados</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇾</span><span class="country-name">Belarus</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇪</span><span class="country-name">Belgium</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇿</span><span class="country-name">Belize</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇯</span><span class="country-name">Benin</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇹</span><span class="country-name">Bhutan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇴</span><span class="country-name">Bolivia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇦</span><span class="country-name">Bosnia & Herzegovina</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇼</span><span class="country-name">Botswana</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇷</span><span class="country-name">Brazil</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇳</span><span class="country-name">Brunei</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇬</span><span class="country-name">Bulgaria</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇫</span><span class="country-name">Burkina Faso</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇮</span><span class="country-name">Burundi</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇰🇭</span><span class="country-name">Cambodia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇲</span><span class="country-name">Cameroon</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇦</span><span class="country-name">Canada</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇻</span><span class="country-name">Cape Verde</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇫</span><span class="country-name">Central African Republic</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇩</span><span class="country-name">Chad</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇱</span><span class="country-name">Chile</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇳</span><span class="country-name">China</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇴</span><span class="country-name">Colombia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇰🇲</span><span class="country-name">Comoros</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇬</span><span class="country-name">Congo</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇷</span><span class="country-name">Costa Rica</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇭🇷</span><span class="country-name">Croatia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇺</span><span class="country-name">Cuba</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇾</span><span class="country-name">Cyprus</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇿</span><span class="country-name">Czech Republic</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇩🇰</span><span class="country-name">Denmark</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇩🇯</span><span class="country-name">Djibouti</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇩🇲</span><span class="country-name">Dominica</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇩🇴</span><span class="country-name">Dominican Republic</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇪🇨</span><span class="country-name">Ecuador</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇪🇬</span><span class="country-name">Egypt</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇻</span><span class="country-name">El Salvador</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇬🇶</span><span class="country-name">Equatorial Guinea</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇪🇷</span><span class="country-name">Eritrea</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇪🇪</span><span class="country-name">Estonia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇿</span><span class="country-name">Eswatini</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇪🇹</span><span class="country-name">Ethiopia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇫🇯</span><span class="country-name">Fiji</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇫🇮</span><span class="country-name">Finland</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇫🇷</span><span class="country-name">France</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇬🇦</span><span class="country-name">Gabon</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇬🇲</span><span class="country-name">Gambia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇬🇪</span><span class="country-name">Georgia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇩🇪</span><span class="country-name">Germany</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇬🇭</span><span class="country-name">Ghana</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇬🇷</span><span class="country-name">Greece</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇬🇩</span><span class="country-name">Grenada</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇬🇹</span><span class="country-name">Guatemala</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇬🇳</span><span class="country-name">Guinea</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇬🇼</span><span class="country-name">Guinea-Bissau</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇬🇾</span><span class="country-name">Guyana</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇭🇹</span><span class="country-name">Haiti</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇭🇳</span><span class="country-name">Honduras</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇭🇺</span><span class="country-name">Hungary</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇮🇸</span><span class="country-name">Iceland</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇮🇳</span><span class="country-name">India</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇮🇩</span><span class="country-name">Indonesia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇮🇷</span><span class="country-name">Iran</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇮🇶</span><span class="country-name">Iraq</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇮🇪</span><span class="country-name">Ireland</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇮🇹</span><span class="country-name">Italy</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇯🇲</span><span class="country-name">Jamaica</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇯🇵</span><span class="country-name">Japan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇯🇴</span><span class="country-name">Jordan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇰🇿</span><span class="country-name">Kazakhstan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇰🇪</span><span class="country-name">Kenya</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇰🇮</span><span class="country-name">Kiribati</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇰🇵</span><span class="country-name">North Korea</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇰🇷</span><span class="country-name">South Korea</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇰🇼</span><span class="country-name">Kuwait</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇰🇬</span><span class="country-name">Kyrgyzstan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇱🇦</span><span class="country-name">Laos</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇱🇻</span><span class="country-name">Latvia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇱🇧</span><span class="country-name">Lebanon</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇱🇸</span><span class="country-name">Lesotho</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇱🇷</span><span class="country-name">Liberia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇱🇾</span><span class="country-name">Libya</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇱🇮</span><span class="country-name">Liechtenstein</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇱🇹</span><span class="country-name">Lithuania</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇱🇺</span><span class="country-name">Luxembourg</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇬</span><span class="country-name">Madagascar</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇼</span><span class="country-name">Malawi</span><i class="fa-solid fa-chevron-right"></i></div>
         <div class="country-row"><span class="flag">🇲🇾</span><span class="country-name">Malaysia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇻</span><span class="country-name">Maldives</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇱</span><span class="country-name">Mali</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇹</span><span class="country-name">Malta</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇭</span><span class="country-name">Marshall Islands</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇷</span><span class="country-name">Mauritania</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇺</span><span class="country-name">Mauritius</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇽</span><span class="country-name">Mexico</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇫🇲</span><span class="country-name">Micronesia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇩</span><span class="country-name">Moldova</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇨</span><span class="country-name">Monaco</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇳</span><span class="country-name">Mongolia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇪</span><span class="country-name">Montenegro</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇦</span><span class="country-name">Morocco</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇿</span><span class="country-name">Mozambique</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇲</span><span class="country-name">Myanmar</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇳🇦</span><span class="country-name">Namibia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇳🇷</span><span class="country-name">Nauru</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇳🇵</span><span class="country-name">Nepal</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇳🇱</span><span class="country-name">Netherlands</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇳🇿</span><span class="country-name">New Zealand</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇳🇮</span><span class="country-name">Nicaragua</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇳🇪</span><span class="country-name">Niger</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇳🇬</span><span class="country-name">Nigeria</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇰</span><span class="country-name">North Macedonia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇳🇴</span><span class="country-name">Norway</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇴🇲</span><span class="country-name">Oman</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇵🇰</span><span class="country-name">Pakistan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇵🇼</span><span class="country-name">Palau</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇵🇸</span><span class="country-name">Palestine</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇵🇦</span><span class="country-name">Panama</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇵🇬</span><span class="country-name">Papua New Guinea</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇵🇾</span><span class="country-name">Paraguay</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇵🇪</span><span class="country-name">Peru</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇵🇭</span><span class="country-name">Philippines</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇵🇱</span><span class="country-name">Poland</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇵🇹</span><span class="country-name">Portugal</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇶🇦</span><span class="country-name">Qatar</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇷🇴</span><span class="country-name">Romania</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇷🇺</span><span class="country-name">Russia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇷🇼</span><span class="country-name">Rwanda</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇰🇳</span><span class="country-name">Saint Kitts & Nevis</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇱🇨</span><span class="country-name">Saint Lucia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇻🇨</span><span class="country-name">Saint Vincent & Grenadines</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇼🇸</span><span class="country-name">Samoa</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇲</span><span class="country-name">San Marino</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇹</span><span class="country-name">Sao Tome & Principe</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇦</span><span class="country-name">Saudi Arabia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇳</span><span class="country-name">Senegal</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇷🇸</span><span class="country-name">Serbia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇨</span><span class="country-name">Seychelles</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇱</span><span class="country-name">Sierra Leone</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇯🇵</span><span class="country-name">Japan</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇮🇩</span><span class="country-name">Indonesia</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇰🇷</span><span class="country-name">South Korea</span><i class="fa-solid fa-chevron-right"></i></div>
         <div class="country-row"><span class="flag">🇸🇬</span><span class="country-name">Singapore</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇰</span><span class="country-name">Slovakia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇮</span><span class="country-name">Slovenia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇧</span><span class="country-name">Solomon Islands</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇴</span><span class="country-name">Somalia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇿🇦</span><span class="country-name">South Africa</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇸</span><span class="country-name">South Sudan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇪🇸</span><span class="country-name">Spain</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇱🇰</span><span class="country-name">Sri Lanka</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇩</span><span class="country-name">Sudan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇷</span><span class="country-name">Suriname</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇪</span><span class="country-name">Sweden</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇭</span><span class="country-name">Switzerland</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇾</span><span class="country-name">Syria</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇼</span><span class="country-name">Taiwan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇯</span><span class="country-name">Tajikistan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇿</span><span class="country-name">Tanzania</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇭</span><span class="country-name">Thailand</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇱</span><span class="country-name">Timor-Leste</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇬</span><span class="country-name">Togo</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇴</span><span class="country-name">Tonga</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇹</span><span class="country-name">Trinidad & Tobago</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇳</span><span class="country-name">Tunisia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇷</span><span class="country-name">Turkey</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇲</span><span class="country-name">Turkmenistan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇻</span><span class="country-name">Tuvalu</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇺🇬</span><span class="country-name">Uganda</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇺🇦</span><span class="country-name">Ukraine</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇦🇪</span><span class="country-name">United Arab Emirates</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇬🇧</span><span class="country-name">United Kingdom</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇺🇸</span><span class="country-name">United States</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇺🇾</span><span class="country-name">Uruguay</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇺🇿</span><span class="country-name">Uzbekistan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇻🇺</span><span class="country-name">Vanuatu</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇻🇦</span><span class="country-name">Vatican City</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇻🇪</span><span class="country-name">Venezuela</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇻🇳</span><span class="country-name">Vietnam</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇾🇪</span><span class="country-name">Yemen</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇿🇲</span><span class="country-name">Zambia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇿🇼</span><span class="country-name">Zimbabwe</span><i class="fa-solid fa-chevron-right"></i></div>
       </div>
     </div>
   </div>
@@ -276,98 +88,140 @@
   <!-- 5. SETTINGS PAGE VIEW -->
   <div id="settings-page" class="page-view">
     <div class="settings-header">
-      <h2><i class="fa-solid fa-gear"></i> Settings</h2>
+      <h2><i class="fa-solid fa-gear"></i> <span data-i18n="settingsTitle">Settings</span></h2>
     </div>
 
     <div class="settings-list">
-      
-      <!-- User Item -->
       <div class="settings-item" onclick="showSubPage('user-profile-page')">
         <div class="settings-left">
           <i class="fa-solid fa-user"></i>
-          <span class="title">User</span>
+          <span class="title" data-i18n="menuUser">User Profile</span>
         </div>
         <i class="fa-solid fa-chevron-right"></i>
       </div>
 
-      <!-- Languages Item -->
       <div class="settings-item" onclick="openModal('language-modal')">
         <div class="settings-left">
           <i class="fa-solid fa-language"></i>
-          <span class="title">Languages</span>
+          <span class="title" data-i18n="menuLang">Languages</span>
         </div>
         <i class="fa-solid fa-chevron-right"></i>
       </div>
 
-      <!-- Theme Mode Item -->
       <div class="settings-item" onclick="openModal('theme-modal')">
         <div class="settings-left">
           <i class="fa-solid fa-moon"></i>
-          <span class="title">Theme Mode</span>
+          <span class="title" data-i18n="menuTheme">Theme Mode</span>
         </div>
         <i class="fa-solid fa-chevron-right"></i>
       </div>
 
-      <!-- Donation Item -->
       <div class="settings-item" onclick="openModal('donation-modal')">
         <div class="settings-left">
           <i class="fa-solid fa-hand-holding-heart"></i>
-          <span class="title">Donation</span>
+          <span class="title" data-i18n="menuDonate">Donation</span>
         </div>
         <i class="fa-solid fa-chevron-right"></i>
       </div>
 
-      <!-- Creation Info Item -->
       <div class="settings-item" onclick="openModal('info-modal')">
         <div class="settings-left">
           <i class="fa-solid fa-circle-info"></i>
-          <span class="title">Creation Info</span>
+          <span class="title" data-i18n="menuInfo">Creation Info</span>
         </div>
         <i class="fa-solid fa-chevron-right"></i>
       </div>
 
-      <!-- Version Mode (v1) Item -->
       <div class="settings-item" onclick="openModal('version-modal')">
         <div class="settings-left">
           <i class="fa-solid fa-code-branch"></i>
-          <span class="title">Version Mode (v1)</span>
+          <span class="title" data-i18n="menuVersion">Version Mode (v1)</span>
         </div>
         <i class="fa-solid fa-chevron-right"></i>
       </div>
 
-      <!-- Get Support Item -->
-      <div class="settings-item" onclick="openModal('support-modal')">
+      <div class="settings-item" onclick="showSubPage('support-page')">
         <div class="settings-left">
           <i class="fa-solid fa-ticket"></i>
-          <span class="title">Get Support</span>
+          <span class="title" data-i18n="menuSupport">Get Support</span>
         </div>
         <i class="fa-solid fa-chevron-right"></i>
       </div>
-
     </div>
   </div>
 
-  <!-- 6. USER PROFILE SUB-PAGE -->
+  <!-- 6. EDITABLE USER PROFILE SUB-PAGE -->
   <div id="user-profile-page" class="page-view">
     <div class="profile-nav">
       <button class="back-btn" onclick="showPage('settings-page')">
-        <i class="fa-solid fa-arrow-left"></i> Back to Settings
+        <i class="fa-solid fa-arrow-left"></i> <span data-i18n="backSettings">Back to Settings</span>
       </button>
     </div>
 
     <div class="profile-header-card">
-      <div class="profile-avatar-wrapper">
-        <i class="fa-solid fa-user avatar-placeholder"></i>
+      <div class="profile-avatar-wrapper" onclick="triggerPhotoUpload()">
+        <img id="profile-img-preview" src="" alt="Profile Photo" style="display:none; width:100%; height:100%; border-radius:50%; object-fit:cover;">
+        <i id="profile-avatar-icon" class="fa-solid fa-user avatar-placeholder"></i>
+        <div class="upload-badge"><i class="fa-solid fa-camera"></i></div>
       </div>
+      <input type="file" id="profile-photo-input" accept="image/*" style="display:none;" onchange="loadProfilePhoto(event)">
     </div>
 
     <div class="profile-details-list">
-      <div class="detail-row"><span class="label">NAME:</span> <span class="value">Sara</span></div>
-      <div class="detail-row"><span class="label">USER ID:</span> <span class="value" id="user-id">USR-849201</span></div>
-      <div class="detail-row"><span class="label">MOBILE NO.:</span> <span class="value">+60 12-345 6789</span></div>
-      <div class="detail-row"><span class="label">DOB:</span> <span class="value">15 MARCH 2007</span></div>
-      <div class="detail-row"><span class="label">REGION:</span> <span class="value">Malaysia</span></div>
-      <div class="detail-row"><span class="label">CITY:</span> <span class="value">Kuala Lumpur</span></div>
+      <div class="detail-row">
+        <span class="label">NAME:</span>
+        <input type="text" id="user-name" class="editable-input" value="Sara">
+      </div>
+      <div class="detail-row">
+        <span class="label">USER ID:</span>
+        <span class="value readonly-val" id="user-id">USR-849201</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">MOBILE NO.:</span>
+        <input type="text" id="user-mobile" class="editable-input" value="+60 12-345 6789">
+      </div>
+      <div class="detail-row">
+        <span class="label">DOB:</span>
+        <input type="text" id="user-dob" class="editable-input" value="15 MARCH 2007">
+      </div>
+      <div class="detail-row">
+        <span class="label">REGION:</span>
+        <input type="text" id="user-region" class="editable-input" value="Malaysia">
+      </div>
+      <div class="detail-row">
+        <span class="label">CITY:</span>
+        <input type="text" id="user-city" class="editable-input" value="Kuala Lumpur">
+      </div>
+    </div>
+
+    <button class="save-profile-btn" onclick="saveProfileChanges()" data-i18n="saveProfile">Save Changes</button>
+  </div>
+
+  <!-- 7. GET SUPPORT DEDICATED PAGE -->
+  <div id="support-page" class="page-view">
+    <div class="profile-nav">
+      <button class="back-btn" onclick="showPage('settings-page')">
+        <i class="fa-solid fa-arrow-left"></i> <span data-i18n="backSettings">Back to Settings</span>
+      </button>
+    </div>
+
+    <div class="support-container">
+      <h2><i class="fa-solid fa-envelope-open-text"></i> <span data-i18n="supportPageTitle">Submit a Support Ticket</span></h2>
+      <p data-i18n="supportPageDesc">Encountered an issue or have a question? Send us a direct inquiry.</p>
+
+      <form id="support-form" onsubmit="sendSupportTicket(event)">
+        <div class="form-group">
+          <label data-i18n="labelSubject">Subject / Issue Type</label>
+          <input type="text" id="support-subject" placeholder="e.g., Incorrect barcode, App bug" required>
+        </div>
+
+        <div class="form-group">
+          <label data-i18n="labelMessage">Message & Details</label>
+          <textarea id="support-message" rows="5" placeholder="Describe your issue or feedback in detail..." required></textarea>
+        </div>
+
+        <button type="submit" class="submit-ticket-btn" data-i18n="btnSendTicket">Send Ticket via Email</button>
+      </form>
     </div>
   </div>
 
@@ -375,12 +229,12 @@
   <nav class="bottom-nav">
     <button class="nav-item active" onclick="showPage('app-page')">
       <i class="fa-solid fa-house"></i>
-      <span>App</span>
+      <span data-i18n="navApp">App</span>
     </button>
 
     <button class="nav-item" onclick="showPage('add-product-page')">
       <i class="fa-solid fa-plus"></i>
-      <span>Add Product</span>
+      <span data-i18n="navAdd">Add Product</span>
     </button>
 
     <button class="scan-btn" onclick="showPage('scan-page')">
@@ -389,74 +243,116 @@
 
     <button class="nav-item" onclick="showPage('countries-page')">
       <i class="fa-solid fa-globe"></i>
-      <span>Countries</span>
+      <span data-i18n="navCountries">Countries</span>
     </button>
 
     <button class="nav-item" onclick="showPage('settings-page')">
       <i class="fa-solid fa-gear"></i>
-      <span>Settings</span>
+      <span data-i18n="navSettings">Settings</span>
     </button>
   </nav>
 
   <!-- MODALS -->
+
+  <!-- 11 LANGUAGES MODAL -->
   <div id="language-modal" class="modal">
     <div class="modal-content">
-      <h3>Select Language</h3>
+      <h3 data-i18n="selectLang">Select Language</h3>
       <ul class="modal-options">
-        <li onclick="closeModal('language-modal')">English</li>
-        <li onclick="closeModal('language-modal')">Bahasa Melayu</li>
-        <li onclick="closeModal('language-modal')">Japanese (日本語)</li>
+        <li onclick="setAppLanguage('en')">English</li>
+        <li onclick="setAppLanguage('ms')">Bahasa Melayu</li>
+        <li onclick="setAppLanguage('id')">Bahasa Indonesia</li>
+        <li onclick="setAppLanguage('ja')">Japanese (日本語)</li>
+        <li onclick="setAppLanguage('zh')">Chinese (中文)</li>
+        <li onclick="setAppLanguage('fr')">French (Français)</li>
+        <li onclick="setAppLanguage('es')">Spanish (Español)</li>
+        <li onclick="setAppLanguage('it')">Italian (Italiano)</li>
+        <li onclick="setAppLanguage('de')">German (Deutsch)</li>
+        <li onclick="setAppLanguage('ar')">Arabic (العربية)</li>
+        <li onclick="setAppLanguage('ko')">Korean (한국어)</li>
       </ul>
-      <button class="close-btn" onclick="closeModal('language-modal')">Close</button>
+      <button class="close-btn" onclick="closeModal('language-modal')" data-i18n="btnClose">Close</button>
     </div>
   </div>
 
+  <!-- ACTIVE THEME MODAL -->
   <div id="theme-modal" class="modal">
     <div class="modal-content">
-      <h3>Select Theme</h3>
+      <h3 data-i18n="selectTheme">Select Theme</h3>
       <ul class="modal-options">
-        <li onclick="closeModal('theme-modal')">Light Mode</li>
-        <li onclick="closeModal('theme-modal')">Dark Mode</li>
+        <li onclick="setTheme('light')"><i class="fa-solid fa-sun"></i> Light Mode</li>
+        <li onclick="setTheme('dark')"><i class="fa-solid fa-moon"></i> Dark Mode</li>
       </ul>
-      <button class="close-btn" onclick="closeModal('theme-modal')">Close</button>
+      <button class="close-btn" onclick="closeModal('theme-modal')" data-i18n="btnClose">Close</button>
     </div>
   </div>
 
+  <!-- DONATION MODAL -->
   <div id="donation-modal" class="modal">
     <div class="modal-content">
-      <h3>Donation</h3>
-      <p style="margin: 15px 0; font-size: 0.9rem; color: #555;">Support app & creator | 100% directly to Palestine / Any aid available.</p>
-      <button class="close-btn" onclick="closeModal('donation-modal')">Close</button>
+      <h3 data-i18n="donationHeader">Support H-scan</h3>
+      <p style="margin: 8px 0; font-size: 0.85rem; color: #666;" data-i18n="donationSub">Choose your donation cause below:</p>
+
+      <div class="donation-options-container">
+        <button class="donation-type-btn" onclick="initiateDonation('Creator Token')">
+          <i class="fa-solid fa-mug-hot"></i>
+          <div>
+            <strong data-i18n="donCreator">Support the Creator</strong>
+            <small data-i18n="donCreatorSub">Small token of appreciation for development</small>
+          </div>
+        </button>
+
+        <button class="donation-type-btn palestine" onclick="initiateDonation('Palestine Aid')">
+          <i class="fa-solid fa-hand-holding-heart"></i>
+          <div>
+            <strong data-i18n="donPalestine">Palestine & Humanitarian Aid</strong>
+            <small data-i18n="donPalestineSub">100% of proceeds directed to relief</small>
+          </div>
+        </button>
+      </div>
+
+      <button class="close-btn" onclick="closeModal('donation-modal')" data-i18n="btnClose">Close</button>
     </div>
   </div>
 
-  <div id="info-modal" class="modal">
+  <!-- PAYMENT METHOD MODAL -->
+  <div id="payment-modal" class="modal">
     <div class="modal-content">
-      <h3>Creation Info</h3>
-      <p style="margin: 15px 0; font-size: 0.9rem; color: #555;">Short story of the app creation.</p>
-      <button class="close-btn" onclick="closeModal('info-modal')">Close</button>
+      <h3 id="payment-target-title">Select Payment Method</h3>
+      <ul class="modal-options">
+        <li onclick="processPayment('Online Banking / Interbank')"><i class="fa-solid fa-building-columns"></i> Online Banking / FPX</li>
+        <li onclick="processPayment('PayPal')"><i class="fa-brands fa-paypal"></i> PayPal</li>
+      </ul>
+      <button class="close-btn" onclick="closeModal('payment-modal')" data-i18n="btnClose">Cancel</button>
     </div>
   </div>
 
+  <!-- CREATION INFO MODAL -->
+  <div id="info-modal" class="modal">
+    <div class="modal-content info-modal-content">
+      <h3><i class="fa-solid fa-heart"></i> The Story of H-scan</h3>
+      <div class="story-body">
+        <p>Hello! I am <strong>Zahraa</strong>, the creator of H-scan.</p>
+        <p>While traveling abroad, I experienced a terrible moment: accidentally consuming food that contained non-Halal ingredients. Even though I was using a scanner app at the time, a second check after eating revealed the item was haram after showing as Halal during the first scan!</p>
+        <p>To make matters worse, many scanners restrict basic usage behind paywalls or limited scan quotas. As a Muslim, I felt every individual deserves effortless, transparent access to reliable Halal verification—100% free, without anxiety or financial barriers.</p>
+        <p>That realization inspired me to build <strong>H-scan</strong> for our global community. Your usage means the world to me, and any contributions directly support continuous app maintenance and humanitarian relief. Thank you for being part of this journey!</p>
+      </div>
+      <button class="close-btn" onclick="closeModal('info-modal')" data-i18n="btnClose">Close</button>
+    </div>
+  </div>
+
+  <!-- VERSION MODAL -->
   <div id="version-modal" class="modal">
     <div class="modal-content">
       <h3>Version Mode (v1)</h3>
-      <p style="margin: 15px 0; font-size: 0.9rem; color: #555;">Current App Version: 1.0.0</p>
-      <button class="close-btn" onclick="closeModal('version-modal')">Close</button>
-    </div>
-  </div>
-
-  <div id="support-modal" class="modal">
-    <div class="modal-content">
-      <h3>Get Support</h3>
-      <p style="margin: 15px 0; font-size: 0.9rem; color: #555;">Submit tickets for app improvements.</p>
-      <button class="close-btn" onclick="closeModal('support-modal')">Close</button>
+      <p style="margin: 15px 0; font-size: 0.9rem; color: #555;">Current App Version: 1.0.0 (Build 2026.08)</p>
+      <button class="close-btn" onclick="closeModal('version-modal')" data-i18n="btnClose">Close</button>
     </div>
   </div>
 
   <!-- JavaScript Controls -->
   <script>
-    // 1. Dynamic Clock Function
+    // 1. DYNAMIC CLOCK
     function updateClock() {
       const now = new Date();
       let hours = now.getHours();
@@ -479,7 +375,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // 2. Leaflet Map Setup
+    // 2. LEAFLET MAP SETUP
     let map;
     function initMap() {
       const mapElement = document.getElementById('map');
@@ -506,7 +402,7 @@
     }
     window.addEventListener('load', initMap);
 
-    // 3. Page Switcher
+    // 3. PAGE SWITCHER
     function showPage(pageId) {
       document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active-page'));
       document.querySelectorAll('.bottom-nav .nav-item').forEach(b => b.classList.remove('active'));
@@ -530,7 +426,7 @@
       if (target) target.classList.add('active-page');
     }
 
-    // 4. Modal Handlers
+    // 4. MODAL CONTROLS
     function openModal(modalId) {
       document.getElementById(modalId).classList.add('show');
     }
@@ -538,7 +434,211 @@
       document.getElementById(modalId).classList.remove('show');
     }
 
-    // 5. Country Search Filter
+    // 5. USER PROFILE EDITING & PHOTO UPLOAD
+    function triggerPhotoUpload() {
+      document.getElementById('profile-photo-input').click();
+    }
+
+    function loadProfilePhoto(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const preview = document.getElementById('profile-img-preview');
+          const icon = document.getElementById('profile-avatar-icon');
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+          icon.style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function saveProfileChanges() {
+      alert("Profile updated successfully!");
+    }
+
+    // 6. MULTI-LANGUAGE DICTIONARY & TOGGLE
+    const translations = {
+      en: {
+        logo: "H-SCAN", flag: "Flag", bannerText: "Banner Slide (Updates / Info)", savedHistory: "Saved / History",
+        bottomBannerText: "Halal Food & Snacks Slide", addProductTitle: "Add Product", addProductDesc: "Submit a new product to the Halal database here.",
+        scanTitle: "Barcode Scanner", scanDesc: "Camera view for scanning product barcodes will load here.", countriesTitle: "Halal Regions",
+        countriesDesc: "Select a country to explore verified Halal certifications.", popularTitle: "Popular Destinations", allCountriesTitle: "All Countries",
+        settingsTitle: "Settings", menuUser: "User Profile", menuLang: "Languages", menuTheme: "Theme Mode", menuDonate: "Donation", menuInfo: "Creation Info",
+        menuVersion: "Version Mode (v1)", menuSupport: "Get Support", navApp: "App", navAdd: "Add Product", navCountries: "Countries", navSettings: "Settings",
+        backSettings: "Back to Settings", saveProfile: "Save Changes", selectLang: "Select Language", selectTheme: "Select Theme", btnClose: "Close",
+        donationHeader: "Support H-scan", donationSub: "Choose your donation cause below:", donCreator: "Support the Creator", donCreatorSub: "Small token of appreciation for development",
+        donPalestine: "Palestine & Humanitarian Aid", donPalestineSub: "100% of proceeds directed to relief", supportPageTitle: "Submit a Support Ticket",
+        supportPageDesc: "Encountered an issue or have a question? Send us a direct inquiry.", labelSubject: "Subject / Issue Type", labelMessage: "Message & Details", btnSendTicket: "Send Ticket via Email"
+      },
+      ms: {
+        logo: "H-SCAN", flag: "Bendera", bannerText: "Slaid Pengumuman / Info", savedHistory: "Disimpan / Sejarah",
+        bottomBannerText: "Slaid Makanan & Snek Halal", addProductTitle: "Tambah Produk", addProductDesc: "Hantar produk baru ke pangkalan data Halal di sini.",
+        scanTitle: "Pengimbas Kod Bar", scanDesc: "Paparan kamera untuk mengimbas kod bar produk.", countriesTitle: "Wilayah Halal",
+        countriesDesc: "Pilih negara untuk meneroka pensijilan Halal yang disahkan.", popularTitle: "Destinasi Popular", allCountriesTitle: "Semua Negara",
+        settingsTitle: "Tetapan", menuUser: "Profil Pengguna", menuLang: "Bahasa", menuTheme: "Mod Tema", menuDonate: "Sumbangan", menuInfo: "Info Pembuatan",
+        menuVersion: "Versi Mod (v1)", menuSupport: "Dapatkan Bantuan", navApp: "Aplikasi", navAdd: "Tambah", navCountries: "Negara", navSettings: "Tetapan",
+        backSettings: "Kembali ke Tetapan", saveProfile: "Simpan Perubahan", selectLang: "Pilih Bahasa", selectTheme: "Pilih Tema", btnClose: "Tutup",
+        donationHeader: "Sokong H-scan", donationSub: "Pilih tujuan sumbangan anda di bawah:", donCreator: "Sokong Pencipta", donCreatorSub: "Tanda penghargaan kecil untuk pembangunan",
+        donPalestine: "Bantuan Palestin & Kemanusiaan", donPalestineSub: "100% hasil disalurkan kepada bantuan", supportPageTitle: "Hantar Tiket Bantuan",
+        supportPageDesc: "Menghadapi masalah atau mempunyai soalan? Hantar pertanyaan secara terus.", labelSubject: "Subjek / Jenis Masalah", labelMessage: "Mesej & Butiran", btnSendTicket: "Hantar Tiket Melalui E-mel"
+      },
+      id: {
+        logo: "H-SCAN", flag: "Bendera", bannerText: "Slide Pengumuman / Info", savedHistory: "Tersimpan / Riwayat",
+        bottomBannerText: "Slide Makanan & Camilan Halal", addProductTitle: "Tambah Produk", addProductDesc: "Kirim produk baru ke basis data Halal di sini.",
+        scanTitle: "Pemindai Kode Batang", scanDesc: "Tampilan kamera untuk memindai kode batang produk.", countriesTitle: "Wilayah Halal",
+        countriesDesc: "Pilih negara untuk menjelajahi sertifikasi Halal yang terverifikasi.", popularTitle: "Destinasi Populer", allCountriesTitle: "Semua Negara",
+        settingsTitle: "Pengaturan", menuUser: "Profil Pengguna", menuLang: "Bahasa", menuTheme: "Mode Tema", menuDonate: "Donasi", menuInfo: "Info Pembuatan",
+        menuVersion: "Versi Mode (v1)", menuSupport: "Dapatkan Bantuan", navApp: "Aplikasi", navAdd: "Tambah", navCountries: "Negara", navSettings: "Pengaturan",
+        backSettings: "Kembali ke Pengaturan", saveProfile: "Simpan Perubahan", selectLang: "Pilih Bahasa", selectTheme: "Pilih Tema", btnClose: "Tutup",
+        donationHeader: "Dukung H-scan", donationSub: "Pilih tujuan donasi Anda di bawah ini:", donCreator: "Dukung Pembuat", donCreatorSub: "Apresiasi kecil untuk pengembangan",
+        donPalestine: "Bantuan Palestina & Kemanusiaan", donPalestineSub: "100% hasil disalurkan untuk bantuan", supportPageTitle: "Kirim Tiket Dukungan",
+        supportPageDesc: "Mengalami masalah atau memiliki pertanyaan? Kirim pertanyaan secara langsung.", labelSubject: "Subjek / Jenis Masalah", labelMessage: "Pesan & Detail", btnSendTicket: "Kirim Tiket via Email"
+      },
+      ja: {
+        logo: "H-SCAN", flag: "国旗", bannerText: "バナースライド（最新情報）", savedHistory: "保存済み / 履歴",
+        bottomBannerText: "ハラール食品スライド", addProductTitle: "製品を追加", addProductDesc: "ハラールデータベースに新しい製品を送信します。",
+        scanTitle: "バーコードスキャナー", scanDesc: "バーコード読み取り用カメラビュー。", countriesTitle: "ハラール地域",
+        countriesDesc: "認証されたハラール地域を選択します。", popularTitle: "人気の目的地", allCountriesTitle: "すべての国",
+        settingsTitle: "設定", menuUser: "ユーザープロファイル", menuLang: "言語", menuTheme: "テーマモード", menuDonate: "寄付", menuInfo: "アプリ制作情報",
+        menuVersion: "バージョン (v1)", menuSupport: "サポートを受ける", navApp: "アプリ", navAdd: "追加", navCountries: "国一覧", navSettings: "設定",
+        backSettings: "設定に戻る", saveProfile: "変更を保存", selectLang: "言語を選択", selectTheme: "テーマを選択", btnClose: "閉じる",
+        donationHeader: "H-scanを支援", donationSub: "寄付の目的を選択してください：", donCreator: "制作者を支援", donCreatorSub: "開発への感謝のトークン",
+        donPalestine: "パレスチナ人道支援", donPalestineSub: "収益の100%を支援に充当", supportPageTitle: "サポートチケットを送信",
+        supportPageDesc: "問題やご質問がありますか？直接お問い合わせください。", labelSubject: "件名 / 問題の種類", labelMessage: "メッセージの詳細", btnSendTicket: "メールでチケットを送信"
+      },
+      zh: {
+        logo: "H-SCAN", flag: "国旗", bannerText: "横幅公告（更新/信息）", savedHistory: "已保存 / 历史",
+        bottomBannerText: "清真食品与零食专区", addProductTitle: "添加产品", addProductDesc: "在此向清真数据库提交新产品。",
+        scanTitle: "条形码扫描器", scanDesc: "用于扫描产品条形码的相机界面。", countriesTitle: "清真区域",
+        countriesDesc: "选择国家以查看经过验证的清真认证。", popularTitle: "热门目的地", allCountriesTitle: "所有国家",
+        settingsTitle: "设置", menuUser: "用户资料", menuLang: "语言", menuTheme: "主题模式", menuDonate: "捐赠", menuInfo: "创作背景",
+        menuVersion: "版本模式 (v1)", menuSupport: "获取支持", navApp: "应用", navAdd: "添加", navCountries: "国家", navSettings: "设置",
+        backSettings: "返回设置", saveProfile: "保存更改", selectLang: "选择语言", selectTheme: "选择主题", btnClose: "关闭",
+        donationHeader: "支持 H-scan", donationSub: "请在下方选择您的捐款目的：", donCreator: "支持创作者", donCreatorSub: "对开发工作的小额感谢",
+        donPalestine: "巴勒斯坦及人道主义援助", donPalestineSub: "100% 收益直接用于援助", supportPageTitle: "提交支持工单",
+        supportPageDesc: "遇到问题或有疑问？请直接发送询问。", labelSubject: "主题 / 问题类型", labelMessage: "信息与详情", btnSendTicket: "通过电子邮件发送工单"
+      },
+      fr: {
+        logo: "H-SCAN", flag: "Drapeau", bannerText: "Bannière (Mises à jour)", savedHistory: "Enregistré / Historique",
+        bottomBannerText: "Aliments & Snacks Halal", addProductTitle: "Ajouter un produit", addProductDesc: "Soumettre un produit à la base de données Halal.",
+        scanTitle: "Scanner de code-barres", scanDesc: "L'appareil photo s'ouvrira pour scanner les codes-barres.", countriesTitle: "Régions Halal",
+        countriesDesc: "Sélectionnez un pays pour explorer les certifications.", popularTitle: "Destinations populaires", allCountriesTitle: "Tous les pays",
+        settingsTitle: "Paramètres", menuUser: "Profil utilisateur", menuLang: "Langues", menuTheme: "Mode Thème", menuDonate: "Faire un don", menuInfo: "À propos",
+        menuVersion: "Version (v1)", menuSupport: "Obtenir de l'aide", navApp: "App", navAdd: "Ajouter", navCountries: "Pays", navSettings: "Paramètres",
+        backSettings: "Retour aux paramètres", saveProfile: "Enregistrer", selectLang: "Choisir la langue", selectTheme: "Choisir le thème", btnClose: "Fermer",
+        donationHeader: "Soutenir H-scan", donationSub: "Choisissez la cause de votre don :", donCreator: "Soutenir la créatrice", donCreatorSub: "Un geste d'appréciation pour le développement",
+        donPalestine: "Aide humanitaire pour la Palestine", donPalestineSub: "100% des bénéfices destinés à l'aide", supportPageTitle: "Envoyer un ticket d'assistance",
+        supportPageDesc: "Un problème ou une question ? Envoyez une demande directe.", labelSubject: "Sujet / Type de problème", labelMessage: "Message et détails", btnSendTicket: "Envoyer par e-mail"
+      },
+      es: {
+        logo: "H-SCAN", flag: "Bandera", bannerText: "Banner (Actualizaciones / Info)", savedHistory: "Guardado / Historial",
+        bottomBannerText: "Comida y Snacks Halal", addProductTitle: "Agregar producto", addProductDesc: "Envíe un nuevo producto a la base de datos Halal.",
+        scanTitle: "Escáner de código de barras", scanDesc: "La cámara se cargará para escanear productos.", countriesTitle: "Regiones Halal",
+        countriesDesc: "Seleccione un país para explorar certificaciones Halal.", popularTitle: "Destinos populares", allCountriesTitle: "Todos los países",
+        settingsTitle: "Ajustes", menuUser: "Perfil de usuario", menuLang: "Idiomas", menuTheme: "Modo de tema", menuDonate: "Donaciones", menuInfo: "Información de creación",
+        menuVersion: "Versión (v1)", menuSupport: "Obtener soporte", navApp: "Inicio", navAdd: "Agregar", navCountries: "Países", navSettings: "Ajustes",
+        backSettings: "Volver a ajustes", saveProfile: "Guardar cambios", selectLang: "Seleccionar idioma", selectTheme: "Seleccionar tema", btnClose: "Cerrar",
+        donationHeader: "Apoyar a H-scan", donationSub: "Elija la causa de su donación:", donCreator: "Apoyar a la creadora", donCreatorSub: "Un pequeño gesto de agradecimiento",
+        donPalestine: "Ayuda para Palestina y Humanitaria", donPalestineSub: "El 100% de lo recaudado va a la ayuda", supportPageTitle: "Enviar ticket de soporte",
+        supportPageDesc: "¿Tiene un problema o pregunta? Envíenos una consulta.", labelSubject: "Asunto / Tipo de problema", labelMessage: "Mensaje y detalles", btnSendTicket: "Enviar por correo electrónico"
+      },
+      it: {
+        logo: "H-SCAN", flag: "Bandiera", bannerText: "Banner (Aggiornamenti / Info)", savedHistory: "Salvati / Cronologia",
+        bottomBannerText: "Cibo e Snack Halal", addProductTitle: "Aggiungi prodotto", addProductDesc: "Invia un nuovo prodotto al database Halal.",
+        scanTitle: "Scanner codice a barre", scanDesc: "La fotocamera si aprirà per scansionare i prodotti.", countriesTitle: "Regioni Halal",
+        countriesDesc: "Seleziona un paese per verificare le certificazioni.", popularTitle: "Destinazioni popolari", allCountriesTitle: "Tutti i paesi",
+        settingsTitle: "Impostazioni", menuUser: "Profilo utente", menuLang: "Lingue", menuTheme: "Modalità tema", menuDonate: "Donazioni", menuInfo: "Info creazione",
+        menuVersion: "Versione (v1)", menuSupport: "Ottieni supporto", navApp: "App", navAdd: "Aggiungi", navCountries: "Paesi", navSettings: "Impostazioni",
+        backSettings: "Torna alle impostazioni", saveProfile: "Salva modifiche", selectLang: "Seleziona lingua", selectTheme: "Seleziona tema", btnClose: "Chiudi",
+        donationHeader: "Sostieni H-scan", donationSub: "Scegli la causa della tua donazione:", donCreator: "Sostieni la creatrice", donCreatorSub: "Un piccolo segno di apprezzamento",
+        donPalestine: "Aiuto umanitario per la Palestina", donPalestineSub: "Il 100% del ricavado va in aiuti", supportPageTitle: "Invia un ticket di supporto",
+        supportPageDesc: "Hai un problema o una domanda? Invia una richiesta diretta.", labelSubject: "Oggetto / Tipo di problema", labelMessage: "Messaggio e dettagli", btnSendTicket: "Invia tramite e-mail"
+      },
+      de: {
+        logo: "H-SCAN", flag: "Flagge", bannerText: "Banner (Updates / Info)", savedHistory: "Gespeichert / Verlauf",
+        bottomBannerText: "Halal Essen & Snacks", addProductTitle: "Produkt hinzufügen", addProductDesc: "Neues Produkt zur Halal-Datenbank hinzufügen.",
+        scanTitle: "Barcodescanner", scanDesc: "Kameraansicht zum Scannen von Produkt-Barcodes.", countriesTitle: "Halal-Regionen",
+        countriesDesc: "Wählen Sie ein Land aus, um Zertifizierungen zu sehen.", popularTitle: "Beliebte Reiseziele", allCountriesTitle: "Alle Länder",
+        settingsTitle: "Einstellungen", menuUser: "Benutzerprofil", menuLang: "Sprachen", menuTheme: "Themenmodus", menuDonate: "Spenden", menuInfo: "Ersteller-Info",
+        menuVersion: "Version (v1)", menuSupport: "Support erhalten", navApp: "App", navAdd: "Hinzufügen", navCountries: "Länder", navSettings: "Einstellungen",
+        backSettings: "Zurück zu Einstellungen", saveProfile: "Änderungen speichern", selectLang: "Sprache wählen", selectTheme: "Thema wählen", btnClose: "Schließen",
+        donationHeader: "H-scan unterstützen", donationSub: "Wählen Sie Ihren Spendenzweck aus:", donCreator: "Entwicklerin unterstützen", donCreatorSub: "Kleine Anerkennung für die Entwicklung",
+        donPalestine: "Palästina & Humanitäre Hilfe", donPalestineSub: "100 % der Erlöse fließen in die Hilfe", supportPageTitle: "Support-Ticket senden",
+        supportPageDesc: "Haben Sie ein Problem oder eine Frage? Senden Sie eine Anfrage.", labelSubject: "Betreff / Problemtyp", labelMessage: "Nachricht & Details", btnSendTicket: "Ticket per E-Mail senden"
+      },
+      ar: {
+        logo: "H-SCAN", flag: "علم", bannerText: "شريط التحديثات والمعلومات", savedHistory: "المحفوظات / السجل",
+        bottomBannerText: "عروض الأطعمة والوجبات الخفيفة الحلال", addProductTitle: "إضافة منتج", addProductDesc: "أضف منتجًا جديدًا إلى قاعدة بيانات الحلال هنا.",
+        scanTitle: "ماسح الباركود", scanDesc: "سيتم فتح الكاميرا لمسح باركود المنتجات.", countriesTitle: "المناطق الحلال",
+        countriesDesc: "اختر دولة للاطلاع على الشهادات المعتمدة.", popularTitle: "الوجهات الشائعة", allCountriesTitle: "جميع الدول",
+        settingsTitle: "الإعدادات", menuUser: "ملف المستخدم", menuLang: "اللغات", menuTheme: "مظهر التطبيق", menuDonate: "التبرعات", menuInfo: "قصة التطبيق",
+        menuVersion: "إصدار التطبيق (v1)", menuSupport: "الدعم الفني", navApp: "الرئيسية", navAdd: "إضافة", navCountries: "الدول", navSettings: "الإعدادات",
+        backSettings: "العودة للإعدادات", saveProfile: "حفظ التغييرات", selectLang: "اختر اللغة", selectTheme: "اختر المظهر", btnClose: "إغلاق",
+        donationHeader: "دعم تطبيق H-scan", donationSub: "اختر جهة التبرع أدناه:", donCreator: "دعم مطورة التطبيق", donCreatorSub: "رمز تقدير بسيط لجهود التطوير",
+        donPalestine: "مساعدات فلسطين والإغاثة الإنسانية", donPalestineSub: "100% من التبرعات تذهب مباشرة للإغاثة", supportPageTitle: "إرسال تذكرة دعم",
+        supportPageDesc: "هل واجهت مشكلة أو لديك استفسار؟ أرسل لنا مباشرة.", labelSubject: "الموضوع / نوع المشكلة", labelMessage: "الرسالة والتفاصيل", btnSendTicket: "إرسال التذكرة عبر البريد"
+      },
+      ko: {
+        logo: "H-SCAN", flag: "국기", bannerText: "배너 슬라이드 (업데이트 / 정보)", savedHistory: "저장됨 / 기록",
+        bottomBannerText: "할랄 푸드 & 스낵 슬라이드", addProductTitle: "제품 추가", addProductDesc: "할랄 데이터베이스에 새 제품을 제출합니다.",
+        scanTitle: "바코드 스캐너", scanDesc: "바코드 스캔을 위한 카메라 화면이 로드됩니다.", countriesTitle: "할랄 지역",
+        countriesDesc: "인증된 할랄 지역을 탐색할 국가를 선택하세요.", popularTitle: "인기 목적지", allCountriesTitle: "모든 국가",
+        settingsTitle: "설정", menuUser: "사용자 프로필", menuLang: "언어", menuTheme: "테마 모드", menuDonate: "기부", menuInfo: "제작 정보",
+        menuVersion: "버전 모드 (v1)", menuSupport: "지원 받기", navApp: "앱", navAdd: "추가", navCountries: "국가", navSettings: "설정",
+        backSettings: "설정으로 돌아가기", saveProfile: "변경 사항 저장", selectLang: "언어 선택", selectTheme: "테마 선택", btnClose: "닫기",
+        donationHeader: "H-scan 후원하기", donationSub: "아래에서 기부 목적을 선택하세요:", donCreator: "제작자 후원하기", donCreatorSub: "개발에 대한 작은 감사의 표시",
+        donPalestine: "팔레스타인 및 인도적 지원", donPalestineSub: "수익금 100%가 구호 활동에 전달됩니다", supportPageTitle: "지원 티켓 제출",
+        supportPageDesc: "문제가 있거나 질문이 있으신가요? 직접 문의해 주세요.", labelSubject: "제목 / 문제 유형", labelMessage: "메시지 및 상세 내용", btnSendTicket: "이메일로 티켓 보내기"
+      }
+    };
+
+    function setAppLanguage(langCode) {
+      const dictionary = translations[langCode] || translations['en'];
+      document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        if (dictionary[key]) {
+          element.textContent = dictionary[key];
+        }
+      });
+      closeModal('language-modal');
+    }
+
+    // 7. THEME MODE TOGGLE
+    function setTheme(themeMode) {
+      if (themeMode === 'dark') {
+        document.body.classList.add('dark-theme');
+      } else {
+        document.body.classList.remove('dark-theme');
+      }
+      closeModal('theme-modal');
+    }
+
+    // 8. DONATION GATEWAY CONTROL
+    let currentDonationCause = '';
+    function initiateDonation(cause) {
+      currentDonationCause = cause;
+      closeModal('donation-modal');
+      document.getElementById('payment-target-title').textContent = `Pay via for [${cause}]`;
+      openModal('payment-modal');
+    }
+
+    function processPayment(method) {
+      closeModal('payment-modal');
+      alert(`Redirecting to ${method} gateway to complete donation for "${currentDonationCause}"...`);
+    }
+
+    // 9. SUPPORT TICKET EMAIL SYSTEM
+    function sendSupportTicket(event) {
+      event.preventDefault();
+      const subject = encodeURIComponent(document.getElementById('support-subject').value);
+      const message = encodeURIComponent(document.getElementById('support-message').value);
+      const mailtoLink = `mailto:zaealic@gmail.com?subject=H-scan%20Support:%20${subject}&body=${message}`;
+      window.location.href = mailtoLink;
+    }
+
+    // 10. COUNTRY SEARCH FILTER
     function filterCountries() {
       const input = document.getElementById('country-search').value.toLowerCase().trim();
       const rows = document.querySelectorAll('#countries-list .country-row');
