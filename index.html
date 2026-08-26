@@ -13,7 +13,7 @@
   <!-- Top Bar -->
   <header class="app-header">
     <div><strong>LOGO</strong></div>
-    <div>12:00 PM<br><small>26 AUG</small></div>
+    <div id="time-display">--:--<br><small>-- ---</small></div>
     <div>🇲🇾 Flag</div>
   </header>
 
@@ -51,6 +51,32 @@
         }
       });
     }
+
+    // Live Clock Function
+    function updateClock() {
+      const now = new Date();
+
+      // Format Time (e.g., 12:00 PM) based on user's timezone
+      const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
+      const timeString = now.toLocaleTimeString([], timeOptions);
+
+      // Format Date (e.g., 26 AUG)
+      const day = now.getDate();
+      const monthOptions = { month: 'short' };
+      const monthString = now.toLocaleDateString([], monthOptions).toUpperCase();
+
+      // Update HTML content
+      const timeDisplay = document.getElementById('time-display');
+      if (timeDisplay) {
+        timeDisplay.innerHTML = `${timeString}<br><small>${day} ${monthString}</small>`;
+      }
+    }
+
+    // Run immediately on page load
+    updateClock();
+
+    // Update every second automatically
+    setInterval(updateClock, 1000);
   </script>
 </body>
 </html>
