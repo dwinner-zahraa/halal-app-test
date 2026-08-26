@@ -6,7 +6,14 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#e06666">
   <title>Halal App</title>
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=7">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Leaflet CSS & JS for Interactive Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
 
@@ -17,33 +24,78 @@
     <div>🇲🇾 Flag</div>
   </header>
 
-  <!-- Banner Slider -->
-  <div class="banner-carousel">
-    <p>Banner Slide (Updates / Info)</p>
+  <!-- APP / HOME PAGE VIEW -->
+  <div id="app-page" class="page-view active-page">
+    <!-- Banner Slider -->
+    <div class="banner-carousel">
+      <p>Banner Slide (Updates / Info)</p>
+    </div>
+
+    <!-- Middle Section: Map & Saved -->
+    <div class="middle-grid">
+      <div id="map" class="active-map"></div>
+      <div class="saved-history">Saved / History</div>
+    </div>
+
+    <!-- Bottom Slider -->
+    <div class="bottom-carousel">
+      <p>Halal Food & Snacks Slide</p>
+    </div>
   </div>
 
-  <!-- Middle Section: Map & Saved -->
-  <div class="middle-grid">
-    <div class="active-map">Active Map</div>
-    <div class="saved-history">Saved / History</div>
+  <!-- ADD PRODUCT PAGE VIEW -->
+  <div id="add-product-page" class="page-view">
+    <h2><i class="fa-solid fa-plus"></i> Add Product</h2>
+    <p>Submit a new product to the Halal database here.</p>
   </div>
 
-  <!-- Bottom Slider -->
-  <div class="bottom-carousel">
-    <p>Halal Food & Snacks Slide</p>
+  <!-- SCANNER PAGE VIEW -->
+  <div id="scan-page" class="page-view">
+    <h2><i class="fa-solid fa-qrcode"></i> Barcode Scanner</h2>
+    <p>Camera view for scanning product barcodes will load here.</p>
+  </div>
+
+  <!-- COUNTRIES PAGE VIEW -->
+  <div id="countries-page" class="page-view">
+    <h2><i class="fa-solid fa-globe"></i> Countries</h2>
+    <p>Select or view supported Halal certification regions.</p>
+  </div>
+
+  <!-- SETTINGS PAGE VIEW -->
+  <div id="settings-page" class="page-view">
+    <h2><i class="fa-solid fa-gear"></i> Settings</h2>
+    <p>App preferences and account management options.</p>
   </div>
 
   <!-- Fixed Navigation Bar -->
   <nav class="bottom-nav">
-    <button class="nav-item">Application</button>
-    <button class="nav-item">Add Product</button>
-    <button class="scan-btn">SCAN</button>
-    <button class="nav-item">Countries</button>
-    <button class="nav-item">Settings</button>
+    <button class="nav-item active" onclick="showPage('app-page')">
+      <i class="fa-solid fa-house"></i>
+      <span>App</span>
+    </button>
+
+    <button class="nav-item" onclick="showPage('add-product-page')">
+      <i class="fa-solid fa-plus"></i>
+      <span>Add Product</span>
+    </button>
+
+    <button class="scan-btn" onclick="showPage('scan-page')">
+      <i class="fa-solid fa-qrcode"></i>
+    </button>
+
+    <button class="nav-item" onclick="showPage('countries-page')">
+      <i class="fa-solid fa-globe"></i>
+      <span>Countries</span>
+    </button>
+
+    <button class="nav-item" onclick="showPage('settings-page')">
+      <i class="fa-solid fa-gear"></i>
+      <span>Settings</span>
+    </button>
   </nav>
 
   <script>
-    // Force unregister all old service workers to clear cached layouts
+    // 1. Service Worker Unregister Cleanup
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations().then(function(registrations) {
         for (let registration of registrations) {
@@ -52,31 +104,73 @@
       });
     }
 
-    // Live Clock Function
+    // 2. Dynamic Clock Function
     function updateClock() {
       const now = new Date();
-
-      // Format Time (e.g., 12:00 PM) based on user's timezone
       const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
       const timeString = now.toLocaleTimeString([], timeOptions);
 
-      // Format Date (e.g., 26 AUG)
       const day = now.getDate();
       const monthOptions = { month: 'short' };
       const monthString = now.toLocaleDateString([], monthOptions).toUpperCase();
 
-      // Update HTML content
       const timeDisplay = document.getElementById('time-display');
       if (timeDisplay) {
         timeDisplay.innerHTML = `${timeString}<br><small>${day} ${monthString}</small>`;
       }
     }
-
-    // Run immediately on page load
     updateClock();
-
-    // Update every second automatically
     setInterval(updateClock, 1000);
+
+    // 3. Interactive Leaflet Map Initialization
+    let map = L.map('map').setView([3.1390, 101.6869], 13); // Default view (Kuala Lumpur)
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    // Request GPS Location & Recalculate Dimensions
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          map.setView([lat, lng], 15);
+          L.marker([lat, lng]).addTo(map)
+            .bindPopup('<b>You are here!</b>')
+            .openPopup();
+          
+          setTimeout(() => map.invalidateSize(), 300);
+        },
+        (error) => {
+          console.warn("Geolocation permission denied or failed:", error.message);
+          setTimeout(() => map.invalidateSize(), 300);
+        }
+      );
+    } else {
+      setTimeout(() => map.invalidateSize(), 300);
+    }
+
+    // Initial resize trigger after DOM finishes rendering
+    setTimeout(() => map.invalidateSize(), 500);
+
+    // 4. Page Switcher Function
+    function showPage(pageId) {
+      document.querySelectorAll('.page-view').forEach(page => {
+        page.classList.remove('active-page');
+      });
+
+      const targetPage = document.getElementById(pageId);
+      if (targetPage) {
+        targetPage.classList.add('active-page');
+      }
+
+      // Re-render map tiles when returning home
+      if (pageId === 'app-page' && typeof map !== 'undefined') {
+        setTimeout(() => map.invalidateSize(), 200);
+      }
+    }
   </script>
 </body>
 </html>
