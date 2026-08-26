@@ -143,12 +143,10 @@
     );
     html5QrcodeScanner.render(onScanSuccess);
 
-    // Register Service Worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js')
-        .then(() => console.log('Service Worker Registered'));
-    }
-
+    // Comment out or remove this block in your <script>:
+// if ('serviceWorker' in navigator) {
+//   navigator.serviceWorker.register('./sw.js');
+// }
     // Show form if scanned barcode isn't found
     function handleNotFound(barcode) {
       document.getElementById("addProductSection").style.display = "block";
@@ -191,14 +189,6 @@
       }
   }
   </script>
-
-    <h3>Product Not Found</h3>
-    <p>Add it to the database:</p>
-    <input type="text" id="newBarcode" placeholder="Barcode" readonly><br><br>
-    <input type="text" id="newProductName" placeholder="Product Name"><br><br>
-    <input type="text" id="newBrand" placeholder="Brand"><br><br>
-    <button onclick="submitNewProduct()">Submit Product</button>
-  </div>
 
 </body>
 </html>
