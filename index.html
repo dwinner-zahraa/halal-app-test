@@ -1,512 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#e06666">
-  <title>Halal App</title>
-  
-  <!-- Cache version -->
-  <link rel="stylesheet" href="style.css?v=12">
-
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
-
-  <!-- Leaflet Map CSS & JS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Halal App - Settings</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 </head>
 <body>
 
-  <!-- Top Bar -->
+  <!-- App Header -->
   <header class="app-header">
-    <div><strong>LOGO</strong></div>
-    <div id="time-display">--:--<br><small>-- ---</small></div>
-    <div>🇲🇾 Flag</div>
+    <div class="header-left">
+      <i class="fa-solid fa-xmark close-icon"></i>
+      <span class="logo-text">LOGO</span>
+    </div>
+    <div class="header-center">
+      <div class="time-display">01:02 am</div>
+      <div class="date-display">27 AUG</div>
+    </div>
+    <div class="header-right">
+      <i class="fa-solid fa-share-nodes"></i>
+      <i class="fa-regular fa-bookmark"></i>
+      <i class="fa-solid fa-ellipsis-vertical"></i>
+      <span class="flag-icon"><i class="fa-solid fa-flag"></i> Flag</span>
+    </div>
   </header>
 
-  <!-- 1. APP / HOME PAGE VIEW -->
-  <div id="app-page" class="page-view active-page">
-    <div class="banner-carousel">
-      <p>Banner Slide (Updates / Info)</p>
-    </div>
+  <!-- MAIN SETTINGS VIEW -->
+  <main id="settings-view" class="view active">
+    <h1 class="page-title">Settings</h1>
 
-    <div class="middle-grid">
-      <div id="map" class="active-map"></div>
-      <div class="saved-history">Saved / History</div>
-    </div>
-
-    <div class="bottom-carousel">
-      <p>Halal Food & Snacks Slide</p>
-    </div>
-  </div>
-
-  <!-- 2. ADD PRODUCT PAGE VIEW -->
-  <div id="add-product-page" class="page-view">
-    <h2><i class="fa-solid fa-plus"></i> Add Product</h2>
-    <p>Submit a new product to the Halal database here.</p>
-  </div>
-
-  <!-- 3. SCANNER PAGE VIEW -->
-  <div id="scan-page" class="page-view">
-    <h2><i class="fa-solid fa-qrcode"></i> Barcode Scanner</h2>
-    <p>Camera view for scanning product barcodes will load here.</p>
-  </div>
-
-  <!-- 4. COUNTRIES PAGE VIEW -->
-  <div id="countries-page" class="page-view">
-    <div class="countries-header">
-      <h2><i class="fa-solid fa-globe"></i> Halal Regions</h2>
-      <p>Select a country to explore verified Halal certifications.</p>
-    </div>
-
-    <div class="country-search-box">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      <input type="text" id="country-search" placeholder="Search country..." oninput="filterCountries()" onkeyup="filterCountries()">
-    </div>
-
-    <div class="countries-scroll-container">
-      <div class="country-section-title">Popular Destinations</div>
-      <div class="popular-grid">
-        <div class="country-card popular"><span class="flag">🇲🇾</span><span class="name">Malaysia</span></div>
-        <div class="country-card popular"><span class="flag">🇯🇵</span><span class="name">Japan</span></div>
-        <div class="country-card popular"><span class="flag">🇮🇩</span><span class="name">Indonesia</span></div>
-        <div class="country-card popular"><span class="flag">🇰🇷</span><span class="name">South Korea</span></div>
-        <div class="country-card popular"><span class="flag">🇹🇭</span><span class="name">Thailand</span></div>
-        <div class="country-card popular"><span class="flag">🇸🇬</span><span class="name">Singapore</span></div>
-      </div>
-
-      <div class="country-section-title">All Countries</div>
-      <div class="all-countries-list" id="countries-list">
-        <div class="country-row"><span class="flag">🇦🇫</span><span class="country-name">Afghanistan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇦🇱</span><span class="country-name">Albania</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇩🇿</span><span class="country-name">Algeria</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇦🇩</span><span class="country-name">Andorra</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇦🇴</span><span class="country-name">Angola</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇦🇬</span><span class="country-name">Antigua & Barbuda</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇦🇷</span><span class="country-name">Argentina</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇦🇲</span><span class="country-name">Armenia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇦🇺</span><span class="country-name">Australia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇦🇹</span><span class="country-name">Austria</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇦🇿</span><span class="country-name">Azerbaijan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇸</span><span class="country-name">Bahamas</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇭</span><span class="country-name">Bahrain</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇩</span><span class="country-name">Bangladesh</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇧</span><span class="country-name">Barbados</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇾</span><span class="country-name">Belarus</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇪</span><span class="country-name">Belgium</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇿</span><span class="country-name">Belize</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇯</span><span class="country-name">Benin</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇹</span><span class="country-name">Bhutan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇴</span><span class="country-name">Bolivia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇦</span><span class="country-name">Bosnia & Herzegovina</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇼</span><span class="country-name">Botswana</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇷</span><span class="country-name">Brazil</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇳</span><span class="country-name">Brunei</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇬</span><span class="country-name">Bulgaria</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇫</span><span class="country-name">Burkina Faso</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇧🇮</span><span class="country-name">Burundi</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇰🇭</span><span class="country-name">Cambodia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇲</span><span class="country-name">Cameroon</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇦</span><span class="country-name">Canada</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇻</span><span class="country-name">Cape Verde</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇫</span><span class="country-name">Central African Republic</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇩</span><span class="country-name">Chad</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇱</span><span class="country-name">Chile</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇳</span><span class="country-name">China</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇴</span><span class="country-name">Colombia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇰🇲</span><span class="country-name">Comoros</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇬</span><span class="country-name">Congo</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇷</span><span class="country-name">Costa Rica</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇭🇷</span><span class="country-name">Croatia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇺</span><span class="country-name">Cuba</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇾</span><span class="country-name">Cyprus</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇿</span><span class="country-name">Czech Republic</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇩🇰</span><span class="country-name">Denmark</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇩🇯</span><span class="country-name">Djibouti</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇩🇲</span><span class="country-name">Dominica</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇩🇴</span><span class="country-name">Dominican Republic</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇪🇨</span><span class="country-name">Ecuador</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇪🇬</span><span class="country-name">Egypt</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇻</span><span class="country-name">El Salvador</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇬🇶</span><span class="country-name">Equatorial Guinea</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇪🇷</span><span class="country-name">Eritrea</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇪🇪</span><span class="country-name">Estonia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇿</span><span class="country-name">Eswatini</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇪🇹</span><span class="country-name">Ethiopia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇫🇯</span><span class="country-name">Fiji</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇫🇮</span><span class="country-name">Finland</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇫🇷</span><span class="country-name">France</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇬🇦</span><span class="country-name">Gabon</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇬🇲</span><span class="country-name">Gambia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇬🇪</span><span class="country-name">Georgia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇩🇪</span><span class="country-name">Germany</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇬🇭</span><span class="country-name">Ghana</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇬🇷</span><span class="country-name">Greece</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇬🇩</span><span class="country-name">Grenada</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇬🇹</span><span class="country-name">Guatemala</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇬🇳</span><span class="country-name">Guinea</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇬🇼</span><span class="country-name">Guinea-Bissau</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇬🇾</span><span class="country-name">Guyana</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇭🇹</span><span class="country-name">Haiti</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇭🇳</span><span class="country-name">Honduras</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇭🇺</span><span class="country-name">Hungary</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇮🇸</span><span class="country-name">Iceland</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇮🇳</span><span class="country-name">India</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇮🇩</span><span class="country-name">Indonesia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇮🇷</span><span class="country-name">Iran</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇮🇶</span><span class="country-name">Iraq</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇮🇪</span><span class="country-name">Ireland</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇮🇹</span><span class="country-name">Italy</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇯🇲</span><span class="country-name">Jamaica</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇯🇵</span><span class="country-name">Japan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇯🇴</span><span class="country-name">Jordan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇰🇿</span><span class="country-name">Kazakhstan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇰🇪</span><span class="country-name">Kenya</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇰🇮</span><span class="country-name">Kiribati</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇰🇵</span><span class="country-name">North Korea</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇰🇷</span><span class="country-name">South Korea</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇰🇼</span><span class="country-name">Kuwait</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇰🇬</span><span class="country-name">Kyrgyzstan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇱🇦</span><span class="country-name">Laos</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇱🇻</span><span class="country-name">Latvia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇱🇧</span><span class="country-name">Lebanon</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇱🇸</span><span class="country-name">Lesotho</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇱🇷</span><span class="country-name">Liberia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇱🇾</span><span class="country-name">Libya</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇱🇮</span><span class="country-name">Liechtenstein</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇱🇹</span><span class="country-name">Lithuania</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇱🇺</span><span class="country-name">Luxembourg</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇬</span><span class="country-name">Madagascar</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇼</span><span class="country-name">Malawi</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇾</span><span class="country-name">Malaysia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇻</span><span class="country-name">Maldives</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇱</span><span class="country-name">Mali</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇹</span><span class="country-name">Malta</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇭</span><span class="country-name">Marshall Islands</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇷</span><span class="country-name">Mauritania</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇺</span><span class="country-name">Mauritius</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇽</span><span class="country-name">Mexico</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇫🇲</span><span class="country-name">Micronesia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇩</span><span class="country-name">Moldova</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇨</span><span class="country-name">Monaco</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇳</span><span class="country-name">Mongolia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇪</span><span class="country-name">Montenegro</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇦</span><span class="country-name">Morocco</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇿</span><span class="country-name">Mozambique</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇲</span><span class="country-name">Myanmar</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇳🇦</span><span class="country-name">Namibia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇳🇷</span><span class="country-name">Nauru</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇳🇵</span><span class="country-name">Nepal</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇳🇱</span><span class="country-name">Netherlands</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇳🇿</span><span class="country-name">New Zealand</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇳🇮</span><span class="country-name">Nicaragua</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇳🇪</span><span class="country-name">Niger</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇳🇬</span><span class="country-name">Nigeria</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇲🇰</span><span class="country-name">North Macedonia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇳🇴</span><span class="country-name">Norway</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇴🇲</span><span class="country-name">Oman</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇵🇰</span><span class="country-name">Pakistan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇵🇼</span><span class="country-name">Palau</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇵🇸</span><span class="country-name">Palestine</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇵🇦</span><span class="country-name">Panama</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇵🇬</span><span class="country-name">Papua New Guinea</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇵🇾</span><span class="country-name">Paraguay</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇵🇪</span><span class="country-name">Peru</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇵🇭</span><span class="country-name">Philippines</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇵🇱</span><span class="country-name">Poland</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇵🇹</span><span class="country-name">Portugal</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇶🇦</span><span class="country-name">Qatar</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇷🇴</span><span class="country-name">Romania</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇷🇺</span><span class="country-name">Russia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇷🇼</span><span class="country-name">Rwanda</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇰🇳</span><span class="country-name">Saint Kitts & Nevis</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇱🇨</span><span class="country-name">Saint Lucia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇻🇨</span><span class="country-name">Saint Vincent & Grenadines</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇼🇸</span><span class="country-name">Samoa</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇲</span><span class="country-name">San Marino</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇹</span><span class="country-name">Sao Tome & Principe</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇦</span><span class="country-name">Saudi Arabia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇳</span><span class="country-name">Senegal</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇷🇸</span><span class="country-name">Serbia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇨</span><span class="country-name">Seychelles</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇱</span><span class="country-name">Sierra Leone</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇬</span><span class="country-name">Singapore</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇰</span><span class="country-name">Slovakia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇮</span><span class="country-name">Slovenia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇧</span><span class="country-name">Solomon Islands</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇴</span><span class="country-name">Somalia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇿🇦</span><span class="country-name">South Africa</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇸</span><span class="country-name">South Sudan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇪🇸</span><span class="country-name">Spain</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇱🇰</span><span class="country-name">Sri Lanka</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇩</span><span class="country-name">Sudan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇷</span><span class="country-name">Suriname</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇪</span><span class="country-name">Sweden</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇨🇭</span><span class="country-name">Switzerland</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇾</span><span class="country-name">Syria</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇼</span><span class="country-name">Taiwan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇯</span><span class="country-name">Tajikistan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇿</span><span class="country-name">Tanzania</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇭</span><span class="country-name">Thailand</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇱</span><span class="country-name">Timor-Leste</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇬</span><span class="country-name">Togo</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇴</span><span class="country-name">Tonga</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇹</span><span class="country-name">Trinidad & Tobago</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇳</span><span class="country-name">Tunisia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇷</span><span class="country-name">Turkey</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇲</span><span class="country-name">Turkmenistan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇹🇻</span><span class="country-name">Tuvalu</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇺🇬</span><span class="country-name">Uganda</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇺🇦</span><span class="country-name">Ukraine</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇦🇪</span><span class="country-name">United Arab Emirates</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇬🇧</span><span class="country-name">United Kingdom</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇺🇸</span><span class="country-name">United States</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇺🇾</span><span class="country-name">Uruguay</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇺🇿</span><span class="country-name">Uzbekistan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇻🇺</span><span class="country-name">Vanuatu</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇻🇦</span><span class="country-name">Vatican City</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇻🇪</span><span class="country-name">Venezuela</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇻🇳</span><span class="country-name">Vietnam</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇾🇪</span><span class="country-name">Yemen</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇿🇲</span><span class="country-name">Zambia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇿🇼</span><span class="country-name">Zimbabwe</span><i class="fa-solid fa-chevron-right"></i></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 5. SETTINGS PAGE VIEW -->
-  <div id="settings-page" class="page-view">
-    <div class="settings-header">
-      <h2><i class="fa-solid fa-gear"></i> Settings</h2>
-    </div>
-
-    <div class="settings-list">
-      
-      <div class="settings-item">
-        <div class="settings-left">
-          <i class="fa-solid fa-user"></i>
-          <div class="settings-text">
-            <span class="title">User Settings</span>
-            <span class="desc">Google Account, User ID, Name, Phone, DOB, Region, City</span>
-          </div>
+    <ul class="settings-list">
+      <!-- User Settings -->
+      <li onclick="openView('profile-view')">
+        <div class="list-item-content">
+          <i class="fa-solid fa-user icon"></i>
+          <span class="item-title">User</span>
         </div>
-        <i class="fa-solid fa-chevron-right"></i>
-      </div>
+        <i class="fa-solid fa-chevron-right chevron"></i>
+      </li>
 
-      <div class="settings-item">
-        <div class="settings-left">
-          <i class="fa-solid fa-language"></i>
-          <div class="settings-text">
-            <span class="title">Languages</span>
-            <span class="desc">Multiple languages for user selection</span>
-          </div>
+      <!-- Languages -->
+      <li onclick="openModal('language-modal')">
+        <div class="list-item-content">
+          <i class="fa-solid fa-language icon"></i>
+          <span class="item-title">Languages</span>
         </div>
-        <i class="fa-solid fa-chevron-right"></i>
-      </div>
+        <i class="fa-solid fa-chevron-right chevron"></i>
+      </li>
 
-      <div class="settings-item">
-        <div class="settings-left">
-          <i class="fa-solid fa-moon"></i>
-          <div class="settings-text">
-            <span class="title">Theme Mode</span>
-            <span class="desc">White (Light) or Dark (Dark) Mode</span>
-          </div>
+      <!-- Theme Mode -->
+      <li onclick="openModal('theme-modal')">
+        <div class="list-item-content">
+          <i class="fa-solid fa-moon icon"></i>
+          <span class="item-title">Theme Mode</span>
         </div>
-        <i class="fa-solid fa-chevron-right"></i>
-      </div>
+        <i class="fa-solid fa-chevron-right chevron"></i>
+      </li>
 
-      <div class="settings-item">
-        <div class="settings-left">
-          <i class="fa-solid fa-hand-holding-dollar"></i>
-          <div class="settings-text">
-            <span class="title">Donation</span>
-            <span class="desc">Donate to support app & creator | 100% directly to Palestine / Any aid available</span>
-          </div>
+      <!-- Donation -->
+      <li>
+        <div class="list-item-content">
+          <i class="fa-solid fa-hand-holding-heart icon"></i>
+          <span class="item-title">Donation</span>
         </div>
-        <i class="fa-solid fa-chevron-right"></i>
-      </div>
+        <i class="fa-solid fa-chevron-right chevron"></i>
+      </li>
 
-      <div class="settings-item">
-        <div class="settings-left">
-          <i class="fa-solid fa-circle-info"></i>
-          <div class="settings-text">
-            <span class="title">Creation Info</span>
-            <span class="desc">Short story of the app creation</span>
-          </div>
+      <!-- Creation Info -->
+      <li>
+        <div class="list-item-content">
+          <i class="fa-solid fa-circle-info icon"></i>
+          <span class="item-title">Creation Info</span>
         </div>
-        <i class="fa-solid fa-chevron-right"></i>
-      </div>
+        <i class="fa-solid fa-chevron-right chevron"></i>
+      </li>
 
-      <div class="settings-item">
-        <div class="settings-left">
-          <i class="fa-solid fa-code-branch"></i>
-          <div class="settings-text">
-            <span class="title">Version Node (v1)</span>
-            <span class="desc">Version node to trace update progress</span>
-          </div>
+      <!-- Version Mode (v1) -->
+      <li>
+        <div class="list-item-content">
+          <i class="fa-solid fa-code-branch icon"></i>
+          <span class="item-title">Version Mode (v1)</span>
         </div>
-        <i class="fa-solid fa-chevron-right"></i>
-      </div>
+        <i class="fa-solid fa-chevron-right chevron"></i>
+      </li>
 
-      <div class="settings-item">
-        <div class="settings-left">
-          <i class="fa-solid fa-ticket"></i>
-          <div class="settings-text">
-            <span class="title">Tickets</span>
-            <span class="desc">Submit tickets for app improvements</span>
-          </div>
+      <!-- Get Support -->
+      <li>
+        <div class="list-item-content">
+          <i class="fa-solid fa-ticket icon"></i>
+          <span class="item-title">Get Support</span>
         </div>
-        <i class="fa-solid fa-chevron-right"></i>
-      </div>
+        <i class="fa-solid fa-chevron-right chevron"></i>
+      </li>
+    </ul>
+  </main>
 
+  <!-- USER PROFILE DETAIL VIEW -->
+  <main id="profile-view" class="view">
+    <div class="profile-nav">
+      <button class="back-btn" onclick="openView('settings-view')">
+        <i class="fa-solid fa-arrow-left"></i> Back
+      </button>
+      <h2>User Profile</h2>
     </div>
-  </div>
 
-  <!-- Bottom Navigation Bar -->
+    <div class="profile-header-card">
+      <div class="profile-avatar-wrapper">
+        <i class="fa-solid fa-user avatar-placeholder"></i>
+      </div>
+    </div>
+
+    <div class="profile-details-list">
+      <div class="detail-row">
+        <span class="label">NAME:</span>
+        <span class="value">Sara</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">USER ID:</span>
+        <span class="value" id="user-id"></span>
+      </div>
+      <div class="detail-row">
+        <span class="label">MOBILE NO.:</span>
+        <span class="value">+60 12-345 6789</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">DOB:</span>
+        <span class="value">15 MARCH 2007</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">REGION:</span>
+        <span class="value">Malaysia</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">CITY:</span>
+        <span class="value">Kuala Lumpur</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom Navigation -->
   <nav class="bottom-nav">
-    <button class="nav-item active" onclick="showPage('app-page')">
+    <div class="nav-item">
       <i class="fa-solid fa-house"></i>
       <span>App</span>
-    </button>
-
-    <button class="nav-item" onclick="showPage('add-product-page')">
+    </div>
+    <div class="nav-item">
       <i class="fa-solid fa-plus"></i>
       <span>Add Product</span>
-    </button>
-
-    <button class="scan-btn" onclick="showPage('scan-page')">
+    </div>
+    <div class="nav-item action-btn">
       <i class="fa-solid fa-qrcode"></i>
-    </button>
-
-    <button class="nav-item" onclick="showPage('countries-page')">
+    </div>
+    <div class="nav-item">
       <i class="fa-solid fa-globe"></i>
       <span>Countries</span>
-    </button>
-
-    <button class="nav-item" onclick="showPage('settings-page')">
+    </div>
+    <div class="nav-item active">
       <i class="fa-solid fa-gear"></i>
       <span>Settings</span>
-    </button>
+    </div>
   </nav>
 
+  <!-- LANGUAGES MODAL -->
+  <div id="language-modal" class="modal">
+    <div class="modal-content">
+      <h3>Select Language</h3>
+      <ul class="modal-options">
+        <li onclick="closeModal('language-modal')">English</li>
+        <li onclick="closeModal('language-modal')">Bahasa Melayu</li>
+        <li onclick="closeModal('language-modal')">Japanese (日本語)</li>
+        <li onclick="closeModal('language-modal')">Arabic (العربية)</li>
+      </ul>
+      <button class="close-btn" onclick="closeModal('language-modal')">Cancel</button>
+    </div>
+  </div>
+
+  <!-- THEME MODAL -->
+  <div id="theme-modal" class="modal">
+    <div class="modal-content">
+      <h3>Select Theme</h3>
+      <ul class="modal-options">
+        <li onclick="closeModal('theme-modal')">Light Mode</li>
+        <li onclick="closeModal('theme-modal')">Dark Mode</li>
+      </ul>
+      <button class="close-btn" onclick="closeModal('theme-modal')">Cancel</button>
+    </div>
+  </div>
+
   <script>
-    // 1. Service Worker Cleanup
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(function(registrations) {
-        for (let registration of registrations) {
-          registration.unregister();
-        }
-      });
+    // Toggle between Settings and Profile pages
+    function openView(viewId) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById(viewId).classList.add('active');
     }
 
-    // 2. Dynamic Clock
-    function updateClock() {
-      const now = new Date();
-      const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
-      const timeString = now.toLocaleTimeString([], timeOptions);
-
-      const day = now.getDate();
-      const monthOptions = { month: 'short' };
-      const monthString = now.toLocaleDateString([], monthOptions).toUpperCase();
-
-      const timeDisplay = document.getElementById('time-display');
-      if (timeDisplay) {
-        timeDisplay.innerHTML = `${timeString}<br><small>${day} ${monthString}</small>`;
-      }
+    // Modal Handlers
+    function openModal(modalId) {
+      document.getElementById(modalId).classList.add('show');
     }
-    updateClock();
-    setInterval(updateClock, 1000);
-
-    // 3. Leaflet Map Initialization
-    let map;
-    function initMap() {
-      const mapElement = document.getElementById('map');
-      if (!mapElement) return;
-
-      map = L.map('map').setView([3.1390, 101.6869], 13);
-
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap'
-      }).addTo(map);
-
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
-            map.setView([lat, lng], 15);
-            L.marker([lat, lng]).addTo(map)
-              .bindPopup('<b>You are here!</b>')
-              .openPopup();
-          },
-          (error) => {
-            console.warn("Geolocation error:", error.message);
-          }
-        );
-      }
-
-      setTimeout(() => { if (map) map.invalidateSize(); }, 500);
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('show');
     }
 
-    window.addEventListener('load', initMap);
-
-    // 4. Navigation Switcher
-    function showPage(pageId) {
-      document.querySelectorAll('.page-view').forEach(page => {
-        page.classList.remove('active-page');
-      });
-
-      document.querySelectorAll('.bottom-nav .nav-item').forEach(btn => {
-        btn.classList.remove('active');
-      });
-
-      const targetPage = document.getElementById(pageId);
-      if (targetPage) {
-        targetPage.classList.add('active-page');
-      }
-
-      const activeBtn = Array.from(document.querySelectorAll('.bottom-nav .nav-item')).find(
-        btn => btn.getAttribute('onclick').includes(pageId)
-      );
-      if (activeBtn) {
-        activeBtn.classList.add('active');
-      }
-
-      if (pageId === 'app-page' && map) {
-        setTimeout(() => map.invalidateSize(), 200);
-      }
-    }
-
-    // 5. Search / Filter Function
-    function filterCountries() {
-      const input = document.getElementById('country-search').value.toLowerCase().trim();
-      const rows = document.querySelectorAll('#countries-list .country-row');
-      const popularSection = document.querySelector('.popular-grid');
-      const popularTitle = document.querySelectorAll('.country-section-title')[0];
-
-      if (input.length > 0) {
-        if (popularSection) popularSection.style.display = 'none';
-        if (popularTitle) popularTitle.style.display = 'none';
-      } else {
-        if (popularSection) popularSection.style.display = 'flex';
-        if (popularTitle) popularTitle.style.display = 'block';
-      }
-
-      rows.forEach(row => {
-        const countryNameElement = row.querySelector('.country-name');
-        if (countryNameElement) {
-          const countryName = countryNameElement.textContent.toLowerCase();
-          if (countryName.includes(input)) {
-            row.style.display = 'flex';
-          } else {
-            row.style.display = 'none';
-          }
-        }
-      });
-    }
+    // Generate random User ID
+    document.getElementById('user-id').textContent = 'USR-' + Math.floor(100000 + Math.random() * 900000);
   </script>
 </body>
 </html>
