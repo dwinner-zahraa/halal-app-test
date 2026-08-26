@@ -59,8 +59,73 @@
 
   <!-- COUNTRIES PAGE VIEW -->
   <div id="countries-page" class="page-view">
-    <h2><i class="fa-solid fa-globe"></i> Countries</h2>
-    <p>Select or view supported Halal certification regions.</p>
+    <div class="countries-header">
+      <h2><i class="fa-solid fa-globe"></i> Halal Regions</h2>
+      <p>Select a country to explore verified Halal certifications.</p>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="country-search-box">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="country-search" placeholder="Search country..." onkeyup="filterCountries()">
+    </div>
+
+    <!-- Scrollable Container -->
+    <div class="countries-scroll-container">
+      
+      <!-- Popular Countries Section -->
+      <div class="country-section-title">Popular Destinations</div>
+      <div class="popular-grid">
+        <div class="country-card popular">
+          <span class="flag">🇲🇾</span>
+          <span class="name">Malaysia</span>
+        </div>
+        <div class="country-card popular">
+          <span class="flag">🇯🇵</span>
+          <span class="name">Japan</span>
+        </div>
+        <div class="country-card popular">
+          <span class="flag">🇮🇩</span>
+          <span class="name">Indonesia</span>
+        </div>
+        <div class="country-card popular">
+          <span class="flag">🇰🇷</span>
+          <span class="name">South Korea</span>
+        </div>
+        <div class="country-card popular">
+          <span class="flag">🇹🇭</span>
+          <span class="name">Thailand</span>
+        </div>
+        <div class="country-card popular">
+          <span class="flag">🇸🇬</span>
+          <span class="name">Singapore</span>
+        </div>
+      </div>
+
+      <!-- All Countries List Section -->
+      <div class="country-section-title">All Countries</div>
+      <div class="all-countries-list" id="countries-list">
+        <div class="country-row"><span class="flag">🇦🇺</span><span class="country-name">Australia</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇧🇳</span><span class="country-name">Brunei</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇨🇦</span><span class="country-name">Canada</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇨🇳</span><span class="country-name">China</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇪🇬</span><span class="country-name">Egypt</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇫🇷</span><span class="country-name">France</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇩🇪</span><span class="country-name">Germany</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇮🇳</span><span class="country-name">India</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇮🇹</span><span class="country-name">Italy</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇲🇻</span><span class="country-name">Maldives</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇳🇿</span><span class="country-name">New Zealand</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇵🇰</span><span class="country-name">Pakistan</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇸🇦</span><span class="country-name">Saudi Arabia</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇹🇷</span><span class="country-name">Turkey</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇦🇪</span><span class="country-name">UAE</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇬🇧</span><span class="country-name">United Kingdom</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇺🇸</span><span class="country-name">United States</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇻🇳</span><span class="country-name">Vietnam</span><i class="fa-solid fa-chevron-right"></i></div>
+      </div>
+
+    </div>
   </div>
 
   <!-- SETTINGS PAGE VIEW -->
@@ -97,7 +162,7 @@
   </nav>
 
   <script>
-    // Unregister service workers completely
+    // 1. Service Worker Cleanup
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations().then(function(registrations) {
         for (let registration of registrations) {
@@ -106,7 +171,7 @@
       });
     }
 
-    // Dynamic Clock
+    // 2. Dynamic Clock
     function updateClock() {
       const now = new Date();
       const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
@@ -124,7 +189,7 @@
     updateClock();
     setInterval(updateClock, 1000);
 
-    // Leaflet Map Initialization
+    // 3. Leaflet Map Initialization
     let map;
     function initMap() {
       const mapElement = document.getElementById('map');
@@ -158,7 +223,7 @@
 
     window.addEventListener('load', initMap);
 
-    // Page Switcher
+    // 4. Page Switcher
     function showPage(pageId) {
       document.querySelectorAll('.page-view').forEach(page => {
         page.classList.remove('active-page');
@@ -172,6 +237,21 @@
       if (pageId === 'app-page' && map) {
         setTimeout(() => map.invalidateSize(), 200);
       }
+    }
+
+    // 5. Search/Filter function for All Countries list
+    function filterCountries() {
+      const input = document.getElementById('country-search').value.toLowerCase();
+      const rows = document.querySelectorAll('#countries-list .country-row');
+
+      rows.forEach(row => {
+        const countryName = row.querySelector('.country-name').textContent.toLowerCase();
+        if (countryName.includes(input)) {
+          row.style.display = 'flex';
+        } else {
+          row.style.display = 'none';
+        }
+      });
     }
   </script>
 </body>
