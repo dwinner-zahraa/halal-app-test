@@ -8,7 +8,7 @@
   <title>Halal App</title>
   
   <!-- Cache version -->
-  <link rel="stylesheet" href="style.css?v=10">
+  <link rel="stylesheet" href="style.css?v=11">
 
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
@@ -67,7 +67,7 @@
     <!-- Search Bar -->
     <div class="country-search-box">
       <i class="fa-solid fa-magnifying-glass"></i>
-      <input type="text" id="country-search" placeholder="Search country..." onkeyup="filterCountries()">
+      <input type="text" id="country-search" placeholder="Search country..." oninput="filterCountries()" onkeyup="filterCountries()">
     </div>
 
     <!-- Scrollable Container -->
@@ -299,6 +299,7 @@
         <div class="country-row"><span class="flag">🇿🇲</span><span class="country-name">Zambia</span><i class="fa-solid fa-chevron-right"></i></div>
         <div class="country-row"><span class="flag">🇿🇼</span><span class="country-name">Zimbabwe</span><i class="fa-solid fa-chevron-right"></i></div>
       </div>
+
     </div>
   </div>
 
@@ -413,17 +414,30 @@
       }
     }
 
-    // 5. Search/Filter function for All Countries list
+    // 5. Real-Time Search/Filter Function
     function filterCountries() {
-      const input = document.getElementById('country-search').value.toLowerCase();
+      const input = document.getElementById('country-search').value.toLowerCase().trim();
       const rows = document.querySelectorAll('#countries-list .country-row');
+      const popularSection = document.querySelector('.popular-grid');
+      const popularTitle = document.querySelectorAll('.country-section-title')[0];
+
+      if (input.length > 0) {
+        if (popularSection) popularSection.style.display = 'none';
+        if (popularTitle) popularTitle.style.display = 'none';
+      } else {
+        if (popularSection) popularSection.style.display = 'flex';
+        if (popularTitle) popularTitle.style.display = 'block';
+      }
 
       rows.forEach(row => {
-        const countryName = row.querySelector('.country-name').textContent.toLowerCase();
-        if (countryName.includes(input)) {
-          row.style.display = 'flex';
-        } else {
-          row.style.display = 'none';
+        const countryNameElement = row.querySelector('.country-name');
+        if (countryNameElement) {
+          const countryName = countryNameElement.textContent.toLowerCase();
+          if (countryName.includes(input)) {
+            row.style.display = 'flex';
+          } else {
+            row.style.display = 'none';
+          }
         }
       });
     }
