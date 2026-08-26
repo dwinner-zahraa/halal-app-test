@@ -1,12 +1,38 @@
 <!DOCTYPE html>
 <html>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#008000">>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#008000">
   <title>Halal Barcode Checker</title>
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body style="font-family: Arial, sans-serif; text-align: center; padding: 30px; max-width: 600px; margin: auto;">
+ 
+<body>
+  <!-- Top Bar -->
+  <header class="app-header">
+    <div><strong>LOGO</strong></div>
+    <div>12:00 PM<br><small>26 AUG</small></div>
+    <div>🇲🇾 Flag</div>
+  </header>
 
+  <!-- Banner Slider -->
+  <div class="banner-carousel">
+    <p>Banner Slide (Updates / Info)</p>
+  </div>
+
+  <!-- Middle Section: Map & Saved -->
+  <div class="middle-grid">
+    <div class="active-map">Active Map</div>
+    <div class="saved-history">Saved / History</div>
+  </div>
+
+  <!-- Bottom Slider -->
+  <div class="bottom-carousel">
+    <p>Halal Food & Snacks Slide</p>
+  </div>
   <h1>Halal Food Checker</h1>
 
   <!-- Camera Container -->
@@ -192,5 +218,219 @@
     <button onclick="submitNewProduct()">Submit Product</button>
   </div>
 
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Halal Barcode Checker</title>
+  <style>
+    :root {
+      --bg-color: #121212;
+      --card-bg: #1e1e1e;
+      --accent-color: #00e676;
+      --text-main: #ffffff;
+      --text-muted: #a0a0a0;
+      --border-color: #2c2c2c;
+      --danger-color: #ff5252;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin: 0;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    #interactive.viewport {
+      width: 100%;
+      height: 240px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    #interactive.viewport video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    input[type="text"], select, textarea {
+      width: 100%;
+      background: #141414;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 12px;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 0.95rem;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: 1px solid var(--accent-color);
+      border-color: var(--accent-color);
+    }
+
+    button {
+      background: var(--accent-color);
+      color: #000;
+      font-weight: 600;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .btn-secondary {
+      background: #2a2a2a;
+      color: var(--text-main);
+    }
+
+    /* Product Details Card */
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .status-halal { background: rgba(0, 230, 118, 0.15); color: var(--accent-color); }
+    .status-unknown { background: rgba(255, 82, 82, 0.15); color: var(--danger-color); }
+
+    /* Scan History */
+    .history-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.9rem;
+    }
+
+    .history-item:last-child {
+      border-bottom: none;
+    }
+
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Halal Barcode Checker</h1>
+    </header>
+
+    <!-- Camera Viewport -->
+    <div class="card">
+      <div id="interactive" class="viewport"></div>
+      <div class="input-group">
+        <input type="text" id="manualBarcode" placeholder="Enter barcode manually">
+        <button onclick="handleManualSearch()">Search</button>
+      </div>
+    </div>
+
+    <!-- Product Details Display -->
+    <div id="productResult" class="card hidden">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h3 id="resProductName" style="margin: 0;">Product Name</h3>
+        <span id="resHalalBadge" class="status-badge status-halal">Halal</span>
+      </div>
+      <p id="resBrand" style="color: var(--text-muted); margin: 4px 0 12px 0;">Brand</p>
+      <div style="font-size: 0.9rem; line-height: 1.5;">
+        <strong>Certification Body:</strong> <span id="resCertBody">-</span><br>
+        <strong>Ingredients / Notes:</strong> <span id="resNotes">-</span>
+      </div>
+    </div>
+
+    <!-- Add Product Form -->
+    <div id="addProductSection" class="card hidden">
+      <h3 style="margin-top: 0;">Add New Product</h3>
+      <p style="color: var(--text-muted); font-size: 0.85rem;">Barcode not found. Populate the info below to add it.</p>
+      
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <input type="text" id="newBarcode" placeholder="Barcode" readonly>
+        <input type="text" id="newProductName" placeholder="Product Name">
+        <input type="text" id="newBrand" placeholder="Brand">
+        
+        <select id="newHalalStatus">
+          <option value="Halal">Halal Verified</option>
+          <option value="Doubtful">Doubtful / Mashbooh</option>
+          <option value="Non-Halal">Non-Halal</option>
+        </select>
+        
+        <input type="text" id="newCertBody" placeholder="Certifying Body (e.g. JAKIM)">
+        <textarea id="newNotes" rows="2" placeholder="Ingredients or notes..."></textarea>
+        
+        <button onclick="submitNewProduct()">Save Product</button>
+      </div>
+    </div>
+
+    <!-- Recent Scans -->
+    <div class="card">
+      <h4 style="margin: 0 0 12px 0; color: var(--text-muted);">Recent Scans</h4>
+      <div class="history-list" id="scanHistory">
+        <!-- Dynamically filled -->
+      </div>
+    </div>
+  </div>
+<!-- Fixed Navigation Bar -->
+  <nav class="bottom-nav">
+    <button class="nav-item">App</button>
+    <button class="nav-item">Add Product</button>
+    <button class="scan-btn">SCAN</button>
+    <button class="nav-item">Countries</button>
+    <button class="nav-item">Settings</button>
+  </nav>
 </body>
 </html>
