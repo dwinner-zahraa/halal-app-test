@@ -3,607 +3,252 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#e06666">
-  <title>H-scan</title>
+  <title>Halal App</title>
   
-  <link rel="stylesheet" href="style.css?v=18">
+  <link rel="stylesheet" href="style.css?v=13">
+
+  <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
 
   <!-- Leaflet Map CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-
-  <!-- HTML5 QR / Barcode Scanner Library -->
-  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-
-  <style>
-    /* --- PLAN KIWI: EXPANDED MAP & HISTORY STYLES --- */
-    .map-container-section {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin: 15px 0;
-    }
-
-    .map-search-bar {
-      display: flex;
-      gap: 8px;
-    }
-
-    .map-search-bar input {
-      flex: 1;
-      padding: 10px 14px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 0.9rem;
-    }
-
-    .map-search-bar button {
-      padding: 10px 14px;
-      background: #e06666;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    #map {
-      height: 300px;
-      width: 100%;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-
-    .history-drawer {
-      background: #f9f9f9;
-      border-radius: 12px;
-      padding: 12px;
-      border: 1px solid #eee;
-    }
-
-    .history-drawer-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-      font-weight: bold;
-      font-size: 0.95rem;
-    }
-
-    .history-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      max-height: 160px;
-      overflow-y: auto;
-    }
-
-    .history-card {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: white;
-      padding: 10px 12px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-      cursor: pointer;
-    }
-
-    .history-card.favorite {
-      border-left: 4px solid #e06666;
-    }
-
-    .history-card-info {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .history-card-info .title {
-      font-weight: bold;
-      font-size: 0.85rem;
-    }
-
-    .history-card-info .sub {
-      font-size: 0.75rem;
-      color: #777;
-    }
-
-    .like-btn {
-      color: #ccc;
-      cursor: pointer;
-      font-size: 1.1rem;
-      transition: color 0.2s;
-    }
-
-    .like-btn.liked {
-      color: #e06666;
-    }
-
-    /* --- PLAN PLUM: DIRECTING COUNTRY BANNER STYLES --- */
-    .banner-carousel-wrapper {
-      position: relative;
-      overflow: hidden;
-      border-radius: 14px;
-      margin-bottom: 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
-
-    .banner-slide {
-      display: none;
-      padding: 18px;
-      border-radius: 14px;
-      color: white;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    .banner-slide.active {
-      display: block;
-    }
-
-    .banner-china { background: linear-gradient(135deg, #de2910 0%, #b31d08 100%); }
-    .banner-japan { background: linear-gradient(135deg, #bc002d 0%, #80001f 100%); }
-    .banner-korea { background: linear-gradient(135deg, #0047a0 0%, #002759 100%); }
-
-    .banner-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .banner-text h3 {
-      font-size: 1.2rem;
-      margin: 4px 0;
-    }
-
-    .banner-text p {
-      font-size: 0.8rem;
-      opacity: 0.9;
-    }
-
-    .banner-snack-previews {
-      display: flex;
-      gap: 6px;
-      margin-top: 10px;
-    }
-
-    .mini-snack-badge {
-      background: rgba(255, 255, 255, 0.25);
-      backdrop-filter: blur(4px);
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-size: 0.7rem;
-      font-weight: bold;
-    }
-
-    /* --- PLAN FIG: HOT DISH SLIDE STYLES --- */
-    .hot-food-section {
-      margin-top: 15px;
-    }
-
-    .hot-food-header {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 10px;
-      font-weight: bold;
-    }
-
-    .hot-food-scroll {
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      padding-bottom: 8px;
-    }
-
-    .hot-food-card {
-      min-width: 200px;
-      background: white;
-      border-radius: 10px;
-      padding: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-      flex-shrink: 0;
-    }
-
-    .hot-food-card img {
-      width: 100%;
-      height: 90px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
-
-    .hot-food-card h4 {
-      font-size: 0.85rem;
-      margin: 6px 0 2px 0;
-    }
-
-    .hot-food-card .dish-desc {
-      font-size: 0.73rem;
-      color: #666;
-    }
-
-    .dish-warning-note {
-      font-size: 0.68rem;
-      color: #d9534f;
-      background: #fff0f0;
-      padding: 4px 6px;
-      border-radius: 4px;
-      margin-top: 6px;
-    }
-
-    /* --- PLAN BLUEBERRY STYLES --- */
-    .country-tag {
-      display: inline-block;
-      font-size: 0.75rem;
-      background: #f0f0f0;
-      padding: 2px 8px;
-      border-radius: 12px;
-      color: #555;
-      margin-bottom: 6px;
-    }
-
-    /* Dark Mode Overrides */
-    body.dark-theme .history-drawer,
-    body.dark-theme .hot-food-card {
-      background: #1e1e1e;
-      border-color: #333;
-      color: #fff;
-    }
-    body.dark-theme .history-card {
-      background: #2a2a2a;
-      color: #fff;
-    }
-    body.dark-theme .history-card-info .sub,
-    body.dark-theme .hot-food-card .dish-desc {
-      color: #aaa;
-    }
-  </style>
 </head>
 <body>
 
-  <!-- Top Header Bar -->
+  <!-- App Header -->
   <header class="app-header">
-    <div><strong data-i18n="logo">H-SCAN</strong></div>
+    <div class="logo-text">H-SCAN</div>
     <div id="time-display">--:--<br><small>-- ---</small></div>
-    <div>🇲🇾 <span data-i18n="flag">Flag</span></div>
+    <!-- Flag only (Auto-updates via location access) -->
+    <div class="flag-only" id="user-country-flag">🇲🇾</div>
   </header>
 
-  <!-- 1. APP / HOME PAGE VIEW -->
+  <!-- 1. HOME / APP PAGE VIEW -->
   <div id="app-page" class="page-view active-page">
-    
-    <!-- PLAN PLUM: DIRECTING COUNTRY BANNER CAROUSEL -->
-    <div class="banner-carousel-wrapper">
-      <!-- China Banner Slide -->
-      <div class="banner-slide banner-china active" onclick="navigateToCountryWindow('China')">
-        <div class="banner-content">
-          <div class="banner-text">
-            <span>🇨🇳 China Specialty</span>
-            <h3>Explore Halal Snacks 🐼</h3>
-            <p>Tap to view verified Chinese snacks & products</p>
-          </div>
-          <i class="fa-solid fa-chevron-right" style="font-size: 1.5rem; opacity: 0.7;"></i>
-        </div>
-        <div class="banner-snack-previews">
-          <span class="mini-snack-badge">🌶️ Weilong Latiao</span>
-          <span class="mini-snack-badge">🥒 Lay's Cucumber</span>
-        </div>
-      </div>
-
-      <!-- Japan Banner Slide -->
-      <div class="banner-slide banner-japan" onclick="navigateToCountryWindow('Japan')">
-        <div class="banner-content">
-          <div class="banner-text">
-            <span>🇯🇵 Japan Specialty</span>
-            <h3>Tokyo Halal Picks 🌸</h3>
-            <p>Tap to explore Japanese convenience store snacks</p>
-          </div>
-          <i class="fa-solid fa-chevron-right" style="font-size: 1.5rem; opacity: 0.7;"></i>
-        </div>
-        <div class="banner-snack-previews">
-          <span class="mini-snack-badge">🥔 Calbee Chips</span>
-          <span class="mini-snack-badge">🐼 Meiji Hello Panda</span>
-        </div>
-      </div>
-
-      <!-- Korea Banner Slide -->
-      <div class="banner-slide banner-korea" onclick="navigateToCountryWindow('South Korea')">
-        <div class="banner-content">
-          <div class="banner-text">
-            <span>🇰🇷 South Korea Specialty</span>
-            <h3>Seoul K-Food Guide ⛩️</h3>
-            <p>Tap to explore verified Korean snacks & ramen</p>
-          </div>
-          <i class="fa-solid fa-chevron-right" style="font-size: 1.5rem; opacity: 0.7;"></i>
-        </div>
-        <div class="banner-snack-previews">
-          <span class="mini-snack-badge">🍜 Samyang Buldak</span>
-          <span class="mini-snack-badge">🍫 Lotte Pepero</span>
+    <div class="banner-carousel">
+      <div class="banner-card red-card">
+        <h3>China Specialty</h3>
+        <h2>Explore Halal Snacks <i class="fa-solid fa-angle-right"></i></h2>
+        <p>Tap to view verified Chinese snacks & products</p>
+        <div class="banner-tags">
+          <span>Weilong Latiao</span>
+          <span>Lay's Cucumber</span>
         </div>
       </div>
     </div>
 
-    <!-- PLAN KIWI: EXPANDED MAP & LIVE SEARCH -->
-    <div class="map-container-section">
-      <div class="map-search-bar">
-        <input type="text" id="map-search-input" placeholder="Search restaurant, convenience store, hawker..." onkeypress="handleMapSearchKey(event)">
-        <button onclick="searchLocationOnMap()"><i class="fa-solid fa-magnifying-glass"></i></button>
-      </div>
-      
-      <div id="map"></div>
-
-      <!-- SMART HISTORY & FAVORITES DRAWER -->
-      <div class="history-drawer">
-        <div class="history-drawer-header">
-          <span><i class="fa-solid fa-clock-rotate-left"></i> <span data-i18n="savedHistory">Saved & Favorites</span></span>
-          <small style="color:#888;" id="history-count">0 saved</small>
-        </div>
-        <div class="history-list" id="history-list-container">
-          <p style="font-size: 0.8rem; color: #888; text-align: center; padding: 10px;">No saved locations yet. Search for a spot or tap a marker!</p>
-        </div>
-      </div>
+    <!-- Search Bar -->
+    <div class="search-box">
+      <input type="text" placeholder="Search restaurant, convenience store...">
+      <button><i class="fa-solid fa-magnifying-glass"></i></button>
     </div>
 
-    <!-- PLAN FIG: POPULAR HOT MEALS & WET DISH CAROUSEL -->
-    <div class="hot-food-section">
-      <div class="hot-food-header">
-        <i class="fa-solid fa-bowl-rice" style="color: #e06666;"></i>
-        <span>Authentic Regional Hot Meals</span>
-      </div>
+    <!-- Live Map (Placed between Search and Saved & Favorites) -->
+    <div class="map-container">
+      <div id="live-map"></div>
+    </div>
 
-      <div class="hot-food-scroll">
-        <!-- China Dish -->
-        <div class="hot-food-card">
-          <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=300" alt="Xinjiang Lamb Skewers">
-          <h4>🇨🇳 Xinjiang Lamb Skewers</h4>
-          <p class="dish-desc">Traditional Uyghur street delicacy, highly popular for Halal safety.</p>
-          <div class="dish-warning-note">
-            <i class="fa-solid fa-circle-info"></i> Note: Verify vendor uses 100% Halal meat source.
+    <!-- Saved & Favorites -->
+    <div class="saved-history-bar">
+      <span><i class="fa-regular fa-bookmark"></i> Saved & Favorites</span>
+      <span class="saved-count">0 saved</span>
+    </div>
+
+    <!-- Authentic Regional Hot Meals Carousel -->
+    <div class="delicacies-section">
+      <div class="section-title">Authentic Regional Hot Meals</div>
+      <div class="delicacy-list">
+        
+        <div class="delicacy-card">
+          <img src="https://images.unsplash.com/photo-1555126634-323283e090fa?w=400" alt="Lamb Skewers">
+          <div class="delicacy-card-info">
+            <h4>Xinjiang Lamb Skewers</h4>
+            <p>Traditional Uyghur street delicacy, highly popular for Halal meat sources.</p>
           </div>
         </div>
 
-        <!-- Korea Dish -->
-        <div class="hot-food-card">
-          <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300" alt="Sundubu Jjigae">
-          <h4>🇰🇷 Seafood Sundubu Jjigae</h4>
-          <p class="dish-desc">Soft tofu stew. Popular choice among Muslims when ordered vegetarian/seafood base.</p>
-          <div class="dish-warning-note">
-            <i class="fa-solid fa-triangle-exclamation"></i> Note: Remind chef to exclude mirin & pork broth base.
+        <div class="delicacy-card">
+          <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400" alt="Beef Noodle">
+          <div class="delicacy-card-info">
+            <h4>Lanzhou Hand-Pulled Beef Noodle</h4>
+            <p>Clear beef broth with hand-pulled noodles and aromatic chili oil.</p>
           </div>
         </div>
 
-        <!-- Thailand Dish -->
-        <div class="hot-food-card">
-          <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=300" alt="Tom Yum Seafood">
-          <h4>🇹🇭 Seafood Tom Yum Soup</h4>
-          <p class="dish-desc">Aromatic Thai sour broth made with fresh prawns, lemongrass, and herbs.</p>
-          <div class="dish-warning-note">
-            <i class="fa-solid fa-circle-info"></i> Note: Confirm broth does not contain uncertified fish sauce.
+        <div class="delicacy-card">
+          <img src="https://images.unsplash.com/photo-1541696432-82c6da8ce7bf?w=400" alt="Halal Hotpot">
+          <div class="delicacy-card-info">
+            <h4>Old Beijing Lamb Hotpot</h4>
+            <p>Classic copper pot mutton dip broth served with traditional sesame sauce.</p>
           </div>
         </div>
+
       </div>
     </div>
   </div>
 
   <!-- 2. ADD PRODUCT PAGE VIEW -->
   <div id="add-product-page" class="page-view">
-    <h2><i class="fa-solid fa-camera"></i> <span data-i18n="addProductTitle">Quick Product Submission</span></h2>
-    <p data-i18n="addProductDesc">Item missing? Snap pictures of the front and back packaging. Our review team will process the details!</p>
-
-    <form id="add-product-form" onsubmit="handleProductSubmission(event)" style="margin-top: 15px;">
-      <div class="form-group">
-        <label>Detected Barcode</label>
-        <input type="text" id="add-barcode" placeholder="Barcode number" readonly style="background: #f0f0f0; font-weight: bold; color: #555;">
-      </div>
-
-      <div class="photo-upload-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0;">
-        <div class="photo-box" onclick="document.getElementById('photo-front-input').click()" style="border: 2px dashed #ccc; padding: 15px; text-align: center; border-radius: 10px; cursor: pointer; background: #fafafa;">
-          <input type="file" id="photo-front-input" accept="image/*" capture="environment" style="display:none;" onchange="previewProductPhoto(event, 'preview-front', 'icon-front')">
-          <i id="icon-front" class="fa-solid fa-camera-retro" style="font-size: 2rem; color: #888;"></i>
-          <img id="preview-front" style="display:none; width: 100%; height: 100px; object-fit: cover; border-radius: 6px;">
-          <p style="font-size: 0.75rem; margin-top: 6px; font-weight: bold; color: #444;">1. Front Packaging</p>
-        </div>
-
-        <div class="photo-box" onclick="document.getElementById('photo-back-input').click()" style="border: 2px dashed #ccc; padding: 15px; text-align: center; border-radius: 10px; cursor: pointer; background: #fafafa;">
-          <input type="file" id="photo-back-input" accept="image/*" capture="environment" style="display:none;" onchange="previewProductPhoto(event, 'preview-back', 'icon-back')">
-          <i id="icon-back" class="fa-solid fa-file-lines" style="font-size: 2rem; color: #888;"></i>
-          <img id="preview-back" style="display:none; width: 100%; height: 100px; object-fit: cover; border-radius: 6px;">
-          <p style="font-size: 0.75rem; margin-top: 6px; font-weight: bold; color: #444;">2. Ingredients (Back)</p>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Additional Notes (Optional)</label>
-        <input type="text" id="add-notes" placeholder="e.g. Bought at local supermarket">
-      </div>
-
-      <button type="submit" class="submit-ticket-btn" style="width: 100%; padding: 12px; background: #e06666; color: white; border: none; border-radius: 8px; font-weight: bold;">Submit Snap to Review Team</button>
-    </form>
+    <h2><i class="fa-solid fa-plus"></i> Add Product</h2>
+    <p>Submit a new product to the Halal database here.</p>
   </div>
 
   <!-- 3. SCANNER PAGE VIEW -->
   <div id="scan-page" class="page-view">
-    <h2><i class="fa-solid fa-qrcode"></i> <span data-i18n="scanTitle">Barcode Scanner</span></h2>
-    <p data-i18n="scanDesc">Align product barcode within camera scanner below.</p>
-
-    <div id="reader-wrapper" style="margin-top: 15px; position: relative;">
-      <div id="reader" style="width: 100%; border-radius: 12px; overflow: hidden; background: #000;"></div>
-    </div>
-
-    <div style="margin-top: 20px; text-align: center;">
-      <p style="font-size: 0.85rem; color: #666; margin-bottom: 8px;">Having camera trouble? Search barcode directly:</p>
-      <div style="display: flex; gap: 8px;">
-        <input type="text" id="manual-barcode-input" placeholder="Enter barcode (e.g., 6902538004018)" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
-        <button onclick="lookupBarcode(document.getElementById('manual-barcode-input').value)" style="padding: 10px 16px; background: #e06666; color: #fff; border: none; border-radius: 6px;">Search</button>
-      </div>
-    </div>
+    <h2><i class="fa-solid fa-qrcode"></i> Barcode Scanner</h2>
+    <p>Camera view for scanning product barcodes will load here.</p>
   </div>
 
   <!-- 4. COUNTRIES PAGE VIEW -->
   <div id="countries-page" class="page-view">
     <div class="countries-header">
-      <h2><i class="fa-solid fa-globe"></i> <span data-i18n="countriesTitle">Halal Regions</span></h2>
-      <p data-i18n="countriesDesc">Select a country to explore verified Halal certifications.</p>
+      <h2><i class="fa-solid fa-globe"></i> Halal Regions</h2>
+      <p>Select a country to explore verified Halal certifications.</p>
     </div>
 
     <div class="country-search-box">
       <i class="fa-solid fa-magnifying-glass"></i>
-      <input type="text" id="country-search" placeholder="Search country..." oninput="filterCountries()">
+      <input type="text" id="country-search" placeholder="Search country..." oninput="filterCountries()" onkeyup="filterCountries()">
     </div>
 
     <div class="countries-scroll-container">
-      <div class="country-section-title" data-i18n="popularTitle">Popular Destinations</div>
+      <div class="country-section-title">Popular Destinations</div>
       <div class="popular-grid">
-        <div class="country-card popular" onclick="selectCountryWindow('Malaysia')"><span class="flag">🇲🇾</span><span class="name">Malaysia</span></div>
-        <div class="country-card popular" onclick="selectCountryWindow('Japan')"><span class="flag">🇯🇵</span><span class="name">Japan</span></div>
-        <div class="country-card popular" onclick="selectCountryWindow('Indonesia')"><span class="flag">🇮🇩</span><span class="name">Indonesia</span></div>
-        <div class="country-card popular" onclick="selectCountryWindow('South Korea')"><span class="flag">🇰🇷</span><span class="name">South Korea</span></div>
-        <div class="country-card popular" onclick="selectCountryWindow('Thailand')"><span class="flag">🇹🇭</span><span class="name">Thailand</span></div>
-        <div class="country-card popular" onclick="selectCountryWindow('China')"><span class="flag">🇨🇳</span><span class="name">China</span></div>
+        <div class="country-card popular"><span class="flag">🇲🇾</span><span class="name">Malaysia</span></div>
+        <div class="country-card popular"><span class="flag">🇯🇵</span><span class="name">Japan</span></div>
+        <div class="country-card popular"><span class="flag">🇮🇩</span><span class="name">Indonesia</span></div>
+        <div class="country-card popular"><span class="flag">🇰🇷</span><span class="name">South Korea</span></div>
+        <div class="country-card popular"><span class="flag">🇹🇭</span><span class="name">Thailand</span></div>
+        <div class="country-card popular"><span class="flag">🇸🇬</span><span class="name">Singapore</span></div>
       </div>
 
-      <div class="country-section-title" data-i18n="allCountriesTitle">All Countries</div>
-      <div class="all-countries-list" id="countries-list"></div>
+      <div class="country-section-title">All Countries</div>
+      <div class="all-countries-list" id="countries-list">
+        <div class="country-row"><span class="flag">🇦🇫</span><span class="country-name">Afghanistan</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇦🇱</span><span class="country-name">Albania</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇩🇿</span><span class="country-name">Algeria</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇨🇳</span><span class="country-name">China</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇯🇵</span><span class="country-name">Japan</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇲🇾</span><span class="country-name">Malaysia</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇸🇬</span><span class="country-name">Singapore</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇰🇷</span><span class="country-name">South Korea</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇹🇭</span><span class="country-name">Thailand</span><i class="fa-solid fa-chevron-right"></i></div>
+      </div>
     </div>
   </div>
 
-  <!-- 5. SETTINGS PAGE VIEW -->
+  <!-- 5. SETTINGS MAIN VIEW -->
   <div id="settings-page" class="page-view">
     <div class="settings-header">
-      <h2><i class="fa-solid fa-gear"></i> <span data-i18n="settingsTitle">Settings</span></h2>
+      <h2><i class="fa-solid fa-gear"></i> Settings</h2>
     </div>
 
     <div class="settings-list">
-      <div class="settings-item" onclick="showSubPage('user-profile-page')">
+      
+      <!-- User Profile Row -->
+      <div class="settings-item" onclick="openSubView('user-profile-view')">
         <div class="settings-left">
           <i class="fa-solid fa-user"></i>
-          <span class="title" data-i18n="menuUser">User Profile</span>
+          <span class="title">User</span>
         </div>
         <i class="fa-solid fa-chevron-right"></i>
       </div>
 
+      <!-- Languages Row -->
       <div class="settings-item" onclick="openModal('language-modal')">
         <div class="settings-left">
           <i class="fa-solid fa-language"></i>
-          <span class="title" data-i18n="menuLang">Languages</span>
+          <span class="title">Languages</span>
         </div>
         <i class="fa-solid fa-chevron-right"></i>
       </div>
 
+      <!-- Theme Mode Row -->
       <div class="settings-item" onclick="openModal('theme-modal')">
         <div class="settings-left">
           <i class="fa-solid fa-moon"></i>
-          <span class="title" data-i18n="menuTheme">Theme Mode</span>
+          <span class="title">Theme Mode</span>
         </div>
         <i class="fa-solid fa-chevron-right"></i>
       </div>
 
-      <div class="settings-item" onclick="openModal('donation-modal')">
+      <!-- Donation Row (No subtext) -->
+      <div class="settings-item">
         <div class="settings-left">
-          <i class="fa-solid fa-hand-holding-heart"></i>
-          <span class="title" data-i18n="menuDonate">Donation</span>
+          <i class="fa-solid fa-hand-holding-dollar"></i>
+          <span class="title">Donation</span>
         </div>
         <i class="fa-solid fa-chevron-right"></i>
       </div>
 
-      <div class="settings-item" onclick="openModal('info-modal')">
+      <!-- Creation Info Row (No subtext) -->
+      <div class="settings-item">
         <div class="settings-left">
           <i class="fa-solid fa-circle-info"></i>
-          <span class="title" data-i18n="menuInfo">Creation Info</span>
+          <span class="title">Creation Info</span>
         </div>
         <i class="fa-solid fa-chevron-right"></i>
       </div>
 
-      <div class="settings-item" onclick="openModal('version-modal')">
+      <!-- Version Mode (v1) Row -->
+      <div class="settings-item">
         <div class="settings-left">
           <i class="fa-solid fa-code-branch"></i>
-          <span class="title" data-i18n="menuVersion">Version Mode (v1)</span>
+          <span class="title">Version Mode (v1)</span>
         </div>
         <i class="fa-solid fa-chevron-right"></i>
       </div>
 
-      <div class="settings-item" onclick="showSubPage('support-page')">
+      <!-- Get Support Row -->
+      <div class="settings-item">
         <div class="settings-left">
-          <i class="fa-solid fa-ticket"></i>
-          <span class="title" data-i18n="menuSupport">Get Support</span>
+          <i class="fa-solid fa-headset"></i>
+          <span class="title">Get Support</span>
         </div>
         <i class="fa-solid fa-chevron-right"></i>
       </div>
+
     </div>
   </div>
 
-  <!-- 6. USER PROFILE SUB-PAGE -->
-  <div id="user-profile-page" class="page-view">
-    <div class="profile-nav">
-      <button class="back-btn" onclick="showPage('settings-page')">
-        <i class="fa-solid fa-arrow-left"></i> <span data-i18n="backSettings">Back to Settings</span>
-      </button>
-    </div>
+  <!-- 6. USER PROFILE SUB-VIEW (INSIDE SETTINGS) -->
+  <div id="user-profile-view" class="page-view">
+    <button class="back-btn" onclick="openSubView('settings-page')">
+      <i class="fa-solid fa-arrow-left"></i> Back to Settings
+    </button>
 
     <div class="profile-header-card">
-      <div class="profile-avatar-wrapper" onclick="triggerPhotoUpload()">
-        <img id="profile-img-preview" src="" alt="Profile Photo" style="display:none; width:100%; height:100%; border-radius:50%; object-fit:cover;">
-        <i id="profile-avatar-icon" class="fa-solid fa-user avatar-placeholder"></i>
-        <div class="upload-badge"><i class="fa-solid fa-camera"></i></div>
+      <div class="profile-avatar-wrapper">
+        <i class="fa-solid fa-user avatar-placeholder"></i>
       </div>
-      <input type="file" id="profile-photo-input" accept="image/*" style="display:none;" onchange="loadProfilePhoto(event)">
     </div>
 
     <div class="profile-details-list">
       <div class="detail-row">
         <span class="label">NAME:</span>
-        <input type="text" id="user-name" class="editable-input" value="Sara">
+        <span class="value">Sara</span>
       </div>
       <div class="detail-row">
         <span class="label">USER ID:</span>
-        <span class="value readonly-val" id="user-id">USR-849201</span>
+        <span class="value" id="user-id">USR-892415</span>
       </div>
       <div class="detail-row">
         <span class="label">MOBILE NO.:</span>
-        <input type="text" id="user-mobile" class="editable-input" value="+60 12-345 6789">
+        <span class="value">+60 12-345 6789</span>
       </div>
       <div class="detail-row">
         <span class="label">DOB:</span>
-        <input type="text" id="user-dob" class="editable-input" value="15 MARCH 2007">
+        <span class="value">15 MARCH 2007</span>
       </div>
       <div class="detail-row">
         <span class="label">REGION:</span>
-        <input type="text" id="user-region" class="editable-input" value="Malaysia">
+        <span class="value">Malaysia</span>
       </div>
       <div class="detail-row">
         <span class="label">CITY:</span>
-        <input type="text" id="user-city" class="editable-input" value="Kuala Lumpur">
+        <span class="value">Kuala Lumpur</span>
       </div>
-    </div>
-
-    <button class="save-profile-btn" onclick="saveProfileChanges()" data-i18n="saveProfile">Save Changes</button>
-  </div>
-
-  <!-- 7. GET SUPPORT DEDICATED PAGE -->
-  <div id="support-page" class="page-view">
-    <div class="profile-nav">
-      <button class="back-btn" onclick="showPage('settings-page')">
-        <i class="fa-solid fa-arrow-left"></i> <span data-i18n="backSettings">Back to Settings</span>
-      </button>
-    </div>
-
-    <div class="support-container">
-      <h2><i class="fa-solid fa-envelope-open-text"></i> <span data-i18n="supportPageTitle">Submit a Support Ticket</span></h2>
-      <p data-i18n="supportPageDesc">Encountered an issue or have a question? Send us a direct inquiry.</p>
-
-      <form id="support-form" onsubmit="sendSupportTicket(event)">
-        <div class="form-group">
-          <label data-i18n="labelSubject">Subject / Issue Type</label>
-          <input type="text" id="support-subject" placeholder="e.g., Incorrect barcode, App bug" required>
-        </div>
-
-        <div class="form-group">
-          <label data-i18n="labelMessage">Message & Details</label>
-          <textarea id="support-message" rows="5" placeholder="Describe your issue or feedback in detail..." required></textarea>
-        </div>
-
-        <button type="submit" class="submit-ticket-btn" data-i18n="btnSendTicket">Send Ticket via Email</button>
-      </form>
     </div>
   </div>
 
@@ -611,12 +256,12 @@
   <nav class="bottom-nav">
     <button class="nav-item active" onclick="showPage('app-page')">
       <i class="fa-solid fa-house"></i>
-      <span data-i18n="navApp">App</span>
+      <span>App</span>
     </button>
 
     <button class="nav-item" onclick="showPage('add-product-page')">
       <i class="fa-solid fa-plus"></i>
-      <span data-i18n="navAdd">Add Product</span>
+      <span>Add Product</span>
     </button>
 
     <button class="scan-btn" onclick="showPage('scan-page')">
@@ -625,714 +270,143 @@
 
     <button class="nav-item" onclick="showPage('countries-page')">
       <i class="fa-solid fa-globe"></i>
-      <span data-i18n="navCountries">Countries</span>
+      <span>Countries</span>
     </button>
 
     <button class="nav-item" onclick="showPage('settings-page')">
       <i class="fa-solid fa-gear"></i>
-      <span data-i18n="navSettings">Settings</span>
+      <span>Settings</span>
     </button>
   </nav>
-
-  <!-- MODALS -->
-
-  <!-- PRODUCT RESULT MODAL -->
-  <div id="product-result-modal" class="modal">
-    <div class="modal-content product-modal-content">
-      <div id="product-country-tag" class="country-tag"></div>
-      <div id="product-status-badge" class="status-badge"></div>
-      
-      <div class="product-img-wrapper" style="margin: 10px 0;">
-        <img id="product-modal-img" src="" alt="Product Image" style="max-width: 140px; border-radius: 8px;">
-      </div>
-
-      <h3 id="product-modal-name" style="margin-bottom: 2px;"></h3>
-      <p id="product-modal-brand" style="color: #777; font-size: 0.85rem; margin-bottom: 12px;"></p>
-
-      <div id="warning-box" class="warning-box" style="display: none;">
-        <strong><i class="fa-solid fa-triangle-exclamation"></i> Warning Ingredients:</strong>
-        <p id="warning-ingredients-text" style="font-size: 0.85rem; margin-top: 4px;"></p>
-      </div>
-
-      <div class="ingredients-box">
-        <strong>Full Ingredients:</strong>
-        <p id="full-ingredients-text" style="font-size: 0.85rem; margin-top: 4px; color: #444;"></p>
-      </div>
-
-      <button class="close-btn" onclick="closeModal('product-result-modal')" style="margin-top: 15px;">Done</button>
-    </div>
-  </div>
 
   <!-- LANGUAGES MODAL -->
   <div id="language-modal" class="modal">
     <div class="modal-content">
-      <h3 data-i18n="selectLang">Select Language</h3>
+      <h3>Select Language</h3>
       <ul class="modal-options">
-        <li onclick="setAppLanguage('en')">English</li>
-        <li onclick="setAppLanguage('ms')">Bahasa Melayu</li>
-        <li onclick="setAppLanguage('id')">Bahasa Indonesia</li>
-        <li onclick="setAppLanguage('ja')">Japanese (日本語)</li>
-        <li onclick="setAppLanguage('zh')">Chinese (中文)</li>
-        <li onclick="setAppLanguage('fr')">French (Français)</li>
-        <li onclick="setAppLanguage('es')">Spanish (Español)</li>
-        <li onclick="setAppLanguage('it')">Italian (Italiano)</li>
-        <li onclick="setAppLanguage('de')">German (Deutsch)</li>
-        <li onclick="setAppLanguage('ar')">Arabic (العربية)</li>
-        <li onclick="setAppLanguage('ko')">Korean (한국어)</li>
+        <li onclick="closeModal('language-modal')">English</li>
+        <li onclick="closeModal('language-modal')">Bahasa Melayu</li>
+        <li onclick="closeModal('language-modal')">Japanese (日本語)</li>
+        <li onclick="closeModal('language-modal')">Arabic (العربية)</li>
       </ul>
-      <button class="close-btn" onclick="closeModal('language-modal')" data-i18n="btnClose">Close</button>
+      <button class="close-btn" onclick="closeModal('language-modal')">Cancel</button>
     </div>
   </div>
 
   <!-- THEME MODAL -->
   <div id="theme-modal" class="modal">
     <div class="modal-content">
-      <h3 data-i18n="selectTheme">Select Theme</h3>
+      <h3>Select Theme</h3>
       <ul class="modal-options">
-        <li onclick="setTheme('light')"><i class="fa-solid fa-sun"></i> Light Mode</li>
-        <li onclick="setTheme('dark')"><i class="fa-solid fa-moon"></i> Dark Mode</li>
+        <li onclick="closeModal('theme-modal')">Light Mode</li>
+        <li onclick="closeModal('theme-modal')">Dark Mode</li>
       </ul>
-      <button class="close-btn" onclick="closeModal('theme-modal')" data-i18n="btnClose">Close</button>
+      <button class="close-btn" onclick="closeModal('theme-modal')">Cancel</button>
     </div>
   </div>
 
-  <!-- DONATION MODAL -->
-  <div id="donation-modal" class="modal">
-    <div class="modal-content">
-      <h3 data-i18n="donationHeader">Support H-scan</h3>
-      <p style="margin: 8px 0; font-size: 0.85rem; color: #666;" data-i18n="donationSub">Choose your donation cause below:</p>
-
-      <div class="donation-options-container">
-        <button class="donation-type-btn" onclick="initiateDonation('Creator Token')">
-          <i class="fa-solid fa-mug-hot"></i>
-          <div>
-            <strong data-i18n="donCreator">Support the Creator</strong>
-            <small data-i18n="donCreatorSub">Small token of appreciation for development</small>
-          </div>
-        </button>
-
-        <button class="donation-type-btn palestine" onclick="initiateDonation('Palestine Aid')">
-          <i class="fa-solid fa-hand-holding-heart"></i>
-          <div>
-            <strong data-i18n="donPalestine">Palestine & Humanitarian Aid</strong>
-            <small data-i18n="donPalestineSub">100% of proceeds directed to relief</small>
-          </div>
-        </button>
-      </div>
-
-      <button class="close-btn" onclick="closeModal('donation-modal')" data-i18n="btnClose">Close</button>
-    </div>
-  </div>
-
-  <!-- PAYMENT METHOD MODAL -->
-  <div id="payment-modal" class="modal">
-    <div class="modal-content">
-      <h3 id="payment-target-title">Select Payment Method</h3>
-      <ul class="modal-options">
-        <li onclick="processPayment('Online Banking / Interbank')"><i class="fa-solid fa-building-columns"></i> Online Banking / FPX</li>
-        <li onclick="processPayment('PayPal')"><i class="fa-brands fa-paypal"></i> PayPal</li>
-      </ul>
-      <button class="close-btn" onclick="closeModal('payment-modal')" data-i18n="btnClose">Cancel</button>
-    </div>
-  </div>
-
-  <!-- CREATION INFO MODAL -->
-  <div id="info-modal" class="modal">
-    <div class="modal-content info-modal-content">
-      <h3><i class="fa-solid fa-heart"></i> The Story of H-scan</h3>
-      <div class="story-body">
-        <p>Hello! I am <strong>Zahraa</strong>, the creator of H-scan.</p>
-        <p>While traveling abroad, I experienced a terrible moment: accidentally consuming food that contained non-Halal ingredients. Even though I was using a scanner app at the time, a second check after eating revealed the item was haram after showing as Halal during the first scan!</p>
-        <p>To make matters worse, many scanners restrict basic usage behind paywalls or limited scan quotas. As a Muslim, I felt every individual deserves effortless, transparent access to reliable Halal verification—100% free, without anxiety or financial barriers.</p>
-
-        <p>That realization inspired me to build <strong>H-scan</strong> for our global community. Your usage means the world to me, and any contributions directly support continuous app maintenance and humanitarian relief. Thank you for being part of this journey!</p>
-      </div>
-      <button class="close-btn" onclick="closeModal('info-modal')" data-i18n="btnClose">Close</button>
-    </div>
-  </div>
-
-  <!-- VERSION MODAL -->
-  <div id="version-modal" class="modal">
-    <div class="modal-content">
-      <h3>Version Mode (v1)</h3>
-      <p style="margin: 15px 0; font-size: 0.9rem; color: #555;">Current App Version: 1.0.0 (Build 2026.08)</p>
-      <button class="close-btn" onclick="closeModal('version-modal')" data-i18n="btnClose">Close</button>
-    </div>
-  </div>
-
-  <!-- Script Logic -->
   <script>
-    // 1. DYNAMIC CLOCK
+    // 1. Clock Updates
     function updateClock() {
       const now = new Date();
-      let hours = now.getHours();
-      let minutes = now.getMinutes();
-      const ampm = hours >= 12 ? 'pm' : 'am';
-      hours = hours % 12;
-      hours = hours ? hours : 12;
-      minutes = minutes < 10 ? '0' + minutes : minutes;
-      const timeString = `${hours}:${minutes} ${ampm}`;
-
+      const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
+      const timeString = now.toLocaleTimeString([], timeOptions);
       const day = now.getDate();
       const monthOptions = { month: 'short' };
-      const monthString = now.toLocaleDateString('en-US', monthOptions).toUpperCase();
+      const monthString = now.toLocaleDateString([], monthOptions).toUpperCase();
 
       const timeDisplay = document.getElementById('time-display');
       if (timeDisplay) {
         timeDisplay.innerHTML = `${timeString}<br><small>${day} ${monthString}</small>`;
       }
     }
-    setInterval(updateClock, 1000);
     updateClock();
+    setInterval(updateClock, 1000);
 
-    // 2. PLAN PLUM - BANNER SLIDE AUTOMATION & DIRECTING NAVIGATION
-    let currentSlideIndex = 0;
-    const slides = document.querySelectorAll('.banner-slide');
-
-    function autoRotateBanners() {
-      if (slides.length === 0) return;
-      slides[currentSlideIndex].classList.remove('active');
-      currentSlideIndex = (currentSlideIndex + 1) % slides.length;
-      slides[currentSlideIndex].classList.add('active');
-    }
-    setInterval(autoRotateBanners, 4000);
-
-    function navigateToCountryWindow(countryName) {
-      showPage('countries-page');
-      const searchBox = document.getElementById('country-search');
-      if (searchBox) {
-        searchBox.value = countryName;
-        filterCountries();
-      }
-    }
-
-    function selectCountryWindow(countryName) {
-      alert(`Opening verified Halal list for ${countryName}...`);
-    }
-
-    // 3. PLAN KIWI - LEAFLET MAP & HISTORY SYSTEM
-    let map;
-    let locationHistory = [];
-
-    const sampleNearbySpots = [
-      { name: "FamilyMart (Halal Certified)", type: "Convenience Store", lat: 3.1395, lng: 101.6875 },
-      { name: "Restoran Nasi Kandar Damascus", type: "Middle Eastern / Halal", lat: 3.1385, lng: 101.6860 },
-      { name: "7-Eleven Fresh", type: "Snack & Mart", lat: 3.1400, lng: 101.6855 }
-    ];
-
+    // 2. Map & Geolocation Flag Update
+    let liveMap;
     function initMap() {
-      const mapElement = document.getElementById('map');
+      const mapElement = document.getElementById('live-map');
       if (!mapElement) return;
 
-      map = L.map('map').setView([3.1390, 101.6869], 15);
+      liveMap = L.map('live-map').setView([3.1390, 101.6869], 13);
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '© OpenStreetMap'
-      }).addTo(map);
+      }).addTo(liveMap);
 
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-          (pos) => {
-            const lat = pos.coords.latitude;
-            const lng = pos.coords.longitude;
-            map.setView([lat, lng], 15);
-            L.marker([lat, lng]).addTo(map).bindPopup('<b>You are here!</b>').openPopup();
+          (position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            liveMap.setView([lat, lng], 15);
+            L.marker([lat, lng]).addTo(liveMap).bindPopup('Your Location').openPopup();
+
+            // Reverse Geocode for dynamic country flag
+            fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
+              .then(res => res.json())
+              .then(data => {
+                if(data && data.address && data.address.country_code) {
+                  const countryCode = data.address.country_code.toUpperCase();
+                  const flagEmoji = countryCode
+                    .replace(/./g, char => String.fromCodePoint(127397 + char.charCodeAt(0)));
+                  document.getElementById('user-country-flag').textContent = flagEmoji;
+                }
+              }).catch(() => {});
           },
-          (err) => console.warn(err.message)
+          (err) => console.warn(err)
         );
       }
-
-      sampleNearbySpots.forEach(spot => {
-        const marker = L.marker([spot.lat, spot.lng]).addTo(map);
-        marker.bindPopup(`<b>${spot.name}</b><br><small>${spot.type}</small>`);
-        marker.on('click', () => {
-          addLocationToHistory(spot.name, spot.type, spot.lat, spot.lng);
-        });
-      });
-
-      setTimeout(() => { if (map) map.invalidateSize(); }, 500);
     }
     window.addEventListener('load', initMap);
 
-    function handleMapSearchKey(event) {
-      if (event.key === 'Enter') {
-        searchLocationOnMap();
-      }
-    }
-
-    function searchLocationOnMap() {
-      const query = document.getElementById('map-search-input').value.trim();
-      if (!query) return;
-
-      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.length > 0) {
-            const first = data[0];
-            const lat = parseFloat(first.lat);
-            const lng = parseFloat(first.lon);
-            const title = first.display_name.split(',')[0];
-            const subtitle = first.display_name.split(',').slice(1, 3).join(',');
-
-            map.setView([lat, lng], 16);
-            L.marker([lat, lng]).addTo(map).bindPopup(`<b>${title}</b><br><small>${subtitle}</small>`).openPopup();
-
-            addLocationToHistory(title, subtitle, lat, lng);
-            document.getElementById('map-search-input').value = '';
-          } else {
-            alert("Location or shop not found. Try entering a broader name!");
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          alert("Error looking up location. Please try again.");
-        });
-    }
-
-    function addLocationToHistory(title, sub, lat, lng) {
-      const exists = locationHistory.find(item => item.title === title);
-      if (!exists) {
-        locationHistory.unshift({
-          id: Date.now(),
-          title: title,
-          sub: sub || "Search Result",
-          lat: lat,
-          lng: lng,
-          isLiked: false
-        });
-        renderHistoryList();
-      }
-    }
-
-    function toggleLikeHistory(id, event) {
-      event.stopPropagation();
-      const item = locationHistory.find(h => h.id === id);
-      if (item) {
-        item.isLiked = !item.isLiked;
-        locationHistory.sort((a, b) => (b.isLiked === a.isLiked) ? 0 : b.isLiked ? 1 : -1);
-        renderHistoryList();
-      }
-    }
-
-    function navigateToHistoryItem(lat, lng) {
-      if (map) {
-        map.setView([lat, lng], 17);
-      }
-    }
-
-    function renderHistoryList() {
-      const container = document.getElementById('history-list-container');
-      const countLabel = document.getElementById('history-count');
-      
-      if (!container) return;
-      countLabel.textContent = `${locationHistory.length} saved`;
-
-      if (locationHistory.length === 0) {
-        container.innerHTML = `<p style="font-size: 0.8rem; color: #888; text-align: center; padding: 10px;">No saved locations yet. Search for a spot or tap a marker!</p>`;
-        return;
-      }
-
-      container.innerHTML = locationHistory.map(item => `
-        <div class="history-card ${item.isLiked ? 'favorite' : ''}" onclick="navigateToHistoryItem(${item.lat}, ${item.lng})">
-          <div class="history-card-info">
-            <span class="title">${item.title}</span>
-            <span class="sub">${item.sub}</span>
-          </div>
-          <i class="fa-solid fa-heart like-btn ${item.isLiked ? 'liked' : ''}" onclick="toggleLikeHistory(${item.id}, event)"></i>
-        </div>
-      `).join('');
-    }
-
-    // 4. COUNTRIES LIST
-    const countryDatabase = [
-      { name: "Malaysia", flag: "🇲🇾" },
-      { name: "Japan", flag: "🇯🇵" },
-      { name: "Indonesia", flag: "🇮🇩" },
-      { name: "South Korea", flag: "🇰🇷" },
-      { name: "Singapore", flag: "🇸🇬" },
-      { name: "Thailand", flag: "🇹🇭" },
-      { name: "China", flag: "🇨🇳" },
-      { name: "Saudi Arabia", flag: "🇸🇦" },
-      { name: "United Arab Emirates", flag: "🇦🇪" },
-      { name: "Turkey", flag: "🇹🇷" },
-      { name: "United Kingdom", flag: "🇬🇧" },
-      { name: "France", flag: "🇫🇷" },
-      { name: "Germany", flag: "🇩🇪" },
-      { name: "Australia", flag: "🇦🇺" },
-      { name: "United States", flag: "🇺🇸" },
-      { name: "Canada", flag: "🇨🇦" },
-      { name: "Egypt", flag: "🇪🇬" },
-      { name: "Pakistan", flag: "🇵🇰" },
-      { name: "Brunei", flag: "🇧🇳" }
-    ];
-
-    function renderCountriesList() {
-      const listContainer = document.getElementById('countries-list');
-      if (!listContainer) return;
-
-      listContainer.innerHTML = countryDatabase.map(c => `
-        <div class="country-row" onclick="selectCountryWindow('${c.name}')">
-          <span class="flag">${c.flag}</span>
-          <span class="country-name">${c.name}</span>
-          <i class="fa-solid fa-chevron-right"></i>
-        </div>
-      `).join('');
-    }
-    window.addEventListener('DOMContentLoaded', renderCountriesList);
-
-    // 5. PLAN BLUEBERRY - BULK CONVENIENCE STORE DATABASE
-    const productDB = {
-      // JAPAN STAPLES
-      "4901330576301": {
-        name: "Calbee Potato Chips (Usushio Light Salt)",
-        brand: "Calbee (Japan)",
-        country: "🇯🇵 Japan",
-        status: "HALAL",
-        img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300",
-        warningIngredients: null,
-        ingredients: "Potatoes, Vegetable Oil (Palm Oil, Rice Oil), Salt."
-      },
-      "4901330502010": {
-        name: "Calbee Jagabee Butter Soy Sauce",
-        brand: "Calbee (Japan)",
-        country: "🇯🇵 Japan",
-        status: "HARAM",
-        img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300",
-        warningIngredients: "Contains Pork Powder & Soy Sauce Mirin extract.",
-        ingredients: "Potatoes, Vegetable Oil, Powdered Soy Sauce, Pork Extract Powder, Butter Powder, Salt, Sugar."
-      },
-      "4902777008592": {
-        name: "Meiji Hello Panda Chocolate",
-        brand: "Meiji",
-        country: "🇯🇵 Japan",
-        status: "HALAL",
-        img: "https://images.unsplash.com/photo-1582293041079-7814c2f12063?w=300",
-        warningIngredients: null,
-        ingredients: "Wheat Flour, Vegetable Oil, Sugar, Cocoa Mass, Whole Milk Powder, Emulsifier (Soy Lecithin), Baking Powder."
-      },
-
-      // KOREA STAPLES
-      "8801043150624": {
-        name: "Samyang Buldak Ramen (Carbonara)",
-        brand: "Samyang (Korea)",
-        country: "🇰🇷 South Korea",
-        status: "HALAL",
-        img: "https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=300",
-        warningIngredients: null,
-        ingredients: "Wheat Flour, Modified Tapioca Starch, Refined Palm Oil, Wheat Gluten, Salt, Soy Lecithin, KMF Halal Certified Artificial Chicken Flavor Powder."
-      },
-      "8801062635930": {
-        name: "Lotte Pepero Original Chocolate",
-        brand: "Lotte (Korea)",
-        country: "🇰🇷 South Korea",
-        status: "HALAL",
-        img: "https://images.unsplash.com/photo-1582293041079-7814c2f12063?w=300",
-        warningIngredients: null,
-        ingredients: "Wheat Flour, Cocoa Mass, Sugar, Vegetable Fat, Shortening, Condensed Milk, Butter, Cocoa Butter."
-      },
-      "8801038110015": {
-        name: "Orion Choco Pie",
-        brand: "Orion (Korea)",
-        country: "🇰🇷 South Korea",
-        status: "HARAM",
-        img: "https://images.unsplash.com/photo-1582293041079-7814c2f12063?w=300",
-        warningIngredients: "Pork-derived Gelatin in Marshmallow core.",
-        ingredients: "Wheat Flour, Sugar, Corn Syrup, Vegetable Oil, Cocoa Powder, Porcine Gelatin, Whole Egg Liquid, Salt."
-      },
-
-      // CHINA STAPLES
-      "6902538004018": {
-        name: "Weilong Spicy Latiao (Konjac Snack)",
-        brand: "Weilong (China)",
-        country: "🇨🇳 China",
-        status: "HALAL",
-        img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300",
-        warningIngredients: null,
-        ingredients: "Konjac Flour, Starch, Vegetable Oil, Chili Powder, Sichuan Pepper, Salt, Sugar, Spice Extracts."
-      },
-      "6901028123456": {
-        name: "Lay's Cucumber Potato Chips",
-        brand: "Lay's (China)",
-        country: "🇨🇳 China",
-        status: "HALAL",
-        img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300",
-        warningIngredients: null,
-        ingredients: "Potatoes, Vegetable Oil, Cucumber Seasoning Powder (Sugar, Salt, Flavor Enhancer, Cucumber Powder)."
-      },
-
-      // THAILAND STAPLES
-      "8850718801124": {
-        name: "Bento Squid Snack (Sweet & Spicy)",
-        brand: "Bento (Thailand)",
-        country: "🇹🇭 Thailand",
-        status: "HALAL",
-        img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300",
-        warningIngredients: null,
-        ingredients: "Squid, Surimi, Wheat Flour, Tapioca Starch, Sweet Chili Sauce Seasoning, Sugar, Salt."
-      },
-      "8850157100115": {
-        name: "Tao Kae Noi Crispy Seaweed (Original)",
-        brand: "Tao Kae Noi (Thailand)",
-        country: "🇹🇭 Thailand",
-        status: "HALAL",
-        img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300",
-        warningIngredients: null,
-        ingredients: "Seaweed, Palm Oil, Salt, White Pepper Powder, Flavor Enhancers (E627, E631)."
-      },
-
-      // MALAYSIA STAPLES
-      "9556001100021": {
-        name: "Mamee Monster Noodle Snack (Chicken)",
-        brand: "Mamee (Malaysia)",
-        country: "🇲🇾 Malaysia",
-        status: "HALAL",
-        img: "https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=300",
-        warningIngredients: null,
-        ingredients: "Wheat Flour, Palm Oil, Salt, Permitted Flavoring (JAKIM Halal Certified Chicken Flavor), Spices."
-      },
-      "5000159461122": {
-        name: "KitKat 4-Finger Milk Chocolate",
-        brand: "Nestlé",
-        country: "🇲🇾 Malaysia",
-        status: "HALAL",
-        img: "https://images.unsplash.com/photo-1582293041079-7814c2f12063?w=300",
-        warningIngredients: null,
-        ingredients: "Sugar, Wheat Flour, Skimmed Milk Powder, Cocoa Butter, Cocoa Mass, Vegetable Fats (Palm, Shea), Butterfat (Milk), Emulsifier (Lecithins)."
-      }
-    };
-
-    let html5QrcodeScanner = null;
-
-    function startScanner() {
-      if (!html5QrcodeScanner) {
-        html5QrcodeScanner = new Html5Qrcode("reader");
-      }
-      
-      const config = { fps: 10, qrbox: { width: 250, height: 180 } };
-
-      html5QrcodeScanner.start(
-        { facingMode: "environment" },
-        config,
-        (decodedText) => {
-          html5QrcodeScanner.stop();
-          lookupBarcode(decodedText);
-        },
-        () => {}
-      ).catch((err) => console.warn("Camera start failed: ", err));
-    }
-
-    function stopScanner() {
-      if (html5QrcodeScanner && html5QrcodeScanner.isScanning) {
-        html5QrcodeScanner.stop().catch(err => console.error(err));
-      }
-    }
-
-    function lookupBarcode(barcode) {
-      const code = barcode.trim();
-      const product = productDB[code];
-
-      if (product) {
-        const badge = document.getElementById('product-status-badge');
-        badge.className = `status-badge ${product.status.toLowerCase()}`;
-        badge.innerHTML = `<i class="fa-solid ${product.status === 'HALAL' ? 'fa-circle-check' : product.status === 'HARAM' ? 'fa-circle-xmark' : 'fa-triangle-exclamation'}"></i> ${product.status}`;
-
-        document.getElementById('product-country-tag').textContent = product.country || "Global Staple";
-        document.getElementById('product-modal-img').src = product.img;
-        document.getElementById('product-modal-name').textContent = product.name;
-        document.getElementById('product-modal-brand').textContent = product.brand;
-        document.getElementById('full-ingredients-text').textContent = product.ingredients;
-
-        const warningBox = document.getElementById('warning-box');
-        if (product.warningIngredients) {
-          warningBox.style.display = 'block';
-          document.getElementById('warning-ingredients-text').textContent = product.warningIngredients;
-        } else {
-          warningBox.style.display = 'none';
-        }
-
-        openModal('product-result-modal');
-      } else {
-        document.getElementById('add-barcode').value = code;
-        showPage('add-product-page');
-      }
-    }
-
-    function previewProductPhoto(event, imgId, iconId) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const img = document.getElementById(imgId);
-          const icon = document.getElementById(iconId);
-          img.src = e.target.result;
-          img.style.display = 'block';
-          icon.style.display = 'none';
-        }
-        reader.readAsDataURL(file);
-      }
-    }
-
-    function handleProductSubmission(event) {
-      event.preventDefault();
-      const code = document.getElementById('add-barcode').value;
-
-      alert(`Product (${code}) photos submitted to the review team! You can keep shopping while we process it.`);
-      document.getElementById('add-product-form').reset();
-      document.getElementById('preview-front').style.display = 'none';
-      document.getElementById('icon-front').style.display = 'block';
-      document.getElementById('preview-back').style.display = 'none';
-      document.getElementById('icon-back').style.display = 'block';
-      
-      showPage('app-page');
-    }
-
-    // 6. PAGE SWITCHER
+    // 3. Navigation View Switcher
     function showPage(pageId) {
-      document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active-page'));
-      document.querySelectorAll('.bottom-nav .nav-item').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.page-view').forEach(page => page.classList.remove('active-page'));
+      document.querySelectorAll('.bottom-nav .nav-item').forEach(btn => btn.classList.remove('active'));
 
-      const target = document.getElementById(pageId);
-      if (target) target.classList.add('active-page');
+      const targetPage = document.getElementById(pageId);
+      if (targetPage) targetPage.classList.add('active-page');
 
       const activeBtn = Array.from(document.querySelectorAll('.bottom-nav .nav-item')).find(
         btn => btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(pageId)
       );
       if (activeBtn) activeBtn.classList.add('active');
 
-      if (pageId === 'scan-page') {
-        startScanner();
-      } else {
-        stopScanner();
-      }
-
-      if (pageId === 'app-page' && map) {
-        setTimeout(() => map.invalidateSize(), 200);
+      if (pageId === 'app-page' && liveMap) {
+        setTimeout(() => liveMap.invalidateSize(), 200);
       }
     }
 
-    function showSubPage(pageId) {
-      stopScanner();
-      document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active-page'));
-      const target = document.getElementById(pageId);
+    function openSubView(subViewId) {
+      document.querySelectorAll('.page-view').forEach(page => page.classList.remove('active-page'));
+      const target = document.getElementById(subViewId);
       if (target) target.classList.add('active-page');
     }
 
-    // 7. MODAL CONTROLS
-    function openModal(modalId) {
-      document.getElementById(modalId).classList.add('show');
-    }
-    function closeModal(modalId) {
-      document.getElementById(modalId).classList.remove('show');
-      if (modalId === 'product-result-modal' && document.getElementById('scan-page').classList.contains('active-page')) {
-        startScanner();
-      }
-    }
+    // 4. Modal Handlers
+    function openModal(modalId) { document.getElementById(modalId).classList.add('show'); }
+    function closeModal(modalId) { document.getElementById(modalId).classList.remove('show'); }
 
-    // 8. USER PROFILE
-    function triggerPhotoUpload() {
-      document.getElementById('profile-photo-input').click();
-    }
-
-    function loadProfilePhoto(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const preview = document.getElementById('profile-img-preview');
-          const icon = document.getElementById('profile-avatar-icon');
-          preview.src = e.target.result;
-          preview.style.display = 'block';
-          icon.style.display = 'none';
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    function saveProfileChanges() {
-      alert("Profile updated successfully!");
-    }
-
-    // 9. MULTI-LANGUAGE DICTIONARY
-    const translations = {
-      en: {
-        logo: "H-SCAN", flag: "Flag", savedHistory: "Saved & Favorites",
-        addProductTitle: "Quick Product Submission", addProductDesc: "Item missing? Snap pictures of the front and back packaging. Our review team will process the details!",
-        scanTitle: "Barcode Scanner", scanDesc: "Align product barcode within camera scanner below.", countriesTitle: "Halal Regions",
-        countriesDesc: "Select a country to explore verified Halal certifications.", popularTitle: "Popular Destinations", allCountriesTitle: "All Countries",
-        settingsTitle: "Settings", menuUser: "User Profile", menuLang: "Languages", menuTheme: "Theme Mode", menuDonate: "Donation", menuInfo: "Creation Info",
-        menuVersion: "Version Mode (v1)", menuSupport: "Get Support", navApp: "App", navAdd: "Add Product", navCountries: "Countries", navSettings: "Settings",
-        backSettings: "Back to Settings", saveProfile: "Save Changes", selectLang: "Select Language", selectTheme: "Select Theme", btnClose: "Close",
-        donationHeader: "Support H-scan", donationSub: "Choose your donation cause below:", donCreator: "Support the Creator", donCreatorSub: "Small token of appreciation for development",
-        donPalestine: "Palestine & Humanitarian Aid", donPalestineSub: "100% of proceeds directed to relief", supportPageTitle: "Submit a Support Ticket",
-        supportPageDesc: "Encountered an issue or have a question? Send us a direct inquiry.", labelSubject: "Subject / Issue Type", labelMessage: "Message & Details", btnSendTicket: "Send Ticket via Email"
-      }
-    };
-
-    function setAppLanguage(langCode) {
-      const dictionary = translations[langCode] || translations['en'];
-      document.querySelectorAll('[data-i18n]').forEach(element => {
-        const key = element.getAttribute('data-i18n');
-        if (dictionary[key]) {
-          element.textContent = dictionary[key];
-        }
-      });
-      closeModal('language-modal');
-    }
-
-    // 10. THEME MODE TOGGLE
-    function setTheme(themeMode) {
-      if (themeMode === 'dark') {
-        document.body.classList.add('dark-theme');
-      } else {
-        document.body.classList.remove('dark-theme');
-      }
-      closeModal('theme-modal');
-    }
-
-    // 11. DONATION GATEWAY CONTROL
-    let currentDonationCause = '';
-    function initiateDonation(cause) {
-      currentDonationCause = cause;
-      closeModal('donation-modal');
-      document.getElementById('payment-target-title').textContent = `Pay via for [${cause}]`;
-      openModal('payment-modal');
-    }
-
-    function processPayment(method) {
-      closeModal('payment-modal');
-      alert(`Redirecting to ${method} gateway to complete donation for "${currentDonationCause}"...`);
-    }
-
-    // 12. SUPPORT TICKET EMAIL SYSTEM
-    function sendSupportTicket(event) {
-      event.preventDefault();
-      const subject = encodeURIComponent(document.getElementById('support-subject').value);
-      const message = encodeURIComponent(document.getElementById('support-message').value);
-      const mailtoLink = `mailto:zaealic@gmail.com?subject=H-scan%20Support:%20${subject}&body=${message}`;
-      window.location.href = mailtoLink;
-    }
-
-    // 13. COUNTRY SEARCH FILTER
+    // 5. Country Filter
     function filterCountries() {
       const input = document.getElementById('country-search').value.toLowerCase().trim();
       const rows = document.querySelectorAll('#countries-list .country-row');
       const popularSection = document.querySelector('.popular-grid');
-      const popularTitles = document.querySelectorAll('.country-section-title');
+      const popularTitle = document.querySelectorAll('.country-section-title')[0];
 
       if (input.length > 0) {
         if (popularSection) popularSection.style.display = 'none';
-        if (popularTitles[0]) popularTitles[0].style.display = 'none';
+        if (popularTitle) popularTitle.style.display = 'none';
       } else {
         if (popularSection) popularSection.style.display = 'flex';
-        if (popularTitles[0]) popularTitles[0].style.display = 'block';
+        if (popularTitle) popularTitle.style.display = 'block';
       }
 
       rows.forEach(row => {
-        const countryNameElement = row.querySelector('.country-name');
-        if (countryNameElement) {
-          const name = countryNameElement.textContent.toLowerCase();
-          row.style.display = name.includes(input) ? 'flex' : 'none';
-        }
+        const name = row.querySelector('.country-name').textContent.toLowerCase();
+        row.style.display = name.includes(input) ? 'flex' : 'none';
       });
     }
   </script>
