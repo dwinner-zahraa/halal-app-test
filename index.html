@@ -18,7 +18,7 @@
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
   <style>
-    /* PLAN KIWI - EXPANDED MAP & HISTORY STYLES */
+    /* PLAN KIWI STYLES */
     .map-container-section {
       display: flex;
       flex-direction: column;
@@ -120,7 +120,17 @@
       color: #e06666;
     }
 
-    /* Dark mode overrides for Kiwi elements */
+    /* PLAN BLUEBERRY STYLES */
+    .country-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      background: #f0f0f0;
+      padding: 2px 8px;
+      border-radius: 12px;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
     body.dark-theme .history-drawer {
       background: #1e1e1e;
       border-color: #333;
@@ -149,7 +159,7 @@
       <p data-i18n="bannerText">Banner Slide (Updates / Info)</p>
     </div>
 
-    <!-- PLAN KIWI: EXPANDED MAP & LIVE SEARCH -->
+    <!-- MAP & LIVE SEARCH -->
     <div class="map-container-section">
       <div class="map-search-bar">
         <input type="text" id="map-search-input" placeholder="Search restaurant, convenience store, hawker..." onkeypress="handleMapSearchKey(event)">
@@ -158,7 +168,7 @@
       
       <div id="map"></div>
 
-      <!-- PLAN KIWI: SMART HISTORY & FAVORITES DRAWER -->
+      <!-- HISTORY & FAVORITES DRAWER -->
       <div class="history-drawer">
         <div class="history-drawer-header">
           <span><i class="fa-solid fa-clock-rotate-left"></i> <span data-i18n="savedHistory">Saved & Favorites</span></span>
@@ -223,7 +233,7 @@
     <div style="margin-top: 20px; text-align: center;">
       <p style="font-size: 0.85rem; color: #666; margin-bottom: 8px;">Having camera trouble? Search barcode directly:</p>
       <div style="display: flex; gap: 8px;">
-        <input type="text" id="manual-barcode-input" placeholder="Enter barcode (e.g., 5000159461122)" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
+        <input type="text" id="manual-barcode-input" placeholder="Enter barcode (e.g., 4901330576301)" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
         <button onclick="lookupBarcode(document.getElementById('manual-barcode-input').value)" style="padding: 10px 16px; background: #e06666; color: #fff; border: none; border-radius: 6px;">Search</button>
       </div>
     </div>
@@ -246,7 +256,7 @@
       <div class="popular-grid">
         <div class="country-card popular"><span class="flag">🇲🇾</span><span class="name">Malaysia</span></div>
         <div class="country-card popular"><span class="flag">🇯🇵</span><span class="name">Japan</span></div>
-        <div class="country-card popular"><span class="flag">🇮🇩</span><span class="name">Indonesia</span></div>
+        <div class="country-card popular"><span class="flag">🇮どもの</span><span class="name">Indonesia</span></div>
         <div class="country-card popular"><span class="flag">🇰🇷</span><span class="name">South Korea</span></div>
         <div class="country-card popular"><span class="flag">🇹🇭</span><span class="name">Thailand</span></div>
         <div class="country-card popular"><span class="flag">🇸🇬</span><span class="name">Singapore</span></div>
@@ -429,6 +439,7 @@
   <!-- PRODUCT RESULT MODAL -->
   <div id="product-result-modal" class="modal">
     <div class="modal-content product-modal-content">
+      <div id="product-country-tag" class="country-tag"></div>
       <div id="product-status-badge" class="status-badge"></div>
       
       <div class="product-img-wrapper" style="margin: 10px 0;">
@@ -574,11 +585,10 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // 2. PLAN KIWI - LEAFLET MAP & HISTORY SYSTEM
+    // 2. LEAFLET MAP & HISTORY SYSTEM
     let map;
     let locationHistory = [];
 
-    // Mock nearby Halal spots/stores around target location
     const sampleNearbySpots = [
       { name: "FamilyMart (Halal Certified)", type: "Convenience Store", lat: 3.1395, lng: 101.6875 },
       { name: "Restoran Nasi Kandar Damascus", type: "Middle Eastern / Halal", lat: 3.1385, lng: 101.6860 },
@@ -595,7 +605,6 @@
         attribution: '© OpenStreetMap'
       }).addTo(map);
 
-      // Plot user location
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (pos) => {
@@ -608,7 +617,6 @@
         );
       }
 
-      // Plot nearby sample points of interest (Hawkers/Mart)
       sampleNearbySpots.forEach(spot => {
         const marker = L.marker([spot.lat, spot.lng]).addTo(map);
         marker.bindPopup(`<b>${spot.name}</b><br><small>${spot.type}</small>`);
@@ -621,7 +629,6 @@
     }
     window.addEventListener('load', initMap);
 
-    // PLAN KIWI: Search Location Logic
     function handleMapSearchKey(event) {
       if (event.key === 'Enter') {
         searchLocationOnMap();
@@ -632,7 +639,6 @@
       const query = document.getElementById('map-search-input').value.trim();
       if (!query) return;
 
-      // Geocoding request via OpenStreetMap Nominatim
       fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
         .then(res => res.json())
         .then(data => {
@@ -658,7 +664,6 @@
         });
     }
 
-    // PLAN KIWI: History & Favorites Management
     function addLocationToHistory(title, sub, lat, lng) {
       const exists = locationHistory.find(item => item.title === title);
       if (!exists) {
@@ -679,7 +684,6 @@
       const item = locationHistory.find(h => h.id === id);
       if (item) {
         item.isLiked = !item.isLiked;
-        // Sort: favorited items prioritized to the top
         locationHistory.sort((a, b) => (b.isLiked === a.isLiked) ? 0 : b.isLiked ? 1 : -1);
         renderHistoryList();
       }
@@ -750,23 +754,124 @@
     }
     window.addEventListener('DOMContentLoaded', renderCountriesList);
 
-    // 4. MOCK DATABASE & LIVE CAMERA SCANNER
+    // 4. PLAN BLUEBERRY - BULK CONVENIENCE STORE SNACK DATABASE
     const productDB = {
-      "5000159461122": {
-        name: "KitKat 4-Finger Milk Chocolate",
-        brand: "Nestlé",
+      // JAPAN STAPLES
+      "4901330576301": {
+        name: "Calbee Potato Chips (Usushio Light Salt)",
+        brand: "Calbee (Japan)",
+        country: "🇯🇵 Japan",
+        status: "HALAL",
+        img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300",
+        warningIngredients: null,
+        ingredients: "Potatoes, Vegetable Oil (Palm Oil, Rice Oil), Salt."
+      },
+      "4901330502010": {
+        name: "Calbee Jagabee Butter Soy Sauce",
+        brand: "Calbee (Japan)",
+        country: "🇯🇵 Japan",
+        status: "HARAM",
+        img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300",
+        warningIngredients: "Contains Pork Powder & Soy Sauce Mirin extract.",
+        ingredients: "Potatoes, Vegetable Oil, Powdered Soy Sauce, Pork Extract Powder, Butter Powder, Salt, Sugar."
+      },
+      "4902777008592": {
+        name: "Meiji Hello Panda Chocolate",
+        brand: "Meiji",
+        country: "🇯🇵 Japan",
         status: "HALAL",
         img: "https://images.unsplash.com/photo-1582293041079-7814c2f12063?w=300",
         warningIngredients: null,
-        ingredients: "Sugar, Wheat Flour, Skimmed Milk Powder, Cocoa Butter, Cocoa Mass, Vegetable Fats (Palm, Shea), Butterfat (Milk), Emulsifier (Lecithins), Raising Agent (Sodium Bicarbonate)."
+        ingredients: "Wheat Flour, Vegetable Oil, Sugar, Cocoa Mass, Whole Milk Powder, Emulsifier (Soy Lecithin), Baking Powder."
       },
+
+      // KOREA STAPLES
       "8801043150624": {
         name: "Samyang Buldak Ramen (Carbonara)",
-        brand: "Samyang",
+        brand: "Samyang (Korea)",
+        country: "🇰🇷 South Korea",
         status: "HALAL",
         img: "https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=300",
         warningIngredients: null,
-        ingredients: "Wheat Flour, Modified Tapioca Starch, Refined Palm Oil, Wheat Gluten, Salt, Soy Lecithin, Artificial Chicken Flavor Powder, Whole Milk Powder, White Sugar."
+        ingredients: "Wheat Flour, Modified Tapioca Starch, Refined Palm Oil, Wheat Gluten, Salt, Soy Lecithin, KMF Halal Certified Artificial Chicken Flavor Powder."
+      },
+      "8801062635930": {
+        name: "Lotte Pepero Original Chocolate",
+        brand: "Lotte (Korea)",
+        country: "🇰🇷 South Korea",
+        status: "HALAL",
+        img: "https://images.unsplash.com/photo-1582293041079-7814c2f12063?w=300",
+        warningIngredients: null,
+        ingredients: "Wheat Flour, Cocoa Mass, Sugar, Vegetable Fat, Shortening, Condensed Milk, Butter, Cocoa Butter."
+      },
+      "8801038110015": {
+        name: "Orion Choco Pie",
+        brand: "Orion (Korea)",
+        country: "🇰🇷 South Korea",
+        status: "HARAM",
+        img: "https://images.unsplash.com/photo-1582293041079-7814c2f12063?w=300",
+        warningIngredients: "Pork-derived Gelatin in Marshmallow core.",
+        ingredients: "Wheat Flour, Sugar, Corn Syrup, Vegetable Oil, Cocoa Powder, Porcine Gelatin, Whole Egg Liquid, Salt."
+      },
+
+      // CHINA STAPLES
+      "6902538004018": {
+        name: "Weilong Spicy Latiao (Konjac Snack)",
+        brand: "Weilong (China)",
+        country: "🇨🇳 China",
+        status: "HALAL",
+        img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300",
+        warningIngredients: null,
+        ingredients: "Konjac Flour, Starch, Vegetable Oil, Chili Powder, Sichuan Pepper, Salt, Sugar, Spice Extracts."
+      },
+      "6901028123456": {
+        name: "Lay's Cucumber Potato Chips",
+        brand: "Lay's (China)",
+        country: "🇨🇳 China",
+        status: "HALAL",
+        img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300",
+        warningIngredients: null,
+        ingredients: "Potatoes, Vegetable Oil, Cucumber Seasoning Powder (Sugar, Salt, Flavor Enhancer, Cucumber Powder)."
+      },
+
+      // THAILAND STAPLES
+      "8850718801124": {
+        name: "Bento Squid Snack (Sweet & Spicy)",
+        brand: "Bento (Thailand)",
+        country: "🇹🇭 Thailand",
+        status: "HALAL",
+        img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300",
+        warningIngredients: null,
+        ingredients: "Squid, Surimi, Wheat Flour, Tapioca Starch, Sweet Chili Sauce Seasoning, Sugar, Salt."
+      },
+      "8850157100115": {
+        name: "Tao Kae Noi Crispy Seaweed (Original)",
+        brand: "Tao Kae Noi (Thailand)",
+        country: "🇹🇭 Thailand",
+        status: "HALAL",
+        img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300",
+        warningIngredients: null,
+        ingredients: "Seaweed, Palm Oil, Salt, White Pepper Powder, Flavor Enhancers (E627, E631)."
+      },
+
+      // MALAYSIA STAPLES
+      "9556001100021": {
+        name: "Mamee Monster Noodle Snack (Chicken)",
+        brand: "Mamee (Malaysia)",
+        country: "🇲🇾 Malaysia",
+        status: "HALAL",
+        img: "https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=300",
+        warningIngredients: null,
+        ingredients: "Wheat Flour, Palm Oil, Salt, Permitted Flavoring (JAKIM Halal Certified Chicken Flavor), Spices."
+      },
+      "5000159461122": {
+        name: "KitKat 4-Finger Milk Chocolate",
+        brand: "Nestlé",
+        country: "🇲🇾 Malaysia",
+        status: "HALAL",
+        img: "https://images.unsplash.com/photo-1582293041079-7814c2f12063?w=300",
+        warningIngredients: null,
+        ingredients: "Sugar, Wheat Flour, Skimmed Milk Powder, Cocoa Butter, Cocoa Mass, Vegetable Fats (Palm, Shea), Butterfat (Milk), Emulsifier (Lecithins)."
       }
     };
 
@@ -805,6 +910,7 @@
         badge.className = `status-badge ${product.status.toLowerCase()}`;
         badge.innerHTML = `<i class="fa-solid ${product.status === 'HALAL' ? 'fa-circle-check' : product.status === 'HARAM' ? 'fa-circle-xmark' : 'fa-triangle-exclamation'}"></i> ${product.status}`;
 
+        document.getElementById('product-country-tag').textContent = product.country || "Global Staple";
         document.getElementById('product-modal-img').src = product.img;
         document.getElementById('product-modal-name').textContent = product.name;
         document.getElementById('product-modal-brand').textContent = product.brand;
