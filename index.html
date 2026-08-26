@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#008000">>
+  <title>Halal Barcode Checker</title>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+</head>
+<body style="font-family: Arial, sans-serif; text-align: center; padding: 30px; max-width: 600px; margin: auto;">
+
+  <h1>Halal Food Checker</h1>
+
+  <!-- Camera Container -->
+  <div id="reader" style="width: 100%; max-width: 400px; margin: 20px auto; border: 2px dashed #ccc; padding: 10px; border-radius: 8px;"></div>
+
+  <p>Or test a barcode manually:</p>
+  <input type="text" id="barcodeInput" placeholder="Enter barcode..." value="3017620422003" style="padding: 8px; width: 60%;">
+  <button onclick="checkFood(document.getElementById('barcodeInput').value)" style="padding: 8px 15px;">Search</button>
+
+  <div id="result" style="margin-top: 30px;"></div>
+
+  <!-- History Section -->
+  <hr style="margin-top: 40px;">
+  <h3>Recent Scans</h3>
+  <ul id="historyList" style="text-align: left; list-style-type: none; padding: 0;"></ul>
+  <button onclick="clearHistory()" style="padding: 5px 10px;">Clear History</button>
+
+  <script>
+    const haramKeywords = [
+      "pork", "pig", "bacon", "ham", "lard", 
+      "gelatin", "gelatine", 
+      "alcohol", "wine", "beer", "rum", "ethanol",
+      "carmine", "e120"
+    ];
+
+    async function checkFood(barcode) {
+      const resultDiv = document.getElementById('result');
+      document.getElementById('barcodeInput').value = barcode;
+      resultDiv.innerHTML = "<p>Searching database...</p>";
+
+      try {
+        const response = await fetch(`https://world.openfoodfacts.org/api/v2/product/${barcode}.json`);
+        const data = await response.json();
+
+        if (data.status === 1) {
+          const product = data.product;
+          const rawIngredients = product.ingredients_text || "";
+
+          if (!rawIngredients) {
+            resultDiv.innerHTML = `
+              <h2>${product.product_name || "Unknown Product"}</h2>
+              <p style="color: orange; font-weight: bold;">⚠️ No ingredient list available to scan.</p>
+            `;
+            return;
+          }
+
+          // Search whole words
+          const detectedHaram = haramKeywords.filter(word => 
+            new RegExp(`\\b${word}\\b`, 'i').test(rawIngredients)
+          );
+
+          // Highlight detected terms in the ingredient text
+          let highlightedIngredients = rawIngredients;
+          detectedHaram.forEach(word => {
+            const regex = new RegExp(`\\b(${word})\\b`, 'gi');
+            highlightedIngredients = highlightedIngredients.replace(regex, `<mark style="background-color: yellow; font-weight: bold; color: red;">$1</mark>`);
+          });
+
+          const isHaram = detectedHaram.length > 0;
+          const statusText = isHaram ? "🔴 Likely Haram / Doubtful" : "🟢 Clear";
+
+          if (isHaram) {
+            resultDiv.innerHTML = `
+              <h2>${product.product_name}</h2>
+              <div style="background-color: #ffcccc; border: 2px solid red; padding: 15px; border-radius: 8px;">
+                <h3 style="color: darkred; margin: 0;">🔴 Likely Haram / Doubtful</h3>
+                <p><strong>Detected terms:</strong> <span style="color: red; font-weight: bold;">${detectedHaram.join(", ")}</span></p>
+              </div>
+              <p style="text-align: left; margin-top: 15px;"><strong>Full Ingredients:</strong> ${highlightedIngredients}</p>
+            `;
+          } else {
+            resultDiv.innerHTML = `
+              <h2>${product.product_name}</h2>
+              <div style="background-color: #d4edda; border: 2px solid green; padding: 15px; border-radius: 8px;">
+                <h3 style="color: darkgreen; margin: 0;">🟢 No Haram Ingredients Detected</h3>
+                <p>Always verify official certification on physical packaging.</p>
+              </div>
+              <p style="text-align: left; margin-top: 15px;"><strong>Full Ingredients:</strong> ${highlightedIngredients}</p>
+            `;
+          }
+
+          saveToHistory(product.product_name || "Unknown Product", statusText);
+
+        } else {
+          resultDiv.innerHTML = "<p>Product not found in database.</p>";
+        }
+      } catch (error) {
+        resultDiv.innerHTML = "<p>Error fetching data. Check your connection.</p>";
+      }
+    }
+
+    // History Functions
+    function saveToHistory(name, status) {
+      let history = JSON.parse(localStorage.getItem('scanHistory')) || [];
+      history.unshift({ name, status, time: new Date().toLocaleTimeString() });
+      history = history.slice(0, 5); // keep last 5
+      localStorage.setItem('scanHistory', JSON.stringify(history));
+      loadHistory();
+    }
+
+    function loadHistory() {
+      const historyList = document.getElementById('historyList');
+      const history = JSON.parse(localStorage.getItem('scanHistory')) || [];
+      historyList.innerHTML = history.map(item => `
+        <li style="padding: 8px 0; border-bottom: 1px solid #eee;">
+          <strong>${item.name}</strong> - ${item.status} <small>(${item.time})</small>
+        </li>
+      `).join('');
+    }
+
+    function clearHistory() {
+      localStorage.removeItem('scanHistory');
+      loadHistory();
+    }
+
+    // Camera initialization
+   // Put all your JavaScript functions here inside <script>
+    function onScanSuccess(decodedText) {
+      checkFood(decodedText);
+    }
+
+    let html5QrcodeScanner = new Html5QrcodeScanner(
+      "reader", { fps: 10, qrbox: { width: 250, height: 150 } }, false
+    );
+    html5QrcodeScanner.render(onScanSuccess);
+
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js')
+        .then(() => console.log('Service Worker Registered'));
+    }
+
+    // Show form if scanned barcode isn't found
+    function handleNotFound(barcode) {
+      document.getElementById("addProductSection").style.display = "block";
+      document.getElementById("newBarcode").value = barcode;
+    }
+
+    // Send product data to Open Food Facts
+    async function submitNewProduct() {
+      const barcode = document.getElementById("newBarcode").value;
+      const productName = document.getElementById("newProductName").value;
+      const brand = document.getElementById("newBrand").value;
+
+      if (!productName || !brand) {
+        alert("Please fill in both product name and brand.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("code", barcode);
+      formData.append("product_name", productName);
+      formData.append("brands", brand);
+      formData.append("comment", "Added via Halal Food Checker");
+
+      try {
+        const response = await fetch("https://world.openfoodfacts.org/cgi/product_jwrite.pl", {
+          method: "POST",
+          body: formData,
+        });
+        
+        const result = await response.json();
+        if (result.status === 1) {
+          alert("Product successfully added!");
+          document.getElementById("addProductSection").style.display = "none";
+        } else {
+          alert("Failed to add product: " + result.status_verbose);
+        }
+      } catch (error) {
+        console.error("Error adding product:", error);
+        alert("Network error while trying to add product.");
+      }
+  }
+  </script>
+
+  <!-- HTML UI Elements (Placed BEFORE </body>) -->
+  <div id="addProductSection" style="display: none; margin-top: 20px; border: 1px solid #ccc; padding: 15px;">
+    <h3>Product Not Found</h3>
+    <p>Add it to the database:</p>
+    <input type="text" id="newBarcode" placeholder="Barcode" readonly><br><br>
+    <input type="text" id="newProductName" placeholder="Product Name"><br><br>
+    <input type="text" id="newBrand" placeholder="Brand"><br><br>
+    <button onclick="submitNewProduct()">Submit Product</button>
+  </div>
+
+</body>
+</html>
