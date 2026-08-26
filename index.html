@@ -5,22 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Halal App</title>
   
-  <link rel="stylesheet" href="style.css?v=13">
+  <link rel="stylesheet" href="style.css">
 
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
 
-  <!-- Leaflet Map CSS & JS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <!-- Mapbox GL JS CSS & JS (Free Tier) -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
 </head>
 <body>
 
   <!-- App Header -->
   <header class="app-header">
     <div class="logo-text">H-SCAN</div>
-    <div id="time-display">--:--<br><small>-- ---</small></div>
-    <!-- Flag only (Auto-updates via location access) -->
+    <div id="time-display">03:44 am<br><small>27 AUG</small></div>
     <div class="flag-only" id="user-country-flag">🇲🇾</div>
   </header>
 
@@ -38,18 +37,18 @@
       </div>
     </div>
 
-    <!-- Search Bar -->
+    <!-- Free Search Bar Linked to Mapbox -->
     <div class="search-box">
-      <input type="text" placeholder="Search restaurant, convenience store...">
-      <button><i class="fa-solid fa-magnifying-glass"></i></button>
+      <input type="text" id="map-search-input" placeholder="Search restaurant, gas station, hotel..." onkeypress="handleSearchKeyPress(event)">
+      <button id="map-search-btn" onclick="searchLocation()"><i class="fa-solid fa-magnifying-glass"></i></button>
     </div>
 
-    <!-- Live Map (Placed between Search and Saved & Favorites) -->
+    <!-- Modern Mapbox Map Container -->
     <div class="map-container">
-      <div id="live-map"></div>
+      <div id="mapbox-map"></div>
     </div>
 
-    <!-- Saved & Favorites -->
+    <!-- Saved & Favorites Bar -->
     <div class="saved-history-bar">
       <span><i class="fa-regular fa-bookmark"></i> Saved & Favorites</span>
       <span class="saved-count">0 saved</span>
@@ -59,7 +58,6 @@
     <div class="delicacies-section">
       <div class="section-title">Authentic Regional Hot Meals</div>
       <div class="delicacy-list">
-        
         <div class="delicacy-card">
           <img src="https://images.unsplash.com/photo-1555126634-323283e090fa?w=400" alt="Lamb Skewers">
           <div class="delicacy-card-info">
@@ -67,7 +65,6 @@
             <p>Traditional Uyghur street delicacy, highly popular for Halal meat sources.</p>
           </div>
         </div>
-
         <div class="delicacy-card">
           <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400" alt="Beef Noodle">
           <div class="delicacy-card-info">
@@ -75,7 +72,6 @@
             <p>Clear beef broth with hand-pulled noodles and aromatic chili oil.</p>
           </div>
         </div>
-
         <div class="delicacy-card">
           <img src="https://images.unsplash.com/photo-1541696432-82c6da8ce7bf?w=400" alt="Halal Hotpot">
           <div class="delicacy-card-info">
@@ -83,33 +79,45 @@
             <p>Classic copper pot mutton dip broth served with traditional sesame sauce.</p>
           </div>
         </div>
-
       </div>
     </div>
   </div>
 
   <!-- 2. ADD PRODUCT PAGE VIEW -->
   <div id="add-product-page" class="page-view">
-    <h2><i class="fa-solid fa-plus"></i> Add Product</h2>
-    <p>Submit a new product to the Halal database here.</p>
+    <div class="page-card">
+      <h2><i class="fa-solid fa-plus-circle" style="color: #e53935;"></i> Add New Product</h2>
+      <p style="margin: 10px 0; color: #666; font-size: 0.85rem;">Submit a product for Halal database verification.</p>
+      <form onsubmit="event.preventDefault(); alert('Product submitted for review!');">
+        <input type="text" placeholder="Product Name" style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; outline: none;">
+        <input type="text" placeholder="Barcode Number" style="width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none;">
+        <button style="width: 100%; padding: 12px; background: #e53935; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Submit Product</button>
+      </form>
+    </div>
   </div>
 
   <!-- 3. SCANNER PAGE VIEW -->
   <div id="scan-page" class="page-view">
-    <h2><i class="fa-solid fa-qrcode"></i> Barcode Scanner</h2>
-    <p>Camera view for scanning product barcodes will load here.</p>
+    <div class="page-card" style="text-align: center;">
+      <i class="fa-solid fa-qrcode" style="color: #e53935; font-size: 2.5rem;"></i>
+      <h3 style="margin-top: 10px;">Barcode Scanner</h3>
+      <div style="width: 100%; height: 220px; background: #111; margin: 20px 0; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.9rem;">
+        <i class="fa-solid fa-camera" style="margin-right: 8px;"></i> Camera Stream Active
+      </div>
+      <p style="color: #666; font-size: 0.85rem;">Align the product barcode within the frame to scan.</p>
+    </div>
   </div>
 
   <!-- 4. COUNTRIES PAGE VIEW -->
   <div id="countries-page" class="page-view">
     <div class="countries-header">
       <h2><i class="fa-solid fa-globe"></i> Halal Regions</h2>
-      <p>Select a country to explore verified Halal certifications.</p>
+      <p style="margin-bottom: 12px; color: #666; font-size: 0.85rem;">Select a country to explore verified Halal certifications.</p>
     </div>
 
     <div class="country-search-box">
       <i class="fa-solid fa-magnifying-glass"></i>
-      <input type="text" id="country-search" placeholder="Search country..." oninput="filterCountries()" onkeyup="filterCountries()">
+      <input type="text" id="country-search" placeholder="Search country..." onkeyup="filterCountries()">
     </div>
 
     <div class="countries-scroll-container">
@@ -126,8 +134,6 @@
       <div class="country-section-title">All Countries</div>
       <div class="all-countries-list" id="countries-list">
         <div class="country-row"><span class="flag">🇦🇫</span><span class="country-name">Afghanistan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇦🇱</span><span class="country-name">Albania</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇩🇿</span><span class="country-name">Algeria</span><i class="fa-solid fa-chevron-right"></i></div>
         <div class="country-row"><span class="flag">🇨🇳</span><span class="country-name">China</span><i class="fa-solid fa-chevron-right"></i></div>
         <div class="country-row"><span class="flag">🇯🇵</span><span class="country-name">Japan</span><i class="fa-solid fa-chevron-right"></i></div>
         <div class="country-row"><span class="flag">🇲🇾</span><span class="country-name">Malaysia</span><i class="fa-solid fa-chevron-right"></i></div>
@@ -140,79 +146,43 @@
 
   <!-- 5. SETTINGS MAIN VIEW -->
   <div id="settings-page" class="page-view">
-    <div class="settings-header">
+    <div class="settings-header" style="margin-bottom: 16px;">
       <h2><i class="fa-solid fa-gear"></i> Settings</h2>
     </div>
 
     <div class="settings-list">
-      
-      <!-- User Profile Row -->
       <div class="settings-item" onclick="openSubView('user-profile-view')">
-        <div class="settings-left">
-          <i class="fa-solid fa-user"></i>
-          <span class="title">User</span>
-        </div>
+        <div class="settings-left"><i class="fa-solid fa-user"></i><span class="title">User</span></div>
         <i class="fa-solid fa-chevron-right"></i>
       </div>
-
-      <!-- Languages Row -->
       <div class="settings-item" onclick="openModal('language-modal')">
-        <div class="settings-left">
-          <i class="fa-solid fa-language"></i>
-          <span class="title">Languages</span>
-        </div>
+        <div class="settings-left"><i class="fa-solid fa-language"></i><span class="title">Languages</span></div>
         <i class="fa-solid fa-chevron-right"></i>
       </div>
-
-      <!-- Theme Mode Row -->
       <div class="settings-item" onclick="openModal('theme-modal')">
-        <div class="settings-left">
-          <i class="fa-solid fa-moon"></i>
-          <span class="title">Theme Mode</span>
-        </div>
+        <div class="settings-left"><i class="fa-solid fa-moon"></i><span class="title">Theme Mode</span></div>
         <i class="fa-solid fa-chevron-right"></i>
       </div>
-
-      <!-- Donation Row (No subtext) -->
       <div class="settings-item">
-        <div class="settings-left">
-          <i class="fa-solid fa-hand-holding-dollar"></i>
-          <span class="title">Donation</span>
-        </div>
+        <div class="settings-left"><i class="fa-solid fa-hand-holding-dollar"></i><span class="title">Donation</span></div>
         <i class="fa-solid fa-chevron-right"></i>
       </div>
-
-      <!-- Creation Info Row (No subtext) -->
       <div class="settings-item">
-        <div class="settings-left">
-          <i class="fa-solid fa-circle-info"></i>
-          <span class="title">Creation Info</span>
-        </div>
+        <div class="settings-left"><i class="fa-solid fa-circle-info"></i><span class="title">Creation Info</span></div>
         <i class="fa-solid fa-chevron-right"></i>
       </div>
-
-      <!-- Version Mode (v1) Row -->
       <div class="settings-item">
-        <div class="settings-left">
-          <i class="fa-solid fa-code-branch"></i>
-          <span class="title">Version Mode (v1)</span>
-        </div>
+        <div class="settings-left"><i class="fa-solid fa-code-branch"></i><span class="title">Version Mode (v1)</span></div>
         <i class="fa-solid fa-chevron-right"></i>
       </div>
-
-      <!-- Get Support Row -->
       <div class="settings-item">
-        <div class="settings-left">
-          <i class="fa-solid fa-headset"></i>
-          <span class="title">Get Support</span>
-        </div>
+        <div class="settings-left"><i class="fa-solid fa-headset"></i><span class="title">Get Support</span></div>
         <i class="fa-solid fa-chevron-right"></i>
       </div>
-
     </div>
   </div>
 
-  <!-- 6. USER PROFILE SUB-VIEW (INSIDE SETTINGS) -->
+  <!-- 6. USER PROFILE SUB-VIEW -->
   <div id="user-profile-view" class="page-view">
     <button class="back-btn" onclick="openSubView('settings-page')">
       <i class="fa-solid fa-arrow-left"></i> Back to Settings
@@ -225,61 +195,43 @@
     </div>
 
     <div class="profile-details-list">
-      <div class="detail-row">
-        <span class="label">NAME:</span>
-        <span class="value">Sara</span>
-      </div>
-      <div class="detail-row">
-        <span class="label">USER ID:</span>
-        <span class="value" id="user-id">USR-892415</span>
-      </div>
-      <div class="detail-row">
-        <span class="label">MOBILE NO.:</span>
-        <span class="value">+60 12-345 6789</span>
-      </div>
-      <div class="detail-row">
-        <span class="label">DOB:</span>
-        <span class="value">15 MARCH 2007</span>
-      </div>
-      <div class="detail-row">
-        <span class="label">REGION:</span>
-        <span class="value">Malaysia</span>
-      </div>
-      <div class="detail-row">
-        <span class="label">CITY:</span>
-        <span class="value">Kuala Lumpur</span>
-      </div>
+      <div class="detail-row"><span class="label">NAME:</span><span class="value">Sara</span></div>
+      <div class="detail-row"><span class="label">USER ID:</span><span class="value">USR-892415</span></div>
+      <div class="detail-row"><span class="label">MOBILE NO.:</span><span class="value">+60 12-345 6789</span></div>
+      <div class="detail-row"><span class="label">DOB:</span><span class="value">15 MARCH 2007</span></div>
+      <div class="detail-row"><span class="label">REGION:</span><span class="value">Malaysia</span></div>
+      <div class="detail-row"><span class="label">CITY:</span><span class="value">Kuala Lumpur</span></div>
     </div>
   </div>
 
   <!-- Bottom Navigation Bar -->
   <nav class="bottom-nav">
-    <button class="nav-item active" onclick="showPage('app-page')">
+    <button class="nav-item active" onclick="showPage('app-page', this)">
       <i class="fa-solid fa-house"></i>
       <span>App</span>
     </button>
 
-    <button class="nav-item" onclick="showPage('add-product-page')">
+    <button class="nav-item" onclick="showPage('add-product-page', this)">
       <i class="fa-solid fa-plus"></i>
       <span>Add Product</span>
     </button>
 
-    <button class="scan-btn" onclick="showPage('scan-page')">
+    <button class="scan-btn" onclick="showPage('scan-page', this)">
       <i class="fa-solid fa-qrcode"></i>
     </button>
 
-    <button class="nav-item" onclick="showPage('countries-page')">
+    <button class="nav-item" onclick="showPage('countries-page', this)">
       <i class="fa-solid fa-globe"></i>
       <span>Countries</span>
     </button>
 
-    <button class="nav-item" onclick="showPage('settings-page')">
+    <button class="nav-item" onclick="showPage('settings-page', this)">
       <i class="fa-solid fa-gear"></i>
       <span>Settings</span>
     </button>
   </nav>
 
-  <!-- LANGUAGES MODAL -->
+  <!-- Modals -->
   <div id="language-modal" class="modal">
     <div class="modal-content">
       <h3>Select Language</h3>
@@ -293,7 +245,6 @@
     </div>
   </div>
 
-  <!-- THEME MODAL -->
   <div id="theme-modal" class="modal">
     <div class="modal-content">
       <h3>Select Theme</h3>
@@ -305,77 +256,28 @@
     </div>
   </div>
 
+  <!-- JavaScript App Logic -->
   <script>
-    // 1. Clock Updates
-    function updateClock() {
-      const now = new Date();
-      const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
-      const timeString = now.toLocaleTimeString([], timeOptions);
-      const day = now.getDate();
-      const monthOptions = { month: 'short' };
-      const monthString = now.toLocaleDateString([], monthOptions).toUpperCase();
+    // Navigation Control
+    function showPage(pageId, element) {
+      document.querySelectorAll('.page-view').forEach(page => {
+        page.classList.remove('active-page');
+      });
 
-      const timeDisplay = document.getElementById('time-display');
-      if (timeDisplay) {
-        timeDisplay.innerHTML = `${timeString}<br><small>${day} ${monthString}</small>`;
-      }
-    }
-    updateClock();
-    setInterval(updateClock, 1000);
-
-    // 2. Map & Geolocation Flag Update
-    let liveMap;
-    function initMap() {
-      const mapElement = document.getElementById('live-map');
-      if (!mapElement) return;
-
-      liveMap = L.map('live-map').setView([3.1390, 101.6869], 13);
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap'
-      }).addTo(liveMap);
-
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
-            liveMap.setView([lat, lng], 15);
-            L.marker([lat, lng]).addTo(liveMap).bindPopup('Your Location').openPopup();
-
-            // Reverse Geocode for dynamic country flag
-            fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
-              .then(res => res.json())
-              .then(data => {
-                if(data && data.address && data.address.country_code) {
-                  const countryCode = data.address.country_code.toUpperCase();
-                  const flagEmoji = countryCode
-                    .replace(/./g, char => String.fromCodePoint(127397 + char.charCodeAt(0)));
-                  document.getElementById('user-country-flag').textContent = flagEmoji;
-                }
-              }).catch(() => {});
-          },
-          (err) => console.warn(err)
-        );
-      }
-    }
-    window.addEventListener('load', initMap);
-
-    // 3. Navigation View Switcher
-    function showPage(pageId) {
-      document.querySelectorAll('.page-view').forEach(page => page.classList.remove('active-page'));
-      document.querySelectorAll('.bottom-nav .nav-item').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.bottom-nav .nav-item').forEach(btn => {
+        btn.classList.remove('active');
+      });
 
       const targetPage = document.getElementById(pageId);
       if (targetPage) targetPage.classList.add('active-page');
 
-      const activeBtn = Array.from(document.querySelectorAll('.bottom-nav .nav-item')).find(
-        btn => btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(pageId)
-      );
-      if (activeBtn) activeBtn.classList.add('active');
+      if (element && element.classList.contains('nav-item')) {
+        element.classList.add('active');
+      }
 
-      if (pageId === 'app-page' && liveMap) {
-        setTimeout(() => liveMap.invalidateSize(), 200);
+      // Resize Mapbox canvas when switching back to Home
+      if (pageId === 'app-page' && map) {
+        setTimeout(() => map.resize(), 100);
       }
     }
 
@@ -385,29 +287,79 @@
       if (target) target.classList.add('active-page');
     }
 
-    // 4. Modal Handlers
-    function openModal(modalId) { document.getElementById(modalId).classList.add('show'); }
-    function closeModal(modalId) { document.getElementById(modalId).classList.remove('show'); }
+    function openModal(id) { document.getElementById(id).classList.add('show'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 
-    // 5. Country Filter
     function filterCountries() {
       const input = document.getElementById('country-search').value.toLowerCase().trim();
       const rows = document.querySelectorAll('#countries-list .country-row');
-      const popularSection = document.querySelector('.popular-grid');
-      const popularTitle = document.querySelectorAll('.country-section-title')[0];
-
-      if (input.length > 0) {
-        if (popularSection) popularSection.style.display = 'none';
-        if (popularTitle) popularTitle.style.display = 'none';
-      } else {
-        if (popularSection) popularSection.style.display = 'flex';
-        if (popularTitle) popularTitle.style.display = 'block';
-      }
-
       rows.forEach(row => {
         const name = row.querySelector('.country-name').textContent.toLowerCase();
         row.style.display = name.includes(input) ? 'flex' : 'none';
       });
+    }
+
+    // Mapbox Implementation (Using your Token)
+    mapboxgl.accessToken = 'pk.eyJ1IjoienJoYXgiLCJhIjoiY210YWh6dGNkMGdtaDJ3c2JzdWluanh2ayJ9.M3dGrh62t8sJJSb1C4iIVQ';
+    
+    const defaultCoords = [101.6869, 3.1390]; // [longitude, latitude]
+    let map = new mapboxgl.Map({
+      container: 'mapbox-map',
+      style: 'mapbox://styles/mapbox/streets-v12', // Clean vector layout
+      center: defaultCoords,
+      zoom: 13
+    });
+
+    let currentMarker = new mapboxgl.Marker({ color: '#e53935' })
+      .setLngLat(defaultCoords)
+      .addTo(map);
+
+    let activePopup = null;
+
+    // Detect User Location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        const userCoords = [position.coords.longitude, position.coords.latitude];
+        map.flyTo({ center: userCoords, zoom: 14 });
+        currentMarker.setLngLat(userCoords);
+      });
+    }
+
+    function handleSearchKeyPress(e) {
+      if (e.key === 'Enter') {
+        searchLocation();
+      }
+    }
+
+    // Search Nearby Stores, Restaurants, Hotels, Gas Stations via Mapbox API
+    function searchLocation() {
+      const query = document.getElementById('map-search-input').value.trim();
+      if (!query) return;
+
+      const center = map.getCenter();
+      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?proximity=${center.lng},${center.lat}&access_token=${mapboxgl.accessToken}`;
+
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          if (data.features && data.features.length > 0) {
+            const match = data.features[0];
+            const coords = match.geometry.coordinates;
+
+            map.flyTo({ center: coords, zoom: 15 });
+            currentMarker.setLngLat(coords);
+
+            if (activePopup) activePopup.remove();
+
+            activePopup = new mapboxgl.Popup({ offset: 25 })
+              .setLngLat(coords)
+              .setHTML(`<div style="padding:4px; font-size:12px;"><b>${match.text}</b><br><span style="color:#666;">${match.place_name}</span></div>`)
+              .addTo(map);
+          } else {
+            alert('Location not found. Try searching for a specific place name or category.');
+          }
+        })
+        .catch(err => console.error('Mapbox Search Error:', err));
     }
   </script>
 </body>

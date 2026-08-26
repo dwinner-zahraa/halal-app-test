@@ -10,7 +10,7 @@ body {
   color: #333;
 }
 
-/* Header Top Bar */
+/* App Header Top Bar */
 .app-header {
   display: flex;
   justify-content: space-between;
@@ -38,7 +38,7 @@ body {
   font-size: 1.5rem;
 }
 
-/* Page Control */
+/* Page Control Views */
 .page-view {
   display: none;
   padding: 16px;
@@ -47,6 +47,13 @@ body {
 
 .page-view.active-page {
   display: block;
+}
+
+.page-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 /* Banner Carousel */
@@ -85,7 +92,7 @@ body {
   margin-right: 6px;
 }
 
-/* Search Box */
+/* Interactive Search Bar */
 .search-box {
   display: flex;
   background: #fff;
@@ -107,19 +114,20 @@ body {
   border: none;
   color: white;
   padding: 10px 16px;
+  cursor: pointer;
 }
 
-/* Map Container */
+/* Map Container & Mapbox Canvas */
 .map-container {
   width: 100%;
-  height: 180px;
+  height: 190px;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid #e0e0e0;
   margin-bottom: 16px;
 }
 
-#live-map {
+#mapbox-map {
   width: 100%;
   height: 100%;
 }
@@ -191,9 +199,10 @@ body {
 .country-search-box {
   display: flex;
   align-items: center;
-  background: #f1f3f4;
+  background: #fff;
   padding: 8px 12px;
   border-radius: 8px;
+  border: 1px solid #ddd;
   margin-bottom: 16px;
 }
 
@@ -225,7 +234,7 @@ body {
   flex-direction: column;
   align-items: center;
   min-width: 70px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  border: 1px solid #eee;
 }
 
 .country-row {
@@ -241,12 +250,6 @@ body {
 .country-row .country-name { flex: 1; }
 
 /* Settings Main View */
-.settings-header {
-  padding-bottom: 12px;
-  border-bottom: 1px solid #eee;
-  margin-bottom: 8px;
-}
-
 .settings-list {
   display: flex;
   flex-direction: column;
@@ -287,7 +290,7 @@ body {
   font-size: 0.95rem;
 }
 
-/* User Profile Sub-View */
+/* Profile Sub-View */
 .back-btn {
   background: none;
   border: none;
@@ -299,7 +302,7 @@ body {
 }
 
 .profile-header-card {
-  background-color: #ffb6c1; /* Soft pink header background */
+  background-color: #ffb6c1;
   height: 130px;
   border-radius: 12px;
   display: flex;
@@ -348,7 +351,7 @@ body {
   color: #555;
 }
 
-/* Bottom Navigation */
+/* Bottom Nav Bar */
 .bottom-nav {
   position: fixed;
   bottom: 0;
