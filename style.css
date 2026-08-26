@@ -1,37 +1,38 @@
-/* Lock to mobile layout */
+/* Dark background to match your wireframe canvas */
 body {
   margin: 0;
   padding: 0;
   max-width: 430px;
   margin: 0 auto;
   font-family: system-ui, -apple-system, sans-serif;
-  background-color: #f4f5f7;
+  background-color: #121212;
+  color: #ffffff;
   padding-bottom: 90px;
 }
 
-/* 1. Top Header */
+/* 1. Header (Soft White) */
 .app-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background: #ffffff;
-  border-bottom: 1px solid #eee;
+  background-color: #f8f9fa;
+  color: #121212;
 }
 
-/* 2. Top Carousel / Banner */
+/* 2. Top Banner (Soft White) */
 .banner-carousel {
   margin: 12px 16px;
   height: 120px;
-  background: #333;
-  color: #fff;
+  background-color: #f8f9fa;
+  color: #121212;
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* 3. Middle Grid (Map & Saved History) */
+/* 3. Middle Grid */
 .middle-grid {
   display: grid;
   grid-template-columns: 1.4fr 1fr;
@@ -40,8 +41,10 @@ body {
   height: 180px;
 }
 
+/* Map Box (Soft Pink) */
 .active-map {
-  background: #d0e1fd;
+  background-color: #ffb6c1;
+  color: #121212;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -49,8 +52,10 @@ body {
   font-weight: bold;
 }
 
+/* History Box (Soft White) */
 .saved-history {
-  background: #e2e8f0;
+  background-color: #f8f9fa;
+  color: #121212;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -58,19 +63,20 @@ body {
   font-weight: bold;
 }
 
-/* 4. Bottom Carousel (Halal Food/Snacks) */
+/* 4. Bottom Food Carousel (Soft Pastel Pink) */
 .bottom-carousel {
   margin: 12px 16px;
   height: 90px;
-  background: #ffffff;
-  border: 1px solid #ddd;
+  background-color: #ffd1dc;
+  color: #121212;
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-weight: bold;
 }
 
-/* 5. Fixed Bottom Navigation Bar */
+/* 5. Fixed Navigation Bar (Soft Darker Pink) */
 .bottom-nav {
   position: fixed;
   bottom: 0;
@@ -79,8 +85,7 @@ body {
   width: 100%;
   max-width: 430px;
   height: 70px;
-  background: #ffffff;
-  border-top: 1px solid #e0e0e0;
+  background-color: #e06666;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -90,18 +95,24 @@ body {
 .nav-item {
   font-size: 11px;
   text-align: center;
-  color: #555;
+  color: #ffffff;
   background: none;
   border: none;
+  font-weight: 500;
 }
 
-/* Main SCAN button */
+/* Central SCAN Button */
 .scan-btn {
-  background: #000000;
-  color: #ffffff;
+  background-color: #ffffff;
+  color: #121212;
   border-radius: 25px;
   padding: 10px 22px;
   font-weight: bold;
   border: none;
   font-size: 14px;
+}
+
+/* Hide older duplicate/unwanted elements */
+.legacy-scanner-section {
+  display: none !important;
 }
