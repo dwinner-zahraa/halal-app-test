@@ -18,12 +18,12 @@
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
   <style>
-    /* PLAN KIWI STYLES */
+    /* --- PLAN KIWI: EXPANDED MAP & HISTORY STYLES --- */
     .map-container-section {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      margin: 10px 0;
+      margin: 15px 0;
     }
 
     .map-search-bar {
@@ -49,7 +49,7 @@
     }
 
     #map {
-      height: 320px;
+      height: 300px;
       width: 100%;
       border-radius: 12px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -75,7 +75,7 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
-      max-height: 180px;
+      max-height: 160px;
       overflow-y: auto;
     }
 
@@ -120,7 +120,119 @@
       color: #e06666;
     }
 
-    /* PLAN BLUEBERRY STYLES */
+    /* --- PLAN PLUM: DIRECTING COUNTRY BANNER STYLES --- */
+    .banner-carousel-wrapper {
+      position: relative;
+      overflow: hidden;
+      border-radius: 14px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .banner-slide {
+      display: none;
+      padding: 18px;
+      border-radius: 14px;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .banner-slide.active {
+      display: block;
+    }
+
+    .banner-china { background: linear-gradient(135deg, #de2910 0%, #b31d08 100%); }
+    .banner-japan { background: linear-gradient(135deg, #bc002d 0%, #80001f 100%); }
+    .banner-korea { background: linear-gradient(135deg, #0047a0 0%, #002759 100%); }
+
+    .banner-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .banner-text h3 {
+      font-size: 1.2rem;
+      margin: 4px 0;
+    }
+
+    .banner-text p {
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+
+    .banner-snack-previews {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .mini-snack-badge {
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(4px);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: bold;
+    }
+
+    /* --- PLAN FIG: HOT DISH SLIDE STYLES --- */
+    .hot-food-section {
+      margin-top: 15px;
+    }
+
+    .hot-food-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .hot-food-scroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    .hot-food-card {
+      min-width: 200px;
+      background: white;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      flex-shrink: 0;
+    }
+
+    .hot-food-card img {
+      width: 100%;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .hot-food-card h4 {
+      font-size: 0.85rem;
+      margin: 6px 0 2px 0;
+    }
+
+    .hot-food-card .dish-desc {
+      font-size: 0.73rem;
+      color: #666;
+    }
+
+    .dish-warning-note {
+      font-size: 0.68rem;
+      color: #d9534f;
+      background: #fff0f0;
+      padding: 4px 6px;
+      border-radius: 4px;
+      margin-top: 6px;
+    }
+
+    /* --- PLAN BLUEBERRY STYLES --- */
     .country-tag {
       display: inline-block;
       font-size: 0.75rem;
@@ -131,15 +243,19 @@
       margin-bottom: 6px;
     }
 
-    body.dark-theme .history-drawer {
+    /* Dark Mode Overrides */
+    body.dark-theme .history-drawer,
+    body.dark-theme .hot-food-card {
       background: #1e1e1e;
       border-color: #333;
+      color: #fff;
     }
     body.dark-theme .history-card {
       background: #2a2a2a;
       color: #fff;
     }
-    body.dark-theme .history-card-info .sub {
+    body.dark-theme .history-card-info .sub,
+    body.dark-theme .hot-food-card .dish-desc {
       color: #aaa;
     }
   </style>
@@ -155,11 +271,59 @@
 
   <!-- 1. APP / HOME PAGE VIEW -->
   <div id="app-page" class="page-view active-page">
-    <div class="banner-carousel">
-      <p data-i18n="bannerText">Banner Slide (Updates / Info)</p>
+    
+    <!-- PLAN PLUM: DIRECTING COUNTRY BANNER CAROUSEL -->
+    <div class="banner-carousel-wrapper">
+      <!-- China Banner Slide -->
+      <div class="banner-slide banner-china active" onclick="navigateToCountryWindow('China')">
+        <div class="banner-content">
+          <div class="banner-text">
+            <span>🇨🇳 China Specialty</span>
+            <h3>Explore Halal Snacks 🐼</h3>
+            <p>Tap to view verified Chinese snacks & products</p>
+          </div>
+          <i class="fa-solid fa-chevron-right" style="font-size: 1.5rem; opacity: 0.7;"></i>
+        </div>
+        <div class="banner-snack-previews">
+          <span class="mini-snack-badge">🌶️ Weilong Latiao</span>
+          <span class="mini-snack-badge">🥒 Lay's Cucumber</span>
+        </div>
+      </div>
+
+      <!-- Japan Banner Slide -->
+      <div class="banner-slide banner-japan" onclick="navigateToCountryWindow('Japan')">
+        <div class="banner-content">
+          <div class="banner-text">
+            <span>🇯🇵 Japan Specialty</span>
+            <h3>Tokyo Halal Picks 🌸</h3>
+            <p>Tap to explore Japanese convenience store snacks</p>
+          </div>
+          <i class="fa-solid fa-chevron-right" style="font-size: 1.5rem; opacity: 0.7;"></i>
+        </div>
+        <div class="banner-snack-previews">
+          <span class="mini-snack-badge">🥔 Calbee Chips</span>
+          <span class="mini-snack-badge">🐼 Meiji Hello Panda</span>
+        </div>
+      </div>
+
+      <!-- Korea Banner Slide -->
+      <div class="banner-slide banner-korea" onclick="navigateToCountryWindow('South Korea')">
+        <div class="banner-content">
+          <div class="banner-text">
+            <span>🇰🇷 South Korea Specialty</span>
+            <h3>Seoul K-Food Guide ⛩️</h3>
+            <p>Tap to explore verified Korean snacks & ramen</p>
+          </div>
+          <i class="fa-solid fa-chevron-right" style="font-size: 1.5rem; opacity: 0.7;"></i>
+        </div>
+        <div class="banner-snack-previews">
+          <span class="mini-snack-badge">🍜 Samyang Buldak</span>
+          <span class="mini-snack-badge">🍫 Lotte Pepero</span>
+        </div>
+      </div>
     </div>
 
-    <!-- MAP & LIVE SEARCH -->
+    <!-- PLAN KIWI: EXPANDED MAP & LIVE SEARCH -->
     <div class="map-container-section">
       <div class="map-search-bar">
         <input type="text" id="map-search-input" placeholder="Search restaurant, convenience store, hawker..." onkeypress="handleMapSearchKey(event)">
@@ -168,7 +332,7 @@
       
       <div id="map"></div>
 
-      <!-- HISTORY & FAVORITES DRAWER -->
+      <!-- SMART HISTORY & FAVORITES DRAWER -->
       <div class="history-drawer">
         <div class="history-drawer-header">
           <span><i class="fa-solid fa-clock-rotate-left"></i> <span data-i18n="savedHistory">Saved & Favorites</span></span>
@@ -180,8 +344,44 @@
       </div>
     </div>
 
-    <div class="bottom-carousel">
-      <p data-i18n="bottomBannerText">Halal Food & Snacks Slide</p>
+    <!-- PLAN FIG: POPULAR HOT MEALS & WET DISH CAROUSEL -->
+    <div class="hot-food-section">
+      <div class="hot-food-header">
+        <i class="fa-solid fa-bowl-rice" style="color: #e06666;"></i>
+        <span>Authentic Regional Hot Meals</span>
+      </div>
+
+      <div class="hot-food-scroll">
+        <!-- China Dish -->
+        <div class="hot-food-card">
+          <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=300" alt="Xinjiang Lamb Skewers">
+          <h4>🇨🇳 Xinjiang Lamb Skewers</h4>
+          <p class="dish-desc">Traditional Uyghur street delicacy, highly popular for Halal safety.</p>
+          <div class="dish-warning-note">
+            <i class="fa-solid fa-circle-info"></i> Note: Verify vendor uses 100% Halal meat source.
+          </div>
+        </div>
+
+        <!-- Korea Dish -->
+        <div class="hot-food-card">
+          <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300" alt="Sundubu Jjigae">
+          <h4>🇰🇷 Seafood Sundubu Jjigae</h4>
+          <p class="dish-desc">Soft tofu stew. Popular choice among Muslims when ordered vegetarian/seafood base.</p>
+          <div class="dish-warning-note">
+            <i class="fa-solid fa-triangle-exclamation"></i> Note: Remind chef to exclude mirin & pork broth base.
+          </div>
+        </div>
+
+        <!-- Thailand Dish -->
+        <div class="hot-food-card">
+          <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=300" alt="Tom Yum Seafood">
+          <h4>🇹🇭 Seafood Tom Yum Soup</h4>
+          <p class="dish-desc">Aromatic Thai sour broth made with fresh prawns, lemongrass, and herbs.</p>
+          <div class="dish-warning-note">
+            <i class="fa-solid fa-circle-info"></i> Note: Confirm broth does not contain uncertified fish sauce.
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -233,7 +433,7 @@
     <div style="margin-top: 20px; text-align: center;">
       <p style="font-size: 0.85rem; color: #666; margin-bottom: 8px;">Having camera trouble? Search barcode directly:</p>
       <div style="display: flex; gap: 8px;">
-        <input type="text" id="manual-barcode-input" placeholder="Enter barcode (e.g., 4901330576301)" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
+        <input type="text" id="manual-barcode-input" placeholder="Enter barcode (e.g., 6902538004018)" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
         <button onclick="lookupBarcode(document.getElementById('manual-barcode-input').value)" style="padding: 10px 16px; background: #e06666; color: #fff; border: none; border-radius: 6px;">Search</button>
       </div>
     </div>
@@ -254,12 +454,12 @@
     <div class="countries-scroll-container">
       <div class="country-section-title" data-i18n="popularTitle">Popular Destinations</div>
       <div class="popular-grid">
-        <div class="country-card popular"><span class="flag">🇲🇾</span><span class="name">Malaysia</span></div>
-        <div class="country-card popular"><span class="flag">🇯🇵</span><span class="name">Japan</span></div>
-        <div class="country-card popular"><span class="flag">🇮どもの</span><span class="name">Indonesia</span></div>
-        <div class="country-card popular"><span class="flag">🇰🇷</span><span class="name">South Korea</span></div>
-        <div class="country-card popular"><span class="flag">🇹🇭</span><span class="name">Thailand</span></div>
-        <div class="country-card popular"><span class="flag">🇸🇬</span><span class="name">Singapore</span></div>
+        <div class="country-card popular" onclick="selectCountryWindow('Malaysia')"><span class="flag">🇲🇾</span><span class="name">Malaysia</span></div>
+        <div class="country-card popular" onclick="selectCountryWindow('Japan')"><span class="flag">🇯🇵</span><span class="name">Japan</span></div>
+        <div class="country-card popular" onclick="selectCountryWindow('Indonesia')"><span class="flag">🇮🇩</span><span class="name">Indonesia</span></div>
+        <div class="country-card popular" onclick="selectCountryWindow('South Korea')"><span class="flag">🇰🇷</span><span class="name">South Korea</span></div>
+        <div class="country-card popular" onclick="selectCountryWindow('Thailand')"><span class="flag">🇹🇭</span><span class="name">Thailand</span></div>
+        <div class="country-card popular" onclick="selectCountryWindow('China')"><span class="flag">🇨🇳</span><span class="name">China</span></div>
       </div>
 
       <div class="country-section-title" data-i18n="allCountriesTitle">All Countries</div>
@@ -585,7 +785,32 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // 2. LEAFLET MAP & HISTORY SYSTEM
+    // 2. PLAN PLUM - BANNER SLIDE AUTOMATION & DIRECTING NAVIGATION
+    let currentSlideIndex = 0;
+    const slides = document.querySelectorAll('.banner-slide');
+
+    function autoRotateBanners() {
+      if (slides.length === 0) return;
+      slides[currentSlideIndex].classList.remove('active');
+      currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+      slides[currentSlideIndex].classList.add('active');
+    }
+    setInterval(autoRotateBanners, 4000);
+
+    function navigateToCountryWindow(countryName) {
+      showPage('countries-page');
+      const searchBox = document.getElementById('country-search');
+      if (searchBox) {
+        searchBox.value = countryName;
+        filterCountries();
+      }
+    }
+
+    function selectCountryWindow(countryName) {
+      alert(`Opening verified Halal list for ${countryName}...`);
+    }
+
+    // 3. PLAN KIWI - LEAFLET MAP & HISTORY SYSTEM
     let map;
     let locationHistory = [];
 
@@ -718,7 +943,7 @@
       `).join('');
     }
 
-    // 3. COUNTRIES LIST
+    // 4. COUNTRIES LIST
     const countryDatabase = [
       { name: "Malaysia", flag: "🇲🇾" },
       { name: "Japan", flag: "🇯🇵" },
@@ -726,6 +951,7 @@
       { name: "South Korea", flag: "🇰🇷" },
       { name: "Singapore", flag: "🇸🇬" },
       { name: "Thailand", flag: "🇹🇭" },
+      { name: "China", flag: "🇨🇳" },
       { name: "Saudi Arabia", flag: "🇸🇦" },
       { name: "United Arab Emirates", flag: "🇦🇪" },
       { name: "Turkey", flag: "🇹🇷" },
@@ -745,7 +971,7 @@
       if (!listContainer) return;
 
       listContainer.innerHTML = countryDatabase.map(c => `
-        <div class="country-row">
+        <div class="country-row" onclick="selectCountryWindow('${c.name}')">
           <span class="flag">${c.flag}</span>
           <span class="country-name">${c.name}</span>
           <i class="fa-solid fa-chevron-right"></i>
@@ -754,7 +980,7 @@
     }
     window.addEventListener('DOMContentLoaded', renderCountriesList);
 
-    // 4. PLAN BLUEBERRY - BULK CONVENIENCE STORE SNACK DATABASE
+    // 5. PLAN BLUEBERRY - BULK CONVENIENCE STORE DATABASE
     const productDB = {
       // JAPAN STAPLES
       "4901330576301": {
@@ -960,7 +1186,7 @@
       showPage('app-page');
     }
 
-    // 5. PAGE SWITCHER
+    // 6. PAGE SWITCHER
     function showPage(pageId) {
       document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active-page'));
       document.querySelectorAll('.bottom-nav .nav-item').forEach(b => b.classList.remove('active'));
@@ -991,7 +1217,7 @@
       if (target) target.classList.add('active-page');
     }
 
-    // 6. MODAL CONTROLS
+    // 7. MODAL CONTROLS
     function openModal(modalId) {
       document.getElementById(modalId).classList.add('show');
     }
@@ -1002,7 +1228,7 @@
       }
     }
 
-    // 7. USER PROFILE
+    // 8. USER PROFILE
     function triggerPhotoUpload() {
       document.getElementById('profile-photo-input').click();
     }
@@ -1026,11 +1252,11 @@
       alert("Profile updated successfully!");
     }
 
-    // 8. MULTI-LANGUAGE DICTIONARY
+    // 9. MULTI-LANGUAGE DICTIONARY
     const translations = {
       en: {
-        logo: "H-SCAN", flag: "Flag", bannerText: "Banner Slide (Updates / Info)", savedHistory: "Saved & Favorites",
-        bottomBannerText: "Halal Food & Snacks Slide", addProductTitle: "Quick Product Submission", addProductDesc: "Item missing? Snap pictures of the front and back packaging. Our review team will process the details!",
+        logo: "H-SCAN", flag: "Flag", savedHistory: "Saved & Favorites",
+        addProductTitle: "Quick Product Submission", addProductDesc: "Item missing? Snap pictures of the front and back packaging. Our review team will process the details!",
         scanTitle: "Barcode Scanner", scanDesc: "Align product barcode within camera scanner below.", countriesTitle: "Halal Regions",
         countriesDesc: "Select a country to explore verified Halal certifications.", popularTitle: "Popular Destinations", allCountriesTitle: "All Countries",
         settingsTitle: "Settings", menuUser: "User Profile", menuLang: "Languages", menuTheme: "Theme Mode", menuDonate: "Donation", menuInfo: "Creation Info",
@@ -1053,7 +1279,7 @@
       closeModal('language-modal');
     }
 
-    // 9. THEME MODE TOGGLE
+    // 10. THEME MODE TOGGLE
     function setTheme(themeMode) {
       if (themeMode === 'dark') {
         document.body.classList.add('dark-theme');
@@ -1063,7 +1289,7 @@
       closeModal('theme-modal');
     }
 
-    // 10. DONATION GATEWAY CONTROL
+    // 11. DONATION GATEWAY CONTROL
     let currentDonationCause = '';
     function initiateDonation(cause) {
       currentDonationCause = cause;
@@ -1077,7 +1303,7 @@
       alert(`Redirecting to ${method} gateway to complete donation for "${currentDonationCause}"...`);
     }
 
-    // 11. SUPPORT TICKET EMAIL SYSTEM
+    // 12. SUPPORT TICKET EMAIL SYSTEM
     function sendSupportTicket(event) {
       event.preventDefault();
       const subject = encodeURIComponent(document.getElementById('support-subject').value);
@@ -1086,7 +1312,7 @@
       window.location.href = mailtoLink;
     }
 
-    // 12. COUNTRY SEARCH FILTER
+    // 13. COUNTRY SEARCH FILTER
     function filterCountries() {
       const input = document.getElementById('country-search').value.toLowerCase().trim();
       const rows = document.querySelectorAll('#countries-list .country-row');
