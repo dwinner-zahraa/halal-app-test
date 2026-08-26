@@ -1,110 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Halal App - Settings</title>
-  <link rel="stylesheet" href="style.css" />
-  <!-- FontAwesome for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#e06666">
+  <title>Halal App</title>
+  
+  <link rel="stylesheet" href="style.css?v=13">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
+
+  <!-- Leaflet Map CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 </head>
 <body>
 
-  <!-- App Header -->
+  <!-- Top Header Bar -->
   <header class="app-header">
-    <div class="header-left">
-      <i class="fa-solid fa-xmark close-icon"></i>
-      <span class="logo-text">LOGO</span>
-    </div>
-    <div class="header-center">
-      <div class="time-display">01:02 am</div>
-      <div class="date-display">27 AUG</div>
-    </div>
-    <div class="header-right">
-      <i class="fa-solid fa-share-nodes"></i>
-      <i class="fa-regular fa-bookmark"></i>
-      <i class="fa-solid fa-ellipsis-vertical"></i>
-      <span class="flag-icon"><i class="fa-solid fa-flag"></i> Flag</span>
-    </div>
+    <div><strong>LOGO</strong></div>
+    <div id="time-display">--:--<br><small>-- ---</small></div>
+    <div>🇲🇾 Flag</div>
   </header>
 
-  <!-- MAIN SETTINGS VIEW -->
-  <main id="settings-view" class="view active">
-    <h1 class="page-title">Settings</h1>
+  <!-- 1. APP / HOME PAGE VIEW -->
+  <div id="app-page" class="page-view active-page">
+    <div class="banner-carousel">
+      <p>Banner Slide (Updates / Info)</p>
+    </div>
 
-    <ul class="settings-list">
-      <!-- User Settings -->
-      <li onclick="openView('profile-view')">
-        <div class="list-item-content">
-          <i class="fa-solid fa-user icon"></i>
-          <span class="item-title">User</span>
+    <div class="middle-grid">
+      <div id="map" class="active-map"></div>
+      <div class="saved-history">Saved / History</div>
+    </div>
+
+    <div class="bottom-carousel">
+      <p>Halal Food & Snacks Slide</p>
+    </div>
+  </div>
+
+  <!-- 2. ADD PRODUCT PAGE VIEW -->
+  <div id="add-product-page" class="page-view">
+    <h2><i class="fa-solid fa-plus"></i> Add Product</h2>
+    <p>Submit a new product to the Halal database here.</p>
+  </div>
+
+  <!-- 3. SCANNER PAGE VIEW -->
+  <div id="scan-page" class="page-view">
+    <h2><i class="fa-solid fa-qrcode"></i> Barcode Scanner</h2>
+    <p>Camera view for scanning product barcodes will load here.</p>
+  </div>
+
+  <!-- 4. COUNTRIES PAGE VIEW -->
+  <div id="countries-page" class="page-view">
+    <div class="countries-header">
+      <h2><i class="fa-solid fa-globe"></i> Halal Regions</h2>
+      <p>Select a country to explore verified Halal certifications.</p>
+    </div>
+
+    <div class="country-search-box">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="country-search" placeholder="Search country..." oninput="filterCountries()">
+    </div>
+
+    <div class="countries-scroll-container">
+      <div class="country-section-title">Popular Destinations</div>
+      <div class="popular-grid">
+        <div class="country-card popular"><span class="flag">🇲🇾</span><span class="name">Malaysia</span></div>
+        <div class="country-card popular"><span class="flag">🇯🇵</span><span class="name">Japan</span></div>
+        <div class="country-card popular"><span class="flag">🇮🇩</span><span class="name">Indonesia</span></div>
+        <div class="country-card popular"><span class="flag">🇰🇷</span><span class="name">South Korea</span></div>
+        <div class="country-card popular"><span class="flag">🇹🇭</span><span class="name">Thailand</span></div>
+        <div class="country-card popular"><span class="flag">🇸🇬</span><span class="name">Singapore</span></div>
+      </div>
+
+      <div class="country-section-title">All Countries</div>
+      <div class="all-countries-list" id="countries-list">
+        <div class="country-row"><span class="flag">🇲🇾</span><span class="country-name">Malaysia</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇯🇵</span><span class="country-name">Japan</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇮🇩</span><span class="country-name">Indonesia</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇰🇷</span><span class="country-name">South Korea</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="country-row"><span class="flag">🇸🇬</span><span class="country-name">Singapore</span><i class="fa-solid fa-chevron-right"></i></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. SETTINGS PAGE VIEW -->
+  <div id="settings-page" class="page-view">
+    <div class="settings-header">
+      <h2><i class="fa-solid fa-gear"></i> Settings</h2>
+    </div>
+
+    <div class="settings-list">
+      
+      <!-- User Item -->
+      <div class="settings-item" onclick="showSubPage('user-profile-page')">
+        <div class="settings-left">
+          <i class="fa-solid fa-user"></i>
+          <span class="title">User</span>
         </div>
-        <i class="fa-solid fa-chevron-right chevron"></i>
-      </li>
+        <i class="fa-solid fa-chevron-right"></i>
+      </div>
 
-      <!-- Languages -->
-      <li onclick="openModal('language-modal')">
-        <div class="list-item-content">
-          <i class="fa-solid fa-language icon"></i>
-          <span class="item-title">Languages</span>
+      <!-- Languages Item -->
+      <div class="settings-item" onclick="openModal('language-modal')">
+        <div class="settings-left">
+          <i class="fa-solid fa-language"></i>
+          <span class="title">Languages</span>
         </div>
-        <i class="fa-solid fa-chevron-right chevron"></i>
-      </li>
+        <i class="fa-solid fa-chevron-right"></i>
+      </div>
 
-      <!-- Theme Mode -->
-      <li onclick="openModal('theme-modal')">
-        <div class="list-item-content">
-          <i class="fa-solid fa-moon icon"></i>
-          <span class="item-title">Theme Mode</span>
+      <!-- Theme Mode Item -->
+      <div class="settings-item" onclick="openModal('theme-modal')">
+        <div class="settings-left">
+          <i class="fa-solid fa-moon"></i>
+          <span class="title">Theme Mode</span>
         </div>
-        <i class="fa-solid fa-chevron-right chevron"></i>
-      </li>
+        <i class="fa-solid fa-chevron-right"></i>
+      </div>
 
-      <!-- Donation -->
-      <li>
-        <div class="list-item-content">
-          <i class="fa-solid fa-hand-holding-heart icon"></i>
-          <span class="item-title">Donation</span>
+      <!-- Donation Item -->
+      <div class="settings-item" onclick="openModal('donation-modal')">
+        <div class="settings-left">
+          <i class="fa-solid fa-hand-holding-heart"></i>
+          <span class="title">Donation</span>
         </div>
-        <i class="fa-solid fa-chevron-right chevron"></i>
-      </li>
+        <i class="fa-solid fa-chevron-right"></i>
+      </div>
 
-      <!-- Creation Info -->
-      <li>
-        <div class="list-item-content">
-          <i class="fa-solid fa-circle-info icon"></i>
-          <span class="item-title">Creation Info</span>
+      <!-- Creation Info Item -->
+      <div class="settings-item" onclick="openModal('info-modal')">
+        <div class="settings-left">
+          <i class="fa-solid fa-circle-info"></i>
+          <span class="title">Creation Info</span>
         </div>
-        <i class="fa-solid fa-chevron-right chevron"></i>
-      </li>
+        <i class="fa-solid fa-chevron-right"></i>
+      </div>
 
-      <!-- Version Mode (v1) -->
-      <li>
-        <div class="list-item-content">
-          <i class="fa-solid fa-code-branch icon"></i>
-          <span class="item-title">Version Mode (v1)</span>
+      <!-- Version Mode (v1) Item -->
+      <div class="settings-item" onclick="openModal('version-modal')">
+        <div class="settings-left">
+          <i class="fa-solid fa-code-branch"></i>
+          <span class="title">Version Mode (v1)</span>
         </div>
-        <i class="fa-solid fa-chevron-right chevron"></i>
-      </li>
+        <i class="fa-solid fa-chevron-right"></i>
+      </div>
 
-      <!-- Get Support -->
-      <li>
-        <div class="list-item-content">
-          <i class="fa-solid fa-ticket icon"></i>
-          <span class="item-title">Get Support</span>
+      <!-- Get Support Item -->
+      <div class="settings-item" onclick="openModal('support-modal')">
+        <div class="settings-left">
+          <i class="fa-solid fa-ticket"></i>
+          <span class="title">Get Support</span>
         </div>
-        <i class="fa-solid fa-chevron-right chevron"></i>
-      </li>
-    </ul>
-  </main>
+        <i class="fa-solid fa-chevron-right"></i>
+      </div>
 
-  <!-- USER PROFILE DETAIL VIEW -->
-  <main id="profile-view" class="view">
+    </div>
+  </div>
+
+  <!-- 6. USER PROFILE SUB-PAGE -->
+  <div id="user-profile-page" class="page-view">
     <div class="profile-nav">
-      <button class="back-btn" onclick="openView('settings-view')">
-        <i class="fa-solid fa-arrow-left"></i> Back
+      <button class="back-btn" onclick="showPage('settings-page')">
+        <i class="fa-solid fa-arrow-left"></i> Back to Settings
       </button>
-      <h2>User Profile</h2>
     </div>
 
     <div class="profile-header-card">
@@ -114,57 +174,43 @@
     </div>
 
     <div class="profile-details-list">
-      <div class="detail-row">
-        <span class="label">NAME:</span>
-        <span class="value">Sara</span>
-      </div>
-      <div class="detail-row">
-        <span class="label">USER ID:</span>
-        <span class="value" id="user-id"></span>
-      </div>
-      <div class="detail-row">
-        <span class="label">MOBILE NO.:</span>
-        <span class="value">+60 12-345 6789</span>
-      </div>
-      <div class="detail-row">
-        <span class="label">DOB:</span>
-        <span class="value">15 MARCH 2007</span>
-      </div>
-      <div class="detail-row">
-        <span class="label">REGION:</span>
-        <span class="value">Malaysia</span>
-      </div>
-      <div class="detail-row">
-        <span class="label">CITY:</span>
-        <span class="value">Kuala Lumpur</span>
-      </div>
+      <div class="detail-row"><span class="label">NAME:</span> <span class="value">Sara</span></div>
+      <div class="detail-row"><span class="label">USER ID:</span> <span class="value" id="user-id">USR-849201</span></div>
+      <div class="detail-row"><span class="label">MOBILE NO.:</span> <span class="value">+60 12-345 6789</span></div>
+      <div class="detail-row"><span class="label">DOB:</span> <span class="value">15 MARCH 2007</span></div>
+      <div class="detail-row"><span class="label">REGION:</span> <span class="value">Malaysia</span></div>
+      <div class="detail-row"><span class="label">CITY:</span> <span class="value">Kuala Lumpur</span></div>
     </div>
-  </main>
+  </div>
 
-  <!-- Bottom Navigation -->
+  <!-- Bottom Navigation Bar -->
   <nav class="bottom-nav">
-    <div class="nav-item">
+    <button class="nav-item active" onclick="showPage('app-page')">
       <i class="fa-solid fa-house"></i>
       <span>App</span>
-    </div>
-    <div class="nav-item">
+    </button>
+
+    <button class="nav-item" onclick="showPage('add-product-page')">
       <i class="fa-solid fa-plus"></i>
       <span>Add Product</span>
-    </div>
-    <div class="nav-item action-btn">
+    </button>
+
+    <button class="scan-btn" onclick="showPage('scan-page')">
       <i class="fa-solid fa-qrcode"></i>
-    </div>
-    <div class="nav-item">
+    </button>
+
+    <button class="nav-item" onclick="showPage('countries-page')">
       <i class="fa-solid fa-globe"></i>
       <span>Countries</span>
-    </div>
-    <div class="nav-item active">
+    </button>
+
+    <button class="nav-item" onclick="showPage('settings-page')">
       <i class="fa-solid fa-gear"></i>
       <span>Settings</span>
-    </div>
+    </button>
   </nav>
 
-  <!-- LANGUAGES MODAL -->
+  <!-- MODALS -->
   <div id="language-modal" class="modal">
     <div class="modal-content">
       <h3>Select Language</h3>
@@ -172,13 +218,11 @@
         <li onclick="closeModal('language-modal')">English</li>
         <li onclick="closeModal('language-modal')">Bahasa Melayu</li>
         <li onclick="closeModal('language-modal')">Japanese (日本語)</li>
-        <li onclick="closeModal('language-modal')">Arabic (العربية)</li>
       </ul>
-      <button class="close-btn" onclick="closeModal('language-modal')">Cancel</button>
+      <button class="close-btn" onclick="closeModal('language-modal')">Close</button>
     </div>
   </div>
 
-  <!-- THEME MODAL -->
   <div id="theme-modal" class="modal">
     <div class="modal-content">
       <h3>Select Theme</h3>
@@ -186,18 +230,119 @@
         <li onclick="closeModal('theme-modal')">Light Mode</li>
         <li onclick="closeModal('theme-modal')">Dark Mode</li>
       </ul>
-      <button class="close-btn" onclick="closeModal('theme-modal')">Cancel</button>
+      <button class="close-btn" onclick="closeModal('theme-modal')">Close</button>
     </div>
   </div>
 
+  <div id="donation-modal" class="modal">
+    <div class="modal-content">
+      <h3>Donation</h3>
+      <p style="margin: 15px 0; font-size: 0.9rem; color: #555;">Support app & creator | 100% directly to Palestine / Any aid available.</p>
+      <button class="close-btn" onclick="closeModal('donation-modal')">Close</button>
+    </div>
+  </div>
+
+  <div id="info-modal" class="modal">
+    <div class="modal-content">
+      <h3>Creation Info</h3>
+      <p style="margin: 15px 0; font-size: 0.9rem; color: #555;">Short story of the app creation.</p>
+      <button class="close-btn" onclick="closeModal('info-modal')">Close</button>
+    </div>
+  </div>
+
+  <div id="version-modal" class="modal">
+    <div class="modal-content">
+      <h3>Version Mode (v1)</h3>
+      <p style="margin: 15px 0; font-size: 0.9rem; color: #555;">Current App Version: 1.0.0</p>
+      <button class="close-btn" onclick="closeModal('version-modal')">Close</button>
+    </div>
+  </div>
+
+  <div id="support-modal" class="modal">
+    <div class="modal-content">
+      <h3>Get Support</h3>
+      <p style="margin: 15px 0; font-size: 0.9rem; color: #555;">Submit tickets for app improvements.</p>
+      <button class="close-btn" onclick="closeModal('support-modal')">Close</button>
+    </div>
+  </div>
+
+  <!-- JavaScript Controls -->
   <script>
-    // Toggle between Settings and Profile pages
-    function openView(viewId) {
-      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-      document.getElementById(viewId).classList.add('active');
+    // 1. Dynamic Clock Function
+    function updateClock() {
+      const now = new Date();
+      let hours = now.getHours();
+      let minutes = now.getMinutes();
+      const ampm = hours >= 12 ? 'pm' : 'am';
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      minutes = minutes < 10 ? '0' + minutes : minutes;
+      const timeString = `${hours}:${minutes} ${ampm}`;
+
+      const day = now.getDate();
+      const monthOptions = { month: 'short' };
+      const monthString = now.toLocaleDateString('en-US', monthOptions).toUpperCase();
+
+      const timeDisplay = document.getElementById('time-display');
+      if (timeDisplay) {
+        timeDisplay.innerHTML = `${timeString}<br><small>${day} ${monthString}</small>`;
+      }
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // 2. Leaflet Map Setup
+    let map;
+    function initMap() {
+      const mapElement = document.getElementById('map');
+      if (!mapElement) return;
+
+      map = L.map('map').setView([3.1390, 101.6869], 13);
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+      }).addTo(map);
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+            map.setView([lat, lng], 15);
+            L.marker([lat, lng]).addTo(map).bindPopup('You are here!').openPopup();
+          },
+          (err) => console.warn(err.message)
+        );
+      }
+      setTimeout(() => { if (map) map.invalidateSize(); }, 500);
+    }
+    window.addEventListener('load', initMap);
+
+    // 3. Page Switcher
+    function showPage(pageId) {
+      document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active-page'));
+      document.querySelectorAll('.bottom-nav .nav-item').forEach(b => b.classList.remove('active'));
+
+      const target = document.getElementById(pageId);
+      if (target) target.classList.add('active-page');
+
+      const activeBtn = Array.from(document.querySelectorAll('.bottom-nav .nav-item')).find(
+        btn => btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(pageId)
+      );
+      if (activeBtn) activeBtn.classList.add('active');
+
+      if (pageId === 'app-page' && map) {
+        setTimeout(() => map.invalidateSize(), 200);
+      }
     }
 
-    // Modal Handlers
+    function showSubPage(pageId) {
+      document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active-page'));
+      const target = document.getElementById(pageId);
+      if (target) target.classList.add('active-page');
+    }
+
+    // 4. Modal Handlers
     function openModal(modalId) {
       document.getElementById(modalId).classList.add('show');
     }
@@ -205,8 +350,15 @@
       document.getElementById(modalId).classList.remove('show');
     }
 
-    // Generate random User ID
-    document.getElementById('user-id').textContent = 'USR-' + Math.floor(100000 + Math.random() * 900000);
+    // 5. Country Filter
+    function filterCountries() {
+      const input = document.getElementById('country-search').value.toLowerCase().trim();
+      const rows = document.querySelectorAll('#countries-list .country-row');
+      rows.forEach(row => {
+        const name = row.querySelector('.country-name').textContent.toLowerCase();
+        row.style.display = name.includes(input) ? 'flex' : 'none';
+      });
+    }
   </script>
 </body>
 </html>
