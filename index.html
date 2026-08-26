@@ -7,12 +7,15 @@
   <meta name="theme-color" content="#e06666">
   <title>H-scan</title>
   
-  <link rel="stylesheet" href="style.css?v=15">
+  <link rel="stylesheet" href="style.css?v=16">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
 
   <!-- Leaflet Map CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+  <!-- HTML5 QR / Barcode Scanner Library -->
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 <body>
 
@@ -43,12 +46,50 @@
   <div id="add-product-page" class="page-view">
     <h2><i class="fa-solid fa-plus"></i> <span data-i18n="addProductTitle">Add Product</span></h2>
     <p data-i18n="addProductDesc">Submit a new product to the Halal database here.</p>
+
+    <form id="add-product-form" onsubmit="handleProductSubmission(event)" style="margin-top: 15px;">
+      <div class="form-group">
+        <label>Barcode Number</label>
+        <input type="text" id="add-barcode" placeholder="e.g. 5000159461122" required>
+      </div>
+
+      <div class="form-group">
+        <label>Product Name</label>
+        <input type="text" id="add-name" placeholder="e.g. Chocolate Bar" required>
+      </div>
+
+      <div class="form-group">
+        <label>Brand</label>
+        <input type="text" id="add-brand" placeholder="e.g. Nestlé" required>
+      </div>
+
+      <div class="form-group">
+        <label>Full Ingredients List</label>
+        <textarea id="add-ingredients" rows="4" placeholder="List all ingredients printed on packaging..." required></textarea>
+      </div>
+
+      <button type="submit" class="submit-ticket-btn">Submit Product for Verification</button>
+    </form>
   </div>
 
   <!-- 3. SCANNER PAGE VIEW -->
   <div id="scan-page" class="page-view">
     <h2><i class="fa-solid fa-qrcode"></i> <span data-i18n="scanTitle">Barcode Scanner</span></h2>
-    <p data-i18n="scanDesc">Camera view for scanning product barcodes will load here.</p>
+    <p data-i18n="scanDesc">Align product barcode within camera scanner below.</p>
+
+    <!-- Interactive Camera Box -->
+    <div id="reader-wrapper" style="margin-top: 15px; position: relative;">
+      <div id="reader" style="width: 100%; border-radius: 12px; overflow: hidden; background: #000;"></div>
+    </div>
+
+    <!-- Manual Barcode Search Fallback -->
+    <div style="margin-top: 20px; text-align: center;">
+      <p style="font-size: 0.85rem; color: #666; margin-bottom: 8px;">Having camera trouble? Search barcode directly:</p>
+      <div style="display: flex; gap: 8px;">
+        <input type="text" id="manual-barcode-input" placeholder="Enter barcode (e.g., 5000159461122)" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
+        <button onclick="lookupBarcode(document.getElementById('manual-barcode-input').value)" style="padding: 10px 16px; background: #e06666; color: #fff; border: none; border-radius: 6px;">Search</button>
+      </div>
+    </div>
   </div>
 
   <!-- 4. COUNTRIES PAGE VIEW -->
@@ -76,11 +117,7 @@
 
       <div class="country-section-title" data-i18n="allCountriesTitle">All Countries</div>
       <div class="all-countries-list" id="countries-list">
-        <div class="country-row"><span class="flag">🇲🇾</span><span class="country-name">Malaysia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇯🇵</span><span class="country-name">Japan</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇮🇩</span><span class="country-name">Indonesia</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇰🇷</span><span class="country-name">South Korea</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="country-row"><span class="flag">🇸🇬</span><span class="country-name">Singapore</span><i class="fa-solid fa-chevron-right"></i></div>
+        <!-- Rendered dynamically by script -->
       </div>
     </div>
   </div>
@@ -254,6 +291,32 @@
 
   <!-- MODALS -->
 
+  <!-- PRODUCT RESULT MODAL -->
+  <div id="product-result-modal" class="modal">
+    <div class="modal-content product-modal-content">
+      <div id="product-status-badge" class="status-badge"></div>
+      
+      <div class="product-img-wrapper" style="margin: 10px 0;">
+        <img id="product-modal-img" src="" alt="Product Image" style="max-width: 140px; border-radius: 8px;">
+      </div>
+
+      <h3 id="product-modal-name" style="margin-bottom: 2px;"></h3>
+      <p id="product-modal-brand" style="color: #777; font-size: 0.85rem; margin-bottom: 12px;"></p>
+
+      <div id="warning-box" class="warning-box" style="display: none;">
+        <strong><i class="fa-solid fa-triangle-exclamation"></i> Warning Ingredients:</strong>
+        <p id="warning-ingredients-text" style="font-size: 0.85rem; margin-top: 4px;"></p>
+      </div>
+
+      <div class="ingredients-box">
+        <strong>Full Ingredients:</strong>
+        <p id="full-ingredients-text" style="font-size: 0.85rem; margin-top: 4px; color: #444;"></p>
+      </div>
+
+      <button class="close-btn" onclick="closeModal('product-result-modal')" style="margin-top: 15px;">Done</button>
+    </div>
+  </div>
+
   <!-- 11 LANGUAGES MODAL -->
   <div id="language-modal" class="modal">
     <div class="modal-content">
@@ -335,6 +398,7 @@
         <p>Hello! I am <strong>Zahraa</strong>, the creator of H-scan.</p>
         <p>While traveling abroad, I experienced a terrible moment: accidentally consuming food that contained non-Halal ingredients. Even though I was using a scanner app at the time, a second check after eating revealed the item was haram after showing as Halal during the first scan!</p>
         <p>To make matters worse, many scanners restrict basic usage behind paywalls or limited scan quotas. As a Muslim, I felt every individual deserves effortless, transparent access to reliable Halal verification—100% free, without anxiety or financial barriers.</p>
+
         <p>That realization inspired me to build <strong>H-scan</strong> for our global community. Your usage means the world to me, and any contributions directly support continuous app maintenance and humanitarian relief. Thank you for being part of this journey!</p>
       </div>
       <button class="close-btn" onclick="closeModal('info-modal')" data-i18n="btnClose">Close</button>
@@ -350,7 +414,7 @@
     </div>
   </div>
 
-  <!-- JavaScript Controls -->
+  <!-- JavaScript Controls & Database Integration -->
   <script>
     // 1. DYNAMIC CLOCK
     function updateClock() {
@@ -402,7 +466,162 @@
     }
     window.addEventListener('load', initMap);
 
-    // 3. PAGE SWITCHER
+    // 3. COMPLETE COUNTRIES LIST RENDERING
+    const countryDatabase = [
+      { name: "Malaysia", flag: "🇲🇾" },
+      { name: "Japan", flag: "🇯🇵" },
+      { name: "Indonesia", flag: "🇮🇩" },
+      { name: "South Korea", flag: "🇰🇷" },
+      { name: "Singapore", flag: "🇸🇬" },
+      { name: "Thailand", flag: "🇹🇭" },
+      { name: "Saudi Arabia", flag: "🇸🇦" },
+      { name: "United Arab Emirates", flag: "🇦🇪" },
+      { name: "Turkey", flag: "🇹🇷" },
+      { name: "United Kingdom", flag: "🇬🇧" },
+      { name: "France", flag: "🇫🇷" },
+      { name: "Germany", flag: "🇩🇪" },
+      { name: "Australia", flag: "🇦🇺" },
+      { name: "United States", flag: "🇺🇸" },
+      { name: "Canada", flag: "🇨🇦" },
+      { name: "Egypt", flag: "🇪🇬" },
+      { name: "Pakistan", flag: "🇵🇰" },
+      { name: "Brunei", flag: "🇧🇳" }
+    ];
+
+    function renderCountriesList() {
+      const listContainer = document.getElementById('countries-list');
+      if (!listContainer) return;
+
+      listContainer.innerHTML = countryDatabase.map(c => `
+        <div class="country-row">
+          <span class="flag">${c.flag}</span>
+          <span class="country-name">${c.name}</span>
+          <i class="fa-solid fa-chevron-right"></i>
+        </div>
+      `).join('');
+    }
+    window.addEventListener('DOMContentLoaded', renderCountriesList);
+
+    // 4. MOCK BARCODE DATABASE & LIVE CAMERA SCANNER
+    const productDB = {
+      "5000159461122": {
+        name: "KitKat 4-Finger Milk Chocolate",
+        brand: "Nestlé",
+        status: "HALAL", // HALAL, HARAM, MASHBOOH
+        img: "https://images.unsplash.com/photo-1582293041079-7814c2f12063?w=300",
+        warningIngredients: null,
+        ingredients: "Sugar, Wheat Flour, Skimmed Milk Powder, Cocoa Butter, Cocoa Mass, Vegetable Fats (Palm, Shea), Butterfat (Milk), Emulsifier (Lecithins), Raising Agent (Sodium Bicarbonate)."
+      },
+      "8801043150624": {
+        name: "Samyang Buldak Ramen (Carbonara)",
+        brand: "Samyang",
+        status: "HALAL",
+        img: "https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=300",
+        warningIngredients: null,
+        ingredients: "Wheat Flour, Modified Tapioca Starch, Refined Palm Oil, Wheat Gluten, Salt, Soy Lecithin, Artificial Chicken Flavor Powder, Whole Milk Powder, White Sugar."
+      },
+      "4901330571234": {
+        name: "Crispy Pork & Potato Chips",
+        brand: "SnackCo",
+        status: "HARAM",
+        img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300",
+        warningIngredients: "Pork Extract, E441 Gelatin (Porcine Origin), Lard Fat",
+        ingredients: "Potatoes, Vegetable Oil, Pork Extract, Gelatin (Porcine), Salt, Sugar, Monosodium Glutamate, Spices."
+      },
+      "4902388012345": {
+        name: "Matcha Cream Biscuits",
+        brand: "Tokyo Sweets",
+        status: "MASHBOOH",
+        img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300",
+        warningIngredients: "E471 Emulsifier (Unspecified animal/plant source), Shortening",
+        ingredients: "Wheat Flour, Sugar, Shortening, Matcha Powder, Whole Milk Powder, Emulsifier (E471), Flavoring."
+      }
+    };
+
+    let html5QrcodeScanner = null;
+
+    function startScanner() {
+      if (!html5QrcodeScanner) {
+        html5QrcodeScanner = new Html5Qrcode("reader");
+      }
+      
+      const config = { fps: 10, qrbox: { width: 250, height: 180 } };
+
+      html5QrcodeScanner.start(
+        { facingMode: "environment" },
+        config,
+        (decodedText) => {
+          html5QrcodeScanner.stop();
+          lookupBarcode(decodedText);
+        },
+        (errorMessage) => {
+          // Ignore scanning frame errors
+        }
+      ).catch((err) => {
+        console.warn("Camera start failed: ", err);
+      });
+    }
+
+    function stopScanner() {
+      if (html5QrcodeScanner && html5QrcodeScanner.isScanning) {
+        html5QrcodeScanner.stop().catch(err => console.error(err));
+      }
+    }
+
+    function lookupBarcode(barcode) {
+      const code = barcode.trim();
+      const product = productDB[code];
+
+      if (product) {
+        // Display Popup Modal
+        const badge = document.getElementById('product-status-badge');
+        badge.className = `status-badge ${product.status.toLowerCase()}`;
+        badge.innerHTML = `<i class="fa-solid ${product.status === 'HALAL' ? 'fa-circle-check' : product.status === 'HARAM' ? 'fa-circle-xmark' : 'fa-triangle-exclamation'}"></i> ${product.status}`;
+
+        document.getElementById('product-modal-img').src = product.img;
+        document.getElementById('product-modal-name').textContent = product.name;
+        document.getElementById('product-modal-brand').textContent = product.brand;
+        document.getElementById('full-ingredients-text').textContent = product.ingredients;
+
+        const warningBox = document.getElementById('warning-box');
+        if (product.warningIngredients) {
+          warningBox.style.display = 'block';
+          document.getElementById('warning-ingredients-text').textContent = product.warningIngredients;
+        } else {
+          warningBox.style.display = 'none';
+        }
+
+        openModal('product-result-modal');
+      } else {
+        alert(`Barcode (${code}) not found in the global database. Redirecting to Add Product page for review.`);
+        document.getElementById('add-barcode').value = code;
+        showPage('add-product-page');
+      }
+    }
+
+    function handleProductSubmission(event) {
+      event.preventDefault();
+      const code = document.getElementById('add-barcode').value;
+      const name = document.getElementById('add-name').value;
+      const brand = document.getElementById('add-brand').value;
+      const ingredients = document.getElementById('add-ingredients').value;
+
+      // Add to local session runtime database
+      productDB[code] = {
+        name: name,
+        brand: brand,
+        status: "MASHBOOH",
+        img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300",
+        warningIngredients: "Pending Halal Committee Review",
+        ingredients: ingredients
+      };
+
+      alert("Thank you! Product submitted for ingredient verification. You can now scan or look up this item.");
+      document.getElementById('add-product-form').reset();
+      showPage('app-page');
+    }
+
+    // 5. PAGE SWITCHER WITH SCANNER CONTROLS
     function showPage(pageId) {
       document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active-page'));
       document.querySelectorAll('.bottom-nav .nav-item').forEach(b => b.classList.remove('active'));
@@ -415,26 +634,36 @@
       );
       if (activeBtn) activeBtn.classList.add('active');
 
+      if (pageId === 'scan-page') {
+        startScanner();
+      } else {
+        stopScanner();
+      }
+
       if (pageId === 'app-page' && map) {
         setTimeout(() => map.invalidateSize(), 200);
       }
     }
 
     function showSubPage(pageId) {
+      stopScanner();
       document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active-page'));
       const target = document.getElementById(pageId);
       if (target) target.classList.add('active-page');
     }
 
-    // 4. MODAL CONTROLS
+    // 6. MODAL CONTROLS
     function openModal(modalId) {
       document.getElementById(modalId).classList.add('show');
     }
     function closeModal(modalId) {
       document.getElementById(modalId).classList.remove('show');
+      if (modalId === 'product-result-modal' && document.getElementById('scan-page').classList.contains('active-page')) {
+        startScanner();
+      }
     }
 
-    // 5. USER PROFILE EDITING & PHOTO UPLOAD
+    // 7. USER PROFILE EDITING & PHOTO UPLOAD
     function triggerPhotoUpload() {
       document.getElementById('profile-photo-input').click();
     }
@@ -458,12 +687,12 @@
       alert("Profile updated successfully!");
     }
 
-    // 6. MULTI-LANGUAGE DICTIONARY & TOGGLE
+    // 8. MULTI-LANGUAGE DICTIONARY & TOGGLE
     const translations = {
       en: {
         logo: "H-SCAN", flag: "Flag", bannerText: "Banner Slide (Updates / Info)", savedHistory: "Saved / History",
         bottomBannerText: "Halal Food & Snacks Slide", addProductTitle: "Add Product", addProductDesc: "Submit a new product to the Halal database here.",
-        scanTitle: "Barcode Scanner", scanDesc: "Camera view for scanning product barcodes will load here.", countriesTitle: "Halal Regions",
+        scanTitle: "Barcode Scanner", scanDesc: "Align product barcode within camera scanner below.", countriesTitle: "Halal Regions",
         countriesDesc: "Select a country to explore verified Halal certifications.", popularTitle: "Popular Destinations", allCountriesTitle: "All Countries",
         settingsTitle: "Settings", menuUser: "User Profile", menuLang: "Languages", menuTheme: "Theme Mode", menuDonate: "Donation", menuInfo: "Creation Info",
         menuVersion: "Version Mode (v1)", menuSupport: "Get Support", navApp: "App", navAdd: "Add Product", navCountries: "Countries", navSettings: "Settings",
@@ -483,114 +712,6 @@
         donationHeader: "Sokong H-scan", donationSub: "Pilih tujuan sumbangan anda di bawah:", donCreator: "Sokong Pencipta", donCreatorSub: "Tanda penghargaan kecil untuk pembangunan",
         donPalestine: "Bantuan Palestin & Kemanusiaan", donPalestineSub: "100% hasil disalurkan kepada bantuan", supportPageTitle: "Hantar Tiket Bantuan",
         supportPageDesc: "Menghadapi masalah atau mempunyai soalan? Hantar pertanyaan secara terus.", labelSubject: "Subjek / Jenis Masalah", labelMessage: "Mesej & Butiran", btnSendTicket: "Hantar Tiket Melalui E-mel"
-      },
-      id: {
-        logo: "H-SCAN", flag: "Bendera", bannerText: "Slide Pengumuman / Info", savedHistory: "Tersimpan / Riwayat",
-        bottomBannerText: "Slide Makanan & Camilan Halal", addProductTitle: "Tambah Produk", addProductDesc: "Kirim produk baru ke basis data Halal di sini.",
-        scanTitle: "Pemindai Kode Batang", scanDesc: "Tampilan kamera untuk memindai kode batang produk.", countriesTitle: "Wilayah Halal",
-        countriesDesc: "Pilih negara untuk menjelajahi sertifikasi Halal yang terverifikasi.", popularTitle: "Destinasi Populer", allCountriesTitle: "Semua Negara",
-        settingsTitle: "Pengaturan", menuUser: "Profil Pengguna", menuLang: "Bahasa", menuTheme: "Mode Tema", menuDonate: "Donasi", menuInfo: "Info Pembuatan",
-        menuVersion: "Versi Mode (v1)", menuSupport: "Dapatkan Bantuan", navApp: "Aplikasi", navAdd: "Tambah", navCountries: "Negara", navSettings: "Pengaturan",
-        backSettings: "Kembali ke Pengaturan", saveProfile: "Simpan Perubahan", selectLang: "Pilih Bahasa", selectTheme: "Pilih Tema", btnClose: "Tutup",
-        donationHeader: "Dukung H-scan", donationSub: "Pilih tujuan donasi Anda di bawah ini:", donCreator: "Dukung Pembuat", donCreatorSub: "Apresiasi kecil untuk pengembangan",
-        donPalestine: "Bantuan Palestina & Kemanusiaan", donPalestineSub: "100% hasil disalurkan untuk bantuan", supportPageTitle: "Kirim Tiket Dukungan",
-        supportPageDesc: "Mengalami masalah atau memiliki pertanyaan? Kirim pertanyaan secara langsung.", labelSubject: "Subjek / Jenis Masalah", labelMessage: "Pesan & Detail", btnSendTicket: "Kirim Tiket via Email"
-      },
-      ja: {
-        logo: "H-SCAN", flag: "国旗", bannerText: "バナースライド（最新情報）", savedHistory: "保存済み / 履歴",
-        bottomBannerText: "ハラール食品スライド", addProductTitle: "製品を追加", addProductDesc: "ハラールデータベースに新しい製品を送信します。",
-        scanTitle: "バーコードスキャナー", scanDesc: "バーコード読み取り用カメラビュー。", countriesTitle: "ハラール地域",
-        countriesDesc: "認証されたハラール地域を選択します。", popularTitle: "人気の目的地", allCountriesTitle: "すべての国",
-        settingsTitle: "設定", menuUser: "ユーザープロファイル", menuLang: "言語", menuTheme: "テーマモード", menuDonate: "寄付", menuInfo: "アプリ制作情報",
-        menuVersion: "バージョン (v1)", menuSupport: "サポートを受ける", navApp: "アプリ", navAdd: "追加", navCountries: "国一覧", navSettings: "設定",
-        backSettings: "設定に戻る", saveProfile: "変更を保存", selectLang: "言語を選択", selectTheme: "テーマを選択", btnClose: "閉じる",
-        donationHeader: "H-scanを支援", donationSub: "寄付の目的を選択してください：", donCreator: "制作者を支援", donCreatorSub: "開発への感謝のトークン",
-        donPalestine: "パレスチナ人道支援", donPalestineSub: "収益の100%を支援に充当", supportPageTitle: "サポートチケットを送信",
-        supportPageDesc: "問題やご質問がありますか？直接お問い合わせください。", labelSubject: "件名 / 問題の種類", labelMessage: "メッセージの詳細", btnSendTicket: "メールでチケットを送信"
-      },
-      zh: {
-        logo: "H-SCAN", flag: "国旗", bannerText: "横幅公告（更新/信息）", savedHistory: "已保存 / 历史",
-        bottomBannerText: "清真食品与零食专区", addProductTitle: "添加产品", addProductDesc: "在此向清真数据库提交新产品。",
-        scanTitle: "条形码扫描器", scanDesc: "用于扫描产品条形码的相机界面。", countriesTitle: "清真区域",
-        countriesDesc: "选择国家以查看经过验证的清真认证。", popularTitle: "热门目的地", allCountriesTitle: "所有国家",
-        settingsTitle: "设置", menuUser: "用户资料", menuLang: "语言", menuTheme: "主题模式", menuDonate: "捐赠", menuInfo: "创作背景",
-        menuVersion: "版本模式 (v1)", menuSupport: "获取支持", navApp: "应用", navAdd: "添加", navCountries: "国家", navSettings: "设置",
-        backSettings: "返回设置", saveProfile: "保存更改", selectLang: "选择语言", selectTheme: "选择主题", btnClose: "关闭",
-        donationHeader: "支持 H-scan", donationSub: "请在下方选择您的捐款目的：", donCreator: "支持创作者", donCreatorSub: "对开发工作的小额感谢",
-        donPalestine: "巴勒斯坦及人道主义援助", donPalestineSub: "100% 收益直接用于援助", supportPageTitle: "提交支持工单",
-        supportPageDesc: "遇到问题或有疑问？请直接发送询问。", labelSubject: "主题 / 问题类型", labelMessage: "信息与详情", btnSendTicket: "通过电子邮件发送工单"
-      },
-      fr: {
-        logo: "H-SCAN", flag: "Drapeau", bannerText: "Bannière (Mises à jour)", savedHistory: "Enregistré / Historique",
-        bottomBannerText: "Aliments & Snacks Halal", addProductTitle: "Ajouter un produit", addProductDesc: "Soumettre un produit à la base de données Halal.",
-        scanTitle: "Scanner de code-barres", scanDesc: "L'appareil photo s'ouvrira pour scanner les codes-barres.", countriesTitle: "Régions Halal",
-        countriesDesc: "Sélectionnez un pays pour explorer les certifications.", popularTitle: "Destinations populaires", allCountriesTitle: "Tous les pays",
-        settingsTitle: "Paramètres", menuUser: "Profil utilisateur", menuLang: "Langues", menuTheme: "Mode Thème", menuDonate: "Faire un don", menuInfo: "À propos",
-        menuVersion: "Version (v1)", menuSupport: "Obtenir de l'aide", navApp: "App", navAdd: "Ajouter", navCountries: "Pays", navSettings: "Paramètres",
-        backSettings: "Retour aux paramètres", saveProfile: "Enregistrer", selectLang: "Choisir la langue", selectTheme: "Choisir le thème", btnClose: "Fermer",
-        donationHeader: "Soutenir H-scan", donationSub: "Choisissez la cause de votre don :", donCreator: "Soutenir la créatrice", donCreatorSub: "Un geste d'appréciation pour le développement",
-        donPalestine: "Aide humanitaire pour la Palestine", donPalestineSub: "100% des bénéfices destinés à l'aide", supportPageTitle: "Envoyer un ticket d'assistance",
-        supportPageDesc: "Un problème ou une question ? Envoyez une demande directe.", labelSubject: "Sujet / Type de problème", labelMessage: "Message et détails", btnSendTicket: "Envoyer par e-mail"
-      },
-      es: {
-        logo: "H-SCAN", flag: "Bandera", bannerText: "Banner (Actualizaciones / Info)", savedHistory: "Guardado / Historial",
-        bottomBannerText: "Comida y Snacks Halal", addProductTitle: "Agregar producto", addProductDesc: "Envíe un nuevo producto a la base de datos Halal.",
-        scanTitle: "Escáner de código de barras", scanDesc: "La cámara se cargará para escanear productos.", countriesTitle: "Regiones Halal",
-        countriesDesc: "Seleccione un país para explorar certificaciones Halal.", popularTitle: "Destinos populares", allCountriesTitle: "Todos los países",
-        settingsTitle: "Ajustes", menuUser: "Perfil de usuario", menuLang: "Idiomas", menuTheme: "Modo de tema", menuDonate: "Donaciones", menuInfo: "Información de creación",
-        menuVersion: "Versión (v1)", menuSupport: "Obtener soporte", navApp: "Inicio", navAdd: "Agregar", navCountries: "Países", navSettings: "Ajustes",
-        backSettings: "Volver a ajustes", saveProfile: "Guardar cambios", selectLang: "Seleccionar idioma", selectTheme: "Seleccionar tema", btnClose: "Cerrar",
-        donationHeader: "Apoyar a H-scan", donationSub: "Elija la causa de su donación:", donCreator: "Apoyar a la creadora", donCreatorSub: "Un pequeño gesto de agradecimiento",
-        donPalestine: "Ayuda para Palestina y Humanitaria", donPalestineSub: "El 100% de lo recaudado va a la ayuda", supportPageTitle: "Enviar ticket de soporte",
-        supportPageDesc: "¿Tiene un problema o pregunta? Envíenos una consulta.", labelSubject: "Asunto / Tipo de problema", labelMessage: "Mensaje y detalles", btnSendTicket: "Enviar por correo electrónico"
-      },
-      it: {
-        logo: "H-SCAN", flag: "Bandiera", bannerText: "Banner (Aggiornamenti / Info)", savedHistory: "Salvati / Cronologia",
-        bottomBannerText: "Cibo e Snack Halal", addProductTitle: "Aggiungi prodotto", addProductDesc: "Invia un nuovo prodotto al database Halal.",
-        scanTitle: "Scanner codice a barre", scanDesc: "La fotocamera si aprirà per scansionare i prodotti.", countriesTitle: "Regioni Halal",
-        countriesDesc: "Seleziona un paese per verificare le certificazioni.", popularTitle: "Destinazioni popolari", allCountriesTitle: "Tutti i paesi",
-        settingsTitle: "Impostazioni", menuUser: "Profilo utente", menuLang: "Lingue", menuTheme: "Modalità tema", menuDonate: "Donazioni", menuInfo: "Info creazione",
-        menuVersion: "Versione (v1)", menuSupport: "Ottieni supporto", navApp: "App", navAdd: "Aggiungi", navCountries: "Paesi", navSettings: "Impostazioni",
-        backSettings: "Torna alle impostazioni", saveProfile: "Salva modifiche", selectLang: "Seleziona lingua", selectTheme: "Seleziona tema", btnClose: "Chiudi",
-        donationHeader: "Sostieni H-scan", donationSub: "Scegli la causa della tua donazione:", donCreator: "Sostieni la creatrice", donCreatorSub: "Un piccolo segno di apprezzamento",
-        donPalestine: "Aiuto umanitario per la Palestina", donPalestineSub: "Il 100% del ricavado va in aiuti", supportPageTitle: "Invia un ticket di supporto",
-        supportPageDesc: "Hai un problema o una domanda? Invia una richiesta diretta.", labelSubject: "Oggetto / Tipo di problema", labelMessage: "Messaggio e dettagli", btnSendTicket: "Invia tramite e-mail"
-      },
-      de: {
-        logo: "H-SCAN", flag: "Flagge", bannerText: "Banner (Updates / Info)", savedHistory: "Gespeichert / Verlauf",
-        bottomBannerText: "Halal Essen & Snacks", addProductTitle: "Produkt hinzufügen", addProductDesc: "Neues Produkt zur Halal-Datenbank hinzufügen.",
-        scanTitle: "Barcodescanner", scanDesc: "Kameraansicht zum Scannen von Produkt-Barcodes.", countriesTitle: "Halal-Regionen",
-        countriesDesc: "Wählen Sie ein Land aus, um Zertifizierungen zu sehen.", popularTitle: "Beliebte Reiseziele", allCountriesTitle: "Alle Länder",
-        settingsTitle: "Einstellungen", menuUser: "Benutzerprofil", menuLang: "Sprachen", menuTheme: "Themenmodus", menuDonate: "Spenden", menuInfo: "Ersteller-Info",
-        menuVersion: "Version (v1)", menuSupport: "Support erhalten", navApp: "App", navAdd: "Hinzufügen", navCountries: "Länder", navSettings: "Einstellungen",
-        backSettings: "Zurück zu Einstellungen", saveProfile: "Änderungen speichern", selectLang: "Sprache wählen", selectTheme: "Thema wählen", btnClose: "Schließen",
-        donationHeader: "H-scan unterstützen", donationSub: "Wählen Sie Ihren Spendenzweck aus:", donCreator: "Entwicklerin unterstützen", donCreatorSub: "Kleine Anerkennung für die Entwicklung",
-        donPalestine: "Palästina & Humanitäre Hilfe", donPalestineSub: "100 % der Erlöse fließen in die Hilfe", supportPageTitle: "Support-Ticket senden",
-        supportPageDesc: "Haben Sie ein Problem oder eine Frage? Senden Sie eine Anfrage.", labelSubject: "Betreff / Problemtyp", labelMessage: "Nachricht & Details", btnSendTicket: "Ticket per E-Mail senden"
-      },
-      ar: {
-        logo: "H-SCAN", flag: "علم", bannerText: "شريط التحديثات والمعلومات", savedHistory: "المحفوظات / السجل",
-        bottomBannerText: "عروض الأطعمة والوجبات الخفيفة الحلال", addProductTitle: "إضافة منتج", addProductDesc: "أضف منتجًا جديدًا إلى قاعدة بيانات الحلال هنا.",
-        scanTitle: "ماسح الباركود", scanDesc: "سيتم فتح الكاميرا لمسح باركود المنتجات.", countriesTitle: "المناطق الحلال",
-        countriesDesc: "اختر دولة للاطلاع على الشهادات المعتمدة.", popularTitle: "الوجهات الشائعة", allCountriesTitle: "جميع الدول",
-        settingsTitle: "الإعدادات", menuUser: "ملف المستخدم", menuLang: "اللغات", menuTheme: "مظهر التطبيق", menuDonate: "التبرعات", menuInfo: "قصة التطبيق",
-        menuVersion: "إصدار التطبيق (v1)", menuSupport: "الدعم الفني", navApp: "الرئيسية", navAdd: "إضافة", navCountries: "الدول", navSettings: "الإعدادات",
-        backSettings: "العودة للإعدادات", saveProfile: "حفظ التغييرات", selectLang: "اختر اللغة", selectTheme: "اختر المظهر", btnClose: "إغلاق",
-        donationHeader: "دعم تطبيق H-scan", donationSub: "اختر جهة التبرع أدناه:", donCreator: "دعم مطورة التطبيق", donCreatorSub: "رمز تقدير بسيط لجهود التطوير",
-        donPalestine: "مساعدات فلسطين والإغاثة الإنسانية", donPalestineSub: "100% من التبرعات تذهب مباشرة للإغاثة", supportPageTitle: "إرسال تذكرة دعم",
-        supportPageDesc: "هل واجهت مشكلة أو لديك استفسار؟ أرسل لنا مباشرة.", labelSubject: "الموضوع / نوع المشكلة", labelMessage: "الرسالة والتفاصيل", btnSendTicket: "إرسال التذكرة عبر البريد"
-      },
-      ko: {
-        logo: "H-SCAN", flag: "국기", bannerText: "배너 슬라이드 (업데이트 / 정보)", savedHistory: "저장됨 / 기록",
-        bottomBannerText: "할랄 푸드 & 스낵 슬라이드", addProductTitle: "제품 추가", addProductDesc: "할랄 데이터베이스에 새 제품을 제출합니다.",
-        scanTitle: "바코드 스캐너", scanDesc: "바코드 스캔을 위한 카메라 화면이 로드됩니다.", countriesTitle: "할랄 지역",
-        countriesDesc: "인증된 할랄 지역을 탐색할 국가를 선택하세요.", popularTitle: "인기 목적지", allCountriesTitle: "모든 국가",
-        settingsTitle: "설정", menuUser: "사용자 프로필", menuLang: "언어", menuTheme: "테마 모드", menuDonate: "기부", menuInfo: "제작 정보",
-        menuVersion: "버전 모드 (v1)", menuSupport: "지원 받기", navApp: "앱", navAdd: "추가", navCountries: "국가", navSettings: "설정",
-        backSettings: "설정으로 돌아가기", saveProfile: "변경 사항 저장", selectLang: "언어 선택", selectTheme: "테마 선택", btnClose: "닫기",
-        donationHeader: "H-scan 후원하기", donationSub: "아래에서 기부 목적을 선택하세요:", donCreator: "제작자 후원하기", donCreatorSub: "개발에 대한 작은 감사의 표시",
-        donPalestine: "팔레스타인 및 인도적 지원", donPalestineSub: "수익금 100%가 구호 활동에 전달됩니다", supportPageTitle: "지원 티켓 제출",
-        supportPageDesc: "문제가 있거나 질문이 있으신가요? 직접 문의해 주세요.", labelSubject: "제목 / 문제 유형", labelMessage: "메시지 및 상세 내용", btnSendTicket: "이메일로 티켓 보내기"
       }
     };
 
@@ -605,7 +726,7 @@
       closeModal('language-modal');
     }
 
-    // 7. THEME MODE TOGGLE
+    // 9. THEME MODE TOGGLE
     function setTheme(themeMode) {
       if (themeMode === 'dark') {
         document.body.classList.add('dark-theme');
@@ -615,7 +736,7 @@
       closeModal('theme-modal');
     }
 
-    // 8. DONATION GATEWAY CONTROL
+    // 10. DONATION GATEWAY CONTROL
     let currentDonationCause = '';
     function initiateDonation(cause) {
       currentDonationCause = cause;
@@ -629,7 +750,7 @@
       alert(`Redirecting to ${method} gateway to complete donation for "${currentDonationCause}"...`);
     }
 
-    // 9. SUPPORT TICKET EMAIL SYSTEM
+    // 11. SUPPORT TICKET EMAIL SYSTEM
     function sendSupportTicket(event) {
       event.preventDefault();
       const subject = encodeURIComponent(document.getElementById('support-subject').value);
@@ -638,7 +759,7 @@
       window.location.href = mailtoLink;
     }
 
-    // 10. COUNTRY SEARCH FILTER
+    // 12. COUNTRY SEARCH FILTER
     function filterCountries() {
       const input = document.getElementById('country-search').value.toLowerCase().trim();
       const rows = document.querySelectorAll('#countries-list .country-row');

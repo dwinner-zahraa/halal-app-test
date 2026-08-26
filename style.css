@@ -570,3 +570,59 @@ body.dark-theme .story-body {
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   cursor: pointer;
 }
+
+/* Product Result Modal */
+.product-modal-content {
+  text-align: center;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.halal {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-badge.haram {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.status-badge.mashbooh {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.warning-box {
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  color: #856404;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: left;
+  margin-bottom: 12px;
+}
+
+.ingredients-box {
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: left;
+}
+
+body.dark-theme .ingredients-box {
+  background-color: #2a2a2a;
+  border-color: #333;
+}
+
+body.dark-theme .ingredients-box p {
+  color: #ccc !important;
+}
