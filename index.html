@@ -19,7 +19,7 @@
   <!-- App Header -->
   <header class="app-header">
     <div class="logo-text">H-SCAN</div>
-    <div id="time-display">03:44 am<br><small>27 AUG</small></div>
+    <div id="time-display">03:53 am<br><small>27 AUG</small></div>
     <div class="flag-only" id="user-country-flag">🇲🇾</div>
   </header>
 
@@ -299,13 +299,13 @@
       });
     }
 
-    // Mapbox Implementation (Using your Token)
+    // Mapbox Token Placeholder
     mapboxgl.accessToken = 'pk.eyJ1IjoienJoYXgiLCJhIjoiY210YWh6dGNkMGdtaDJ3c2JzdWluanh2ayJ9.M3dGrh62t8sJJSb1C4iIVQ';
     
     const defaultCoords = [101.6869, 3.1390]; // [longitude, latitude]
     let map = new mapboxgl.Map({
       container: 'mapbox-map',
-      style: 'mapbox://styles/mapbox/streets-v12', // Clean vector layout
+      style: 'mapbox://styles/mapbox/streets-v12',
       center: defaultCoords,
       zoom: 13
     });
@@ -334,7 +334,7 @@
     // Search Nearby Stores, Restaurants, Hotels, Gas Stations via Mapbox API
     function searchLocation() {
       const query = document.getElementById('map-search-input').value.trim();
-      if (!query) return;
+      if (!query || mapboxgl.accessToken === 'YOUR_MAPBOX_PUBLIC_TOKEN') return;
 
       const center = map.getCenter();
       const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?proximity=${center.lng},${center.lat}&access_token=${mapboxgl.accessToken}`;
