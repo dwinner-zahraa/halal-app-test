@@ -33,23 +33,7 @@
   <div class="bottom-carousel">
     <p>Halal Food & Snacks Slide</p>
   </div>
-  <h1>Halal Food Checker</h1>
-
-  <!-- Camera Container -->
-  <div id="reader" style="width: 100%; max-width: 400px; margin: 20px auto; border: 2px dashed #ccc; padding: 10px; border-radius: 8px;"></div>
-
-  <p>Or test a barcode manually:</p>
-  <input type="text" id="barcodeInput" placeholder="Enter barcode..." value="3017620422003" style="padding: 8px; width: 60%;">
-  <button onclick="checkFood(document.getElementById('barcodeInput').value)" style="padding: 8px 15px;">Search</button>
-
-  <div id="result" style="margin-top: 30px;"></div>
-
-  <!-- History Section -->
-  <hr style="margin-top: 40px;">
-  <h3>Recent Scans</h3>
-  <ul id="historyList" style="text-align: left; list-style-type: none; padding: 0;"></ul>
-  <button onclick="clearHistory()" style="padding: 5px 10px;">Clear History</button>
-
+ 
   <script>
     const haramKeywords = [
       "pork", "pig", "bacon", "ham", "lard", 
@@ -208,8 +192,6 @@
   }
   </script>
 
-  <!-- HTML UI Elements (Placed BEFORE </body>) -->
-  <div id="addProductSection" style="display: none; margin-top: 20px; border: 1px solid #ccc; padding: 15px;">
     <h3>Product Not Found</h3>
     <p>Add it to the database:</p>
     <input type="text" id="newBarcode" placeholder="Barcode" readonly><br><br>
