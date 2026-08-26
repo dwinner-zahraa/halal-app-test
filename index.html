@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#e06666">
   <title>H-scan</title>
   
-  <link rel="stylesheet" href="style.css?v=16">
+  <link rel="stylesheet" href="style.css?v=17">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
 
   <!-- Leaflet Map CSS & JS -->
@@ -42,33 +42,47 @@
     </div>
   </div>
 
-  <!-- 2. ADD PRODUCT PAGE VIEW -->
+  <!-- 2. ADD PRODUCT PAGE VIEW (PHOTO SNAP WORKFLOW) -->
   <div id="add-product-page" class="page-view">
-    <h2><i class="fa-solid fa-plus"></i> <span data-i18n="addProductTitle">Add Product</span></h2>
-    <p data-i18n="addProductDesc">Submit a new product to the Halal database here.</p>
+    <h2><i class="fa-solid fa-camera"></i> <span data-i18n="addProductTitle">Quick Product Submission</span></h2>
+    <p data-i18n="addProductDesc">Item missing? Snap pictures of the front and back packaging. Our review team will process the details!</p>
 
     <form id="add-product-form" onsubmit="handleProductSubmission(event)" style="margin-top: 15px;">
+      
+      <!-- Auto-filled Barcode Field -->
       <div class="form-group">
-        <label>Barcode Number</label>
-        <input type="text" id="add-barcode" placeholder="e.g. 5000159461122" required>
+        <label>Detected Barcode</label>
+        <input type="text" id="add-barcode" placeholder="Barcode number" readonly style="background: #f0f0f0; font-weight: bold; color: #555;">
       </div>
 
-      <div class="form-group">
-        <label>Product Name</label>
-        <input type="text" id="add-name" placeholder="e.g. Chocolate Bar" required>
+      <!-- Packaging Photo Uploads -->
+      <div class="photo-upload-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0;">
+        
+        <!-- Front Photo Box -->
+        <div class="photo-box" onclick="document.getElementById('photo-front-input').click()" style="border: 2px dashed #ccc; padding: 15px; text-align: center; border-radius: 10px; cursor: pointer; background: #fafafa;">
+          <input type="file" id="photo-front-input" accept="image/*" capture="environment" style="display:none;" onchange="previewProductPhoto(event, 'preview-front', 'icon-front')">
+          <i id="icon-front" class="fa-solid fa-camera-retro" style="font-size: 2rem; color: #888;"></i>
+          <img id="preview-front" style="display:none; width: 100%; height: 100px; object-fit: cover; border-radius: 6px;">
+          <p style="font-size: 0.75rem; margin-top: 6px; font-weight: bold; color: #444;">1. Front Packaging</p>
+        </div>
+
+        <!-- Back / Ingredients Photo Box -->
+        <div class="photo-box" onclick="document.getElementById('photo-back-input').click()" style="border: 2px dashed #ccc; padding: 15px; text-align: center; border-radius: 10px; cursor: pointer; background: #fafafa;">
+          <input type="file" id="photo-back-input" accept="image/*" capture="environment" style="display:none;" onchange="previewProductPhoto(event, 'preview-back', 'icon-back')">
+          <i id="icon-back" class="fa-solid fa-file-lines" style="font-size: 2rem; color: #888;"></i>
+          <img id="preview-back" style="display:none; width: 100%; height: 100px; object-fit: cover; border-radius: 6px;">
+          <p style="font-size: 0.75rem; margin-top: 6px; font-weight: bold; color: #444;">2. Ingredients (Back)</p>
+        </div>
+
       </div>
 
+      <!-- Optional Quick Note -->
       <div class="form-group">
-        <label>Brand</label>
-        <input type="text" id="add-brand" placeholder="e.g. Nestlé" required>
+        <label>Additional Notes (Optional)</label>
+        <input type="text" id="add-notes" placeholder="e.g. Bought at local supermarket">
       </div>
 
-      <div class="form-group">
-        <label>Full Ingredients List</label>
-        <textarea id="add-ingredients" rows="4" placeholder="List all ingredients printed on packaging..." required></textarea>
-      </div>
-
-      <button type="submit" class="submit-ticket-btn">Submit Product for Verification</button>
+      <button type="submit" class="submit-ticket-btn" style="width: 100%; padding: 12px; background: #e06666; color: white; border: none; border-radius: 8px; font-weight: bold;">Submit Snap to Review Team</button>
     </form>
   </div>
 
@@ -77,12 +91,10 @@
     <h2><i class="fa-solid fa-qrcode"></i> <span data-i18n="scanTitle">Barcode Scanner</span></h2>
     <p data-i18n="scanDesc">Align product barcode within camera scanner below.</p>
 
-    <!-- Interactive Camera Box -->
     <div id="reader-wrapper" style="margin-top: 15px; position: relative;">
       <div id="reader" style="width: 100%; border-radius: 12px; overflow: hidden; background: #000;"></div>
     </div>
 
-    <!-- Manual Barcode Search Fallback -->
     <div style="margin-top: 20px; text-align: center;">
       <p style="font-size: 0.85rem; color: #666; margin-bottom: 8px;">Having camera trouble? Search barcode directly:</p>
       <div style="display: flex; gap: 8px;">
@@ -116,9 +128,7 @@
       </div>
 
       <div class="country-section-title" data-i18n="allCountriesTitle">All Countries</div>
-      <div class="all-countries-list" id="countries-list">
-        <!-- Rendered dynamically by script -->
-      </div>
+      <div class="all-countries-list" id="countries-list"></div>
     </div>
   </div>
 
@@ -187,7 +197,7 @@
     </div>
   </div>
 
-  <!-- 6. EDITABLE USER PROFILE SUB-PAGE -->
+  <!-- 6. USER PROFILE SUB-PAGE -->
   <div id="user-profile-page" class="page-view">
     <div class="profile-nav">
       <button class="back-btn" onclick="showPage('settings-page')">
@@ -317,7 +327,7 @@
     </div>
   </div>
 
-  <!-- 11 LANGUAGES MODAL -->
+  <!-- LANGUAGES MODAL -->
   <div id="language-modal" class="modal">
     <div class="modal-content">
       <h3 data-i18n="selectLang">Select Language</h3>
@@ -338,7 +348,7 @@
     </div>
   </div>
 
-  <!-- ACTIVE THEME MODAL -->
+  <!-- THEME MODAL -->
   <div id="theme-modal" class="modal">
     <div class="modal-content">
       <h3 data-i18n="selectTheme">Select Theme</h3>
@@ -414,7 +424,7 @@
     </div>
   </div>
 
-  <!-- JavaScript Controls & Database Integration -->
+  <!-- Script Logic -->
   <script>
     // 1. DYNAMIC CLOCK
     function updateClock() {
@@ -466,7 +476,7 @@
     }
     window.addEventListener('load', initMap);
 
-    // 3. COMPLETE COUNTRIES LIST RENDERING
+    // 3. COUNTRIES LIST
     const countryDatabase = [
       { name: "Malaysia", flag: "🇲🇾" },
       { name: "Japan", flag: "🇯🇵" },
@@ -502,12 +512,12 @@
     }
     window.addEventListener('DOMContentLoaded', renderCountriesList);
 
-    // 4. MOCK BARCODE DATABASE & LIVE CAMERA SCANNER
+    // 4. MOCK DATABASE & LIVE CAMERA SCANNER
     const productDB = {
       "5000159461122": {
         name: "KitKat 4-Finger Milk Chocolate",
         brand: "Nestlé",
-        status: "HALAL", // HALAL, HARAM, MASHBOOH
+        status: "HALAL",
         img: "https://images.unsplash.com/photo-1582293041079-7814c2f12063?w=300",
         warningIngredients: null,
         ingredients: "Sugar, Wheat Flour, Skimmed Milk Powder, Cocoa Butter, Cocoa Mass, Vegetable Fats (Palm, Shea), Butterfat (Milk), Emulsifier (Lecithins), Raising Agent (Sodium Bicarbonate)."
@@ -519,22 +529,6 @@
         img: "https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=300",
         warningIngredients: null,
         ingredients: "Wheat Flour, Modified Tapioca Starch, Refined Palm Oil, Wheat Gluten, Salt, Soy Lecithin, Artificial Chicken Flavor Powder, Whole Milk Powder, White Sugar."
-      },
-      "4901330571234": {
-        name: "Crispy Pork & Potato Chips",
-        brand: "SnackCo",
-        status: "HARAM",
-        img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300",
-        warningIngredients: "Pork Extract, E441 Gelatin (Porcine Origin), Lard Fat",
-        ingredients: "Potatoes, Vegetable Oil, Pork Extract, Gelatin (Porcine), Salt, Sugar, Monosodium Glutamate, Spices."
-      },
-      "4902388012345": {
-        name: "Matcha Cream Biscuits",
-        brand: "Tokyo Sweets",
-        status: "MASHBOOH",
-        img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300",
-        warningIngredients: "E471 Emulsifier (Unspecified animal/plant source), Shortening",
-        ingredients: "Wheat Flour, Sugar, Shortening, Matcha Powder, Whole Milk Powder, Emulsifier (E471), Flavoring."
       }
     };
 
@@ -554,12 +548,8 @@
           html5QrcodeScanner.stop();
           lookupBarcode(decodedText);
         },
-        (errorMessage) => {
-          // Ignore scanning frame errors
-        }
-      ).catch((err) => {
-        console.warn("Camera start failed: ", err);
-      });
+        () => {}
+      ).catch((err) => console.warn("Camera start failed: ", err));
     }
 
     function stopScanner() {
@@ -573,7 +563,6 @@
       const product = productDB[code];
 
       if (product) {
-        // Display Popup Modal
         const badge = document.getElementById('product-status-badge');
         badge.className = `status-badge ${product.status.toLowerCase()}`;
         badge.innerHTML = `<i class="fa-solid ${product.status === 'HALAL' ? 'fa-circle-check' : product.status === 'HARAM' ? 'fa-circle-xmark' : 'fa-triangle-exclamation'}"></i> ${product.status}`;
@@ -593,35 +582,43 @@
 
         openModal('product-result-modal');
       } else {
-        alert(`Barcode (${code}) not found in the global database. Redirecting to Add Product page for review.`);
+        // AUTO-INPUT BARCODE AND DIRECT TO PHOTO SUBMISSION PAGE
         document.getElementById('add-barcode').value = code;
         showPage('add-product-page');
+      }
+    }
+
+    // Photo Preview Handler
+    function previewProductPhoto(event, imgId, iconId) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.getElementById(imgId);
+          const icon = document.getElementById(iconId);
+          img.src = e.target.result;
+          img.style.display = 'block';
+          icon.style.display = 'none';
+        }
+        reader.readAsDataURL(file);
       }
     }
 
     function handleProductSubmission(event) {
       event.preventDefault();
       const code = document.getElementById('add-barcode').value;
-      const name = document.getElementById('add-name').value;
-      const brand = document.getElementById('add-brand').value;
-      const ingredients = document.getElementById('add-ingredients').value;
 
-      // Add to local session runtime database
-      productDB[code] = {
-        name: name,
-        brand: brand,
-        status: "MASHBOOH",
-        img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300",
-        warningIngredients: "Pending Halal Committee Review",
-        ingredients: ingredients
-      };
-
-      alert("Thank you! Product submitted for ingredient verification. You can now scan or look up this item.");
+      alert(`Product (${code}) photos submitted to the review team! You can keep shopping while we process it.`);
       document.getElementById('add-product-form').reset();
+      document.getElementById('preview-front').style.display = 'none';
+      document.getElementById('icon-front').style.display = 'block';
+      document.getElementById('preview-back').style.display = 'none';
+      document.getElementById('icon-back').style.display = 'block';
+      
       showPage('app-page');
     }
 
-    // 5. PAGE SWITCHER WITH SCANNER CONTROLS
+    // 5. PAGE SWITCHER
     function showPage(pageId) {
       document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active-page'));
       document.querySelectorAll('.bottom-nav .nav-item').forEach(b => b.classList.remove('active'));
@@ -663,7 +660,7 @@
       }
     }
 
-    // 7. USER PROFILE EDITING & PHOTO UPLOAD
+    // 7. USER PROFILE
     function triggerPhotoUpload() {
       document.getElementById('profile-photo-input').click();
     }
@@ -687,11 +684,11 @@
       alert("Profile updated successfully!");
     }
 
-    // 8. MULTI-LANGUAGE DICTIONARY & TOGGLE
+    // 8. MULTI-LANGUAGE DICTIONARY
     const translations = {
       en: {
         logo: "H-SCAN", flag: "Flag", bannerText: "Banner Slide (Updates / Info)", savedHistory: "Saved / History",
-        bottomBannerText: "Halal Food & Snacks Slide", addProductTitle: "Add Product", addProductDesc: "Submit a new product to the Halal database here.",
+        bottomBannerText: "Halal Food & Snacks Slide", addProductTitle: "Quick Product Submission", addProductDesc: "Item missing? Snap pictures of the front and back packaging. Our review team will process the details!",
         scanTitle: "Barcode Scanner", scanDesc: "Align product barcode within camera scanner below.", countriesTitle: "Halal Regions",
         countriesDesc: "Select a country to explore verified Halal certifications.", popularTitle: "Popular Destinations", allCountriesTitle: "All Countries",
         settingsTitle: "Settings", menuUser: "User Profile", menuLang: "Languages", menuTheme: "Theme Mode", menuDonate: "Donation", menuInfo: "Creation Info",
@@ -700,18 +697,6 @@
         donationHeader: "Support H-scan", donationSub: "Choose your donation cause below:", donCreator: "Support the Creator", donCreatorSub: "Small token of appreciation for development",
         donPalestine: "Palestine & Humanitarian Aid", donPalestineSub: "100% of proceeds directed to relief", supportPageTitle: "Submit a Support Ticket",
         supportPageDesc: "Encountered an issue or have a question? Send us a direct inquiry.", labelSubject: "Subject / Issue Type", labelMessage: "Message & Details", btnSendTicket: "Send Ticket via Email"
-      },
-      ms: {
-        logo: "H-SCAN", flag: "Bendera", bannerText: "Slaid Pengumuman / Info", savedHistory: "Disimpan / Sejarah",
-        bottomBannerText: "Slaid Makanan & Snek Halal", addProductTitle: "Tambah Produk", addProductDesc: "Hantar produk baru ke pangkalan data Halal di sini.",
-        scanTitle: "Pengimbas Kod Bar", scanDesc: "Paparan kamera untuk mengimbas kod bar produk.", countriesTitle: "Wilayah Halal",
-        countriesDesc: "Pilih negara untuk meneroka pensijilan Halal yang disahkan.", popularTitle: "Destinasi Popular", allCountriesTitle: "Semua Negara",
-        settingsTitle: "Tetapan", menuUser: "Profil Pengguna", menuLang: "Bahasa", menuTheme: "Mod Tema", menuDonate: "Sumbangan", menuInfo: "Info Pembuatan",
-        menuVersion: "Versi Mod (v1)", menuSupport: "Dapatkan Bantuan", navApp: "Aplikasi", navAdd: "Tambah", navCountries: "Negara", navSettings: "Tetapan",
-        backSettings: "Kembali ke Tetapan", saveProfile: "Simpan Perubahan", selectLang: "Pilih Bahasa", selectTheme: "Pilih Tema", btnClose: "Tutup",
-        donationHeader: "Sokong H-scan", donationSub: "Pilih tujuan sumbangan anda di bawah:", donCreator: "Sokong Pencipta", donCreatorSub: "Tanda penghargaan kecil untuk pembangunan",
-        donPalestine: "Bantuan Palestin & Kemanusiaan", donPalestineSub: "100% hasil disalurkan kepada bantuan", supportPageTitle: "Hantar Tiket Bantuan",
-        supportPageDesc: "Menghadapi masalah atau mempunyai soalan? Hantar pertanyaan secara terus.", labelSubject: "Subjek / Jenis Masalah", labelMessage: "Mesej & Butiran", btnSendTicket: "Hantar Tiket Melalui E-mel"
       }
     };
 
