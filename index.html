@@ -10,7 +10,7 @@
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
 
-  <!-- Mapbox GL JS CSS & JS (Free Tier) -->
+  <!-- Mapbox GL JS CSS & JS -->
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
 </head>
@@ -19,7 +19,7 @@
   <!-- App Header -->
   <header class="app-header">
     <div class="logo-text">H-SCAN</div>
-    <div id="time-display">03:53 am<br><small>27 AUG</small></div>
+    <div id="time-display">11:28 pm<br><small>27 AUG</small></div>
     <div class="flag-only" id="user-country-flag">🇲🇾</div>
   </header>
 
@@ -43,7 +43,7 @@
       <button id="map-search-btn" onclick="searchLocation()"><i class="fa-solid fa-magnifying-glass"></i></button>
     </div>
 
-    <!-- Modern Mapbox Map Container -->
+    <!-- Mapbox Map Container -->
     <div class="map-container">
       <div id="mapbox-map"></div>
     </div>
@@ -275,7 +275,6 @@
         element.classList.add('active');
       }
 
-      // Resize Mapbox canvas when switching back to Home
       if (pageId === 'app-page' && map) {
         setTimeout(() => map.resize(), 100);
       }
@@ -299,8 +298,9 @@
       });
     }
 
-    // Mapbox Token Placeholder
-    mapboxgl.accessToken = 'pk.eyJ1IjoienJoYXgiLCJhIjoiY210YWh6dGNkMGdtaDJ3c2JzdWluanh2ayJ9.M3dGrh62t8sJJSb1C4iIVQ';
+    // Mapbox Config (Environment variable / user token placeholder)
+    const MAPBOX_PUBLIC_KEY = 'YOUR_MAPBOX_PUBLIC_TOKEN';
+    mapboxgl.accessToken = MAPBOX_PUBLIC_KEY;
     
     const defaultCoords = [101.6869, 3.1390]; // [longitude, latitude]
     let map = new mapboxgl.Map({
@@ -316,7 +316,6 @@
 
     let activePopup = null;
 
-    // Detect User Location
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
         const userCoords = [position.coords.longitude, position.coords.latitude];
@@ -331,7 +330,6 @@
       }
     }
 
-    // Search Nearby Stores, Restaurants, Hotels, Gas Stations via Mapbox API
     function searchLocation() {
       const query = document.getElementById('map-search-input').value.trim();
       if (!query || mapboxgl.accessToken === 'YOUR_MAPBOX_PUBLIC_TOKEN') return;
