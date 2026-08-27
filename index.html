@@ -19,7 +19,7 @@
   <!-- App Header -->
   <header class="app-header">
     <div class="logo-text">H-SCAN</div>
-    <div id="time-display">11:28 pm<br><small>27 AUG</small></div>
+    <div id="time-display">--:-- --<br><small>-- ---</small></div>
     <div class="flag-only" id="user-country-flag">🇲🇾</div>
   </header>
 
@@ -37,13 +37,13 @@
       </div>
     </div>
 
-    <!-- Free Search Bar Linked to Mapbox -->
+    <!-- Search Bar -->
     <div class="search-box">
       <input type="text" id="map-search-input" placeholder="Search restaurant, gas station, hotel..." onkeypress="handleSearchKeyPress(event)">
       <button id="map-search-btn" onclick="searchLocation()"><i class="fa-solid fa-magnifying-glass"></i></button>
     </div>
 
-    <!-- Mapbox Map Container -->
+    <!-- Map Container -->
     <div class="map-container">
       <div id="mapbox-map"></div>
     </div>
@@ -54,7 +54,7 @@
       <span class="saved-count">0 saved</span>
     </div>
 
-    <!-- Authentic Regional Hot Meals Carousel -->
+    <!-- Hot Meals Carousel -->
     <div class="delicacies-section">
       <div class="section-title">Authentic Regional Hot Meals</div>
       <div class="delicacy-list">
@@ -88,6 +88,17 @@
     <div class="page-card">
       <h2><i class="fa-solid fa-plus-circle" style="color: #e53935;"></i> Add New Product</h2>
       <p style="margin: 10px 0; color: #666; font-size: 0.85rem;">Submit a product for Halal database verification.</p>
+      
+      <!-- Interactive Image Upload Dropzone -->
+      <div id="image-upload-zone" onclick="document.getElementById('product-file-input').click()" style="width: 100%; height: 140px; border: 2px dashed #e53935; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 15px; background: #fff5f5; text-align: center; overflow: hidden; position: relative;">
+        <div id="upload-placeholder">
+          <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2rem; color: #e53935;"></i>
+          <p style="font-size: 0.85rem; margin-top: 6px; color: #555;">Tap to upload product picture</p>
+        </div>
+        <img id="product-img-preview" src="" alt="Preview" style="display: none; width: 100%; height: 100%; object-fit: cover;">
+      </div>
+      <input type="file" id="product-file-input" accept="image/*" style="display: none;" onchange="previewProductImage(event)">
+
       <form onsubmit="event.preventDefault(); alert('Product submitted for review!');">
         <input type="text" placeholder="Product Name" style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; outline: none;">
         <input type="text" placeholder="Barcode Number" style="width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none;">
@@ -101,10 +112,19 @@
     <div class="page-card" style="text-align: center;">
       <i class="fa-solid fa-qrcode" style="color: #e53935; font-size: 2.5rem;"></i>
       <h3 style="margin-top: 10px;">Barcode Scanner</h3>
-      <div style="width: 100%; height: 220px; background: #111; margin: 20px 0; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.9rem;">
-        <i class="fa-solid fa-camera" style="margin-right: 8px;"></i> Camera Stream Active
+      
+      <!-- Real Camera Video Box -->
+      <div style="width: 100%; height: 220px; background: #111; margin: 20px 0; border-radius: 12px; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center;">
+        <video id="camera-stream" autoplay playsinline style="width: 100%; height: 100%; object-fit: cover; display: none;"></video>
+        <div id="camera-fallback" style="color: #fff; font-size: 0.9rem; padding: 10px;">
+          <i class="fa-solid fa-camera" style="margin-right: 8px;"></i> Camera Offline
+        </div>
       </div>
-      <p style="color: #666; font-size: 0.85rem;">Align the product barcode within the frame to scan.</p>
+
+      <button onclick="toggleCamera()" style="padding: 10px 20px; background: #e53935; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+        Toggle Camera
+      </button>
+      <p style="color: #666; font-size: 0.85rem; margin-top: 10px;">Align the product barcode within the frame to scan.</p>
     </div>
   </div>
 
@@ -256,17 +276,35 @@
     </div>
   </div>
 
-  <!-- JavaScript App Logic -->
+  <!-- App Script Logic -->
   <script>
-    // Navigation Control
-    function showPage(pageId, element) {
-      document.querySelectorAll('.page-view').forEach(page => {
-        page.classList.remove('active-page');
-      });
+    // 1. LIVE TIME TRACKER
+    function startLiveTime() {
+      const timeDisplay = document.getElementById('time-display');
+      
+      function update() {
+        const now = new Date();
+        let hours = now.getHours();
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        const timeStr = `${String(hours).padStart(2, '0')}:${minutes} ${ampm}`;
 
-      document.querySelectorAll('.bottom-nav .nav-item').forEach(btn => {
-        btn.classList.remove('active');
-      });
+        const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+        const dateStr = `${now.getDate()} ${months[now.getMonth()]}`;
+
+        timeDisplay.innerHTML = `${timeStr}<br><small>${dateStr}</small>`;
+      }
+      
+      update();
+      setInterval(update, 1000);
+    }
+
+    // 2. NAVIGATION CONTROL
+    function showPage(pageId, element) {
+      document.querySelectorAll('.page-view').forEach(page => page.classList.remove('active-page'));
+      document.querySelectorAll('.bottom-nav .nav-item').forEach(btn => btn.classList.remove('active'));
 
       const targetPage = document.getElementById(pageId);
       if (targetPage) targetPage.classList.add('active-page');
@@ -277,6 +315,12 @@
 
       if (pageId === 'app-page' && map) {
         setTimeout(() => map.resize(), 100);
+      }
+
+      if (pageId === 'scan-page') {
+        startCameraStream();
+      } else {
+        stopCameraStream();
       }
     }
 
@@ -289,6 +333,7 @@
     function openModal(id) { document.getElementById(id).classList.add('show'); }
     function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 
+    // 3. COUNTRY FILTERING
     function filterCountries() {
       const input = document.getElementById('country-search').value.toLowerCase().trim();
       const rows = document.querySelectorAll('#countries-list .country-row');
@@ -298,41 +343,104 @@
       });
     }
 
-    // Mapbox Config (Environment variable / user token placeholder)
+    // 4. IMAGE UPLOAD PREVIEW
+    function previewProductImage(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.getElementById('product-img-preview');
+          const placeholder = document.getElementById('upload-placeholder');
+          img.src = e.target.result;
+          img.style.display = 'block';
+          placeholder.style.display = 'none';
+        }
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // 5. CAMERA FUNCTIONALITY
+    let mediaStream = null;
+
+    async function startCameraStream() {
+      const video = document.getElementById('camera-stream');
+      const fallback = document.getElementById('camera-fallback');
+
+      try {
+        mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        video.srcObject = mediaStream;
+        video.style.display = 'block';
+        fallback.style.display = 'none';
+      } catch (err) {
+        console.warn("Camera access denied or unavailable:", err);
+        video.style.display = 'none';
+        fallback.style.display = 'block';
+        fallback.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Camera access restricted`;
+      }
+    }
+
+    function stopCameraStream() {
+      if (mediaStream) {
+        mediaStream.getTracks().forEach(track => track.stop());
+        mediaStream = null;
+      }
+    }
+
+    function toggleCamera() {
+      if (mediaStream) {
+        stopCameraStream();
+        document.getElementById('camera-stream').style.display = 'none';
+        document.getElementById('camera-fallback').style.display = 'block';
+      } else {
+        startCameraStream();
+      }
+    }
+
+    // 6. SAFE MAPBOX INITIALIZATION (Guarded against token errors)
     const MAPBOX_PUBLIC_KEY = 'YOUR_MAPBOX_PUBLIC_TOKEN';
-    mapboxgl.accessToken = MAPBOX_PUBLIC_KEY;
-    
-    const defaultCoords = [101.6869, 3.1390]; // [longitude, latitude]
-    let map = new mapboxgl.Map({
-      container: 'mapbox-map',
-      style: 'mapbox://styles/mapbox/streets-v12',
-      center: defaultCoords,
-      zoom: 13
-    });
+    let map = null;
 
-    let currentMarker = new mapboxgl.Marker({ color: '#e53935' })
-      .setLngLat(defaultCoords)
-      .addTo(map);
-
-    let activePopup = null;
-
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        const userCoords = [position.coords.longitude, position.coords.latitude];
-        map.flyTo({ center: userCoords, zoom: 14 });
-        currentMarker.setLngLat(userCoords);
+    if (MAPBOX_PUBLIC_KEY && MAPBOX_PUBLIC_KEY !== 'YOUR_MAPBOX_PUBLIC_TOKEN') {
+      mapboxgl.accessToken = MAPBOX_PUBLIC_KEY;
+      
+      const defaultCoords = [101.6869, 3.1390];
+      map = new mapboxgl.Map({
+        container: 'mapbox-map',
+        style: 'mapbox://styles/mapbox/streets-v12',
+        center: defaultCoords,
+        zoom: 13
       });
+
+      new mapboxgl.Marker({ color: '#e53935' })
+        .setLngLat(defaultCoords)
+        .addTo(map);
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            const userCoords = [position.coords.longitude, position.coords.latitude];
+            map.flyTo({ center: userCoords, zoom: 14 });
+          },
+          err => console.warn("Geolocation permission dismissed or blocked.")
+        );
+      }
+    } else {
+      document.getElementById('mapbox-map').innerHTML = `
+        <div style="display:flex; align-items:center; justify-content:center; height:100%; background:#f0f0f0; color:#666; font-size:0.8rem; text-align:center; padding:10px;">
+          Map view offline (Provide valid Mapbox token)
+        </div>`;
     }
 
     function handleSearchKeyPress(e) {
-      if (e.key === 'Enter') {
-        searchLocation();
-      }
+      if (e.key === 'Enter') searchLocation();
     }
 
     function searchLocation() {
       const query = document.getElementById('map-search-input').value.trim();
-      if (!query || mapboxgl.accessToken === 'YOUR_MAPBOX_PUBLIC_TOKEN') return;
+      if (!query || !map || MAPBOX_PUBLIC_KEY === 'YOUR_MAPBOX_PUBLIC_TOKEN') {
+        alert("Map search requires a valid Mapbox token.");
+        return;
+      }
 
       const center = map.getCenter();
       const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?proximity=${center.lng},${center.lat}&access_token=${mapboxgl.accessToken}`;
@@ -343,22 +451,16 @@
           if (data.features && data.features.length > 0) {
             const match = data.features[0];
             const coords = match.geometry.coordinates;
-
             map.flyTo({ center: coords, zoom: 15 });
-            currentMarker.setLngLat(coords);
-
-            if (activePopup) activePopup.remove();
-
-            activePopup = new mapboxgl.Popup({ offset: 25 })
-              .setLngLat(coords)
-              .setHTML(`<div style="padding:4px; font-size:12px;"><b>${match.text}</b><br><span style="color:#666;">${match.place_name}</span></div>`)
-              .addTo(map);
           } else {
-            alert('Location not found. Try searching for a specific place name or category.');
+            alert('Location not found.');
           }
         })
         .catch(err => console.error('Mapbox Search Error:', err));
     }
+
+    // Initialize clock on DOM Load
+    document.addEventListener('DOMContentLoaded', startLiveTime);
   </script>
 </body>
 </html>
